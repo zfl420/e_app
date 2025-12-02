@@ -6,7 +6,7 @@ import {
   Wallet, Truck, Gift, MessageSquareText, RotateCcw,
   UserCog, Wrench, Clock, Users
 } from 'lucide-react';
-import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem } from './types';
+import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem } from './types';
 
 export const TOP_ACTIONS: MenuItem[] = [
   { id: 'pay', label: '快捷收款', icon: CircleDollarSign },
@@ -266,3 +266,72 @@ export const PROFILE_STATS = [
     { label: '台次', value: '0' },
     { label: '客单价', value: '0.00' },
 ];
+
+// --- Arrival List Data ---
+export const ARRIVAL_LIST_DATA: ArrivalItem[] = [
+    {
+      id: 'a1',
+      plate: '浙A00V5A',
+      model: '奥迪 A4L',
+      brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/1200px-Audi-Logo_2016.svg.png',
+      status: 'working',
+      subStatus: '维修',
+      time: '在店3分钟',
+      sa: '飞龙',
+      tech: 'TK',
+      tags: [
+        { text: '已预检', color: 'text-green-600', icon: 'check' },
+        { text: '问题x2', color: 'text-secondary', icon: 'alert' },
+        { text: '检测中', color: 'text-orange-500', icon: 'dots' }
+      ],
+      workOrderSummary: '待施工x1',
+      location: '天猫养车 (总部店-飞龙)'
+    },
+    {
+      id: 'a2',
+      plate: '粤B 12345',
+      model: '宝马 5系 530Li',
+      brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
+      status: 'pending',
+      subStatus: '保养',
+      time: '在店1小时',
+      sa: '张三',
+      tech: '李四',
+      tags: [
+        { text: '已预检', color: 'text-green-600', icon: 'check' }
+      ],
+      workOrderSummary: '待派工',
+      location: '天猫养车 (总部店-飞龙)'
+    },
+    {
+      id: 'a3',
+      plate: '京N 88888',
+      model: '奔驰 E300L',
+      brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png',
+      status: 'finished',
+      subStatus: '洗车',
+      time: '在店2小时',
+      sa: '王五',
+      tech: '赵六',
+      tags: [],
+      workOrderSummary: '待结算',
+      location: '天猫养车 (总部店-飞龙)'
+    },
+    // Generate more mock items
+    ...Array.from({ length: 12 }).map((_, i) => ({
+      id: `a${i + 4}`,
+      plate: `苏E ${10000 + i}`,
+      model: i % 2 === 0 ? '大众 迈腾' : '丰田 凯美瑞',
+      brandLogo: i % 2 === 0 ? 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/1200px-Volkswagen_logo_2019.svg.png' : 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/1200px-Toyota.svg.png',
+      status: 'received' as const,
+      subStatus: '普洗',
+      time: '在店10分钟',
+      sa: '客服A',
+      tech: '技师B',
+      tags: [
+         { text: '已接车', color: 'text-blue-500', icon: 'check' as const }
+      ],
+      workOrderSummary: '待检查',
+      location: '天猫养车 (分店-城西)'
+    }))
+  ];

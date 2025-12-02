@@ -11,12 +11,14 @@ import ChatDetail from './components/ChatDetail';
 import InquiryList from './components/InquiryList';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
+import ArrivalList from './components/ArrivalList';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [partsViewVisible, setPartsViewVisible] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [settingsViewVisible, setSettingsViewVisible] = useState(false);
+  const [arrivalViewVisible, setArrivalViewVisible] = useState(false);
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
@@ -31,6 +33,7 @@ const App: React.FC = () => {
     setPartsViewVisible(false);
     setSelectedChatId(null);
     setSettingsViewVisible(false);
+    setArrivalViewVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -71,6 +74,16 @@ const App: React.FC = () => {
       );
   }
 
+  if (arrivalViewVisible) {
+    return (
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <ArrivalList onBack={() => setArrivalViewVisible(false)} />
+          </div>
+        </div>
+      );
+  }
+
   // Render Main Tabs
   return (
     <div className="min-h-screen bg-background flex justify-center">
@@ -78,7 +91,7 @@ const App: React.FC = () => {
         {activeTab === 'home' && (
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <Header />
-            <StoreCard />
+            <StoreCard onArrivalClick={() => setArrivalViewVisible(true)} />
             <Banner />
             <CategoryGrid onCategoryClick={handleCategoryClick} />
             <VideoFeed />

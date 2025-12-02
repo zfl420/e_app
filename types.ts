@@ -73,3 +73,18 @@ export interface InquiryItem {
   parts: InquiryPart[];
   showCart?: boolean;
 }
+
+export interface ArrivalItem {
+  id: string;
+  plate: string;
+  model: string;
+  brandLogo: string;
+  status: 'received' | 'pending' | 'working' | 'finished';
+  subStatus: string;
+  time: string;
+  sa: string;
+  tech: string;
+  tags: { text: string; color: string; icon?: 'check' | 'alert' | 'dots' }[];
+  workOrderSummary: string;
+  location: string;
+}
