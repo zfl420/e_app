@@ -9,17 +9,21 @@ import {
 import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem } from './types';
 
 export const TOP_ACTIONS: MenuItem[] = [
-  { id: 'pay', label: '快捷收款', icon: CircleDollarSign },
   { id: 'price', label: '查4S价', icon: Store },
+  { id: 'maintain', label: '查保养', icon: Wrench },
   { id: 'catalog', label: '电子目录', icon: FileText },
   { id: 'inventory', label: '库存查询', icon: Package },
 ];
 
 export const MANAGEMENT_ACTIONS: MenuItem[] = [
-  { id: 'bill', label: '接车开单', icon: FileSignature, color: 'text-blue-600' },
-  { id: 'customer', label: '客户车辆', icon: Car, color: 'text-indigo-600' },
-  { id: 'workorders', label: '工单列表', icon: ClipboardList, color: 'text-orange-600' },
-  { id: 'marketing', label: '做营销', icon: Share2, color: 'text-pink-600' },
+  { id: 'bill', label: '接车开单', icon: FileSignature, color: 'text-gray-900' },
+  { id: 'vehicle_manage', label: '车辆管理', icon: Car, color: 'text-gray-900' },
+  { id: 'workorders', label: '工单列表', icon: ClipboardList, color: 'text-gray-900' },
+  { id: 'fast_pay', label: '快捷收款', icon: CircleDollarSign, color: 'text-gray-900' },
+  { id: 'manual', label: '维修手册', icon: Wrench, color: 'text-gray-900' },
+  { id: 'reports', label: '查报表', icon: FileText, color: 'text-gray-900' },
+  { id: 'customer_manage', label: '客户管理', icon: Users, color: 'text-gray-900' },
+  { id: 'marketing', label: '做营销', icon: Share2, color: 'text-gray-900' },
 ];
 
 export const RECENT_TASKS: TaskItem[] = [
