@@ -2,7 +2,7 @@ import {
   ScanLine, ShoppingCart, CircleDollarSign, Store, FileText, Package, 
   FileSignature, Car, ClipboardList, Share2, 
   Droplets, Battery, Disc, CircleDot, Database, Filter, Gauge, LayoutGrid,
-  Home, MessageCircle, Plus, FileQuestion, User, Play, Search
+  Home, MessageCircle, Plus, FileQuestion, User
 } from 'lucide-react';
 import { MenuItem, TaskItem, NavItem, VideoItem } from './types';
 
@@ -75,34 +75,93 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'profile', label: '我的', icon: User },
 ];
 
-// New data for Parts List page
+// --- Parts List Data ---
+
 export const SIDEBAR_CATEGORIES = [
   '油品', '蓄电池', '轮胎', '滤清系统', '点火系统', '制动系统', '养护用品', '雨刮系统', '照明系统', '正时附件', '悬挂系统', '传动系统', '工具耗材', '其他'
 ];
 
-export const HOT_CATEGORIES_DATA = [
-  { name: '机油', img: 'https://images.unsplash.com/photo-1560579183-c288f3435c24?w=150&h=150&fit=crop&q=80' },
-  { name: '刹车油', img: 'https://images.unsplash.com/photo-1626127027471-7eb9277d3394?w=150&h=150&fit=crop&q=80' },
-  { name: '波箱油', img: 'https://images.unsplash.com/photo-1608613437533-332997c452df?w=150&h=150&fit=crop&q=80' },
-  { name: '齿轮油', img: 'https://images.unsplash.com/photo-1580228026131-081036df5295?w=150&h=150&fit=crop&q=80' },
-  { name: '方向机油', img: 'https://images.unsplash.com/photo-1609630985558-86d4e8c18731?w=150&h=150&fit=crop&q=80' },
-  { name: '差速器油', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=150&h=150&fit=crop&q=80' },
+interface CategoryData {
+  subcategories: { name: string; img: string }[];
+  brands: { name: string; code: string }[];
+}
+
+const GENERIC_SUBCATEGORIES = [
+  { name: '通用配件', img: 'https://images.unsplash.com/photo-1486262715619-01b80258e0a5?w=150&h=150&fit=crop&q=80' },
+  { name: '专业工具', img: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=150&h=150&fit=crop&q=80' },
+  { name: '清洗剂', img: 'https://images.unsplash.com/photo-1626127027471-7eb9277d3394?w=150&h=150&fit=crop&q=80' },
 ];
 
-export const HOT_BRANDS_DATA = [
-  { name: '0769滤清器', code: '0769' },
-  { name: '1942', code: '1942' },
-  { name: 'KLG', code: 'KLG' },
-  { name: '0769', code: '0769' }, // Placeholder for repeated brands or different lines
-  { name: '1942', code: '1942' },
-  { name: 'KLG_', code: 'KLG' },
-  { name: '555', code: '555' },
-  { name: 'AC 德科', code: 'ACDelco' },
-  { name: '爱驰易', code: 'Aicheyi' },
-  { name: '爱信', code: 'AISIN' },
-  { name: '安索', code: 'AMSOIL' },
-  { name: '安赛途', code: 'Ansetu' },
-  { name: 'Ate', code: 'Ate' },
-  { name: 'Audi', code: 'Audi' },
-  { name: 'AUI车养护', code: 'AUI' },
+const GENERIC_BRANDS = [
+  { name: '博世', code: 'BOSCH' },
+  { name: '马勒', code: 'MAHLE' },
+  { name: '曼牌', code: 'MANN' },
+  { name: 'NGK', code: 'NGK' },
+  { name: '布雷博', code: 'brembo' },
+  { name: 'TRW', code: 'TRW' },
 ];
+
+export const CATEGORY_SECTIONS: Record<string, CategoryData> = {
+  '油品': {
+    subcategories: [
+      { name: '机油', img: 'https://images.unsplash.com/photo-1560579183-c288f3435c24?w=150&h=150&fit=crop&q=80' },
+      { name: '刹车油', img: 'https://images.unsplash.com/photo-1626127027471-7eb9277d3394?w=150&h=150&fit=crop&q=80' },
+      { name: '波箱油', img: 'https://images.unsplash.com/photo-1608613437533-332997c452df?w=150&h=150&fit=crop&q=80' },
+      { name: '齿轮油', img: 'https://images.unsplash.com/photo-1580228026131-081036df5295?w=150&h=150&fit=crop&q=80' },
+      { name: '方向机油', img: 'https://images.unsplash.com/photo-1609630985558-86d4e8c18731?w=150&h=150&fit=crop&q=80' },
+      { name: '差速器油', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=150&h=150&fit=crop&q=80' },
+    ],
+    brands: [
+      { name: '0769滤清器', code: '0769' },
+      { name: '1942', code: '1942' },
+      { name: 'KLG', code: 'KLG' },
+      { name: '0769', code: '0769' },
+      { name: '1942', code: '1942' },
+      { name: 'KLG_', code: 'KLG' },
+      { name: '555', code: '555' },
+      { name: 'AC 德科', code: 'ACDelco' },
+      { name: '爱驰易', code: 'Aicheyi' },
+      { name: '爱信', code: 'AISIN' },
+      { name: '安索', code: 'AMSOIL' },
+      { name: '安赛途', code: 'Ansetu' },
+      { name: 'Ate', code: 'Ate' },
+      { name: 'Audi', code: 'Audi' },
+      { name: 'AUI车养护', code: 'AUI' },
+    ]
+  },
+  '蓄电池': {
+    subcategories: [
+      { name: 'AGM电池', img: 'https://images.unsplash.com/photo-1622383849929-79841f3e9c5f?w=150&h=150&fit=crop&q=80' },
+      { name: '免维护电池', img: 'https://images.unsplash.com/photo-1614741118868-607c31c885ea?w=150&h=150&fit=crop&q=80' },
+      { name: 'EFB电池', img: 'https://images.unsplash.com/photo-1622383849929-79841f3e9c5f?w=150&h=150&fit=crop&q=80' },
+    ],
+    brands: [
+        { name: '瓦尔塔', code: 'VARTA' },
+        { name: '骆驼', code: 'Camel' },
+        { name: '风帆', code: 'Sail' },
+    ]
+  },
+  '轮胎': {
+      subcategories: [
+          { name: '四季胎', img: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=150&h=150&fit=crop&q=80' },
+          { name: '雪地胎', img: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=150&h=150&fit=crop&q=80' },
+          { name: '防爆胎', img: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=150&h=150&fit=crop&q=80' },
+      ],
+      brands: [
+          { name: '米其林', code: 'Michelin' },
+          { name: '普利司通', code: 'Bridge' },
+          { name: '固特异', code: 'Goodyear' },
+          { name: '马牌', code: 'Continental' },
+      ]
+  }
+};
+
+// Fill missing categories with generic data for demonstration
+SIDEBAR_CATEGORIES.forEach(cat => {
+    if (!CATEGORY_SECTIONS[cat]) {
+        CATEGORY_SECTIONS[cat] = {
+            subcategories: GENERIC_SUBCATEGORIES,
+            brands: GENERIC_BRANDS
+        };
+    }
+});
