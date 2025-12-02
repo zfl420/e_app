@@ -9,11 +9,14 @@ import PartsList from './components/PartsList';
 import ChatList from './components/ChatList';
 import ChatDetail from './components/ChatDetail';
 import InquiryList from './components/InquiryList';
+import Profile from './components/Profile';
+import Settings from './components/Settings';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [partsViewVisible, setPartsViewVisible] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+  const [settingsViewVisible, setSettingsViewVisible] = useState(false);
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
@@ -27,6 +30,7 @@ const App: React.FC = () => {
     // Reset secondary views when switching tabs
     setPartsViewVisible(false);
     setSelectedChatId(null);
+    setSettingsViewVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -57,6 +61,16 @@ const App: React.FC = () => {
     );
   }
 
+  if (settingsViewVisible) {
+    return (
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <Settings onBack={() => setSettingsViewVisible(false)} />
+          </div>
+        </div>
+      );
+  }
+
   // Render Main Tabs
   return (
     <div className="min-h-screen bg-background flex justify-center">
@@ -79,11 +93,8 @@ const App: React.FC = () => {
            <InquiryList />
         )}
 
-        {/* Placeholders for other tabs */}
-        {(activeTab === 'profile') && (
-           <div className="flex-1 flex items-center justify-center text-gray-400">
-             Coming Soon
-           </div>
+        {activeTab === 'profile' && (
+           <Profile onSettingsClick={() => setSettingsViewVisible(true)} />
         )}
 
         <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />

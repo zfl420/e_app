@@ -2,7 +2,9 @@ import {
   ScanLine, ShoppingCart, CircleDollarSign, Store, FileText, Package, 
   FileSignature, Car, ClipboardList, Share2, 
   Droplets, Battery, Disc, CircleDot, Database, Filter, Gauge, LayoutGrid,
-  Home, MessageCircle, Plus, FileQuestion, User
+  Home, MessageCircle, Plus, FileQuestion, User,
+  Wallet, Truck, Gift, MessageSquareText, RotateCcw,
+  UserCog, Wrench, Clock, Users
 } from 'lucide-react';
 import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem } from './types';
 
@@ -238,4 +240,29 @@ export const INQUIRY_LIST_DATA: InquiryItem[] = [
       { name: '发动机机脚胶', code: '19372102917(B25112012612)', date: '11/20' }
     ]
   }
+];
+
+// --- Profile Data ---
+
+export const PROFILE_ORDERS = [
+    { label: '待付款', icon: Wallet, badge: null },
+    { label: '待发货', icon: Package, badge: null },
+    { label: '待收货', icon: Truck, badge: null },
+    { label: '待评价', icon: MessageSquareText, badge: 2 },
+    { label: '退款/售后', icon: RotateCcw, badge: 2 },
+];
+
+export const PROFILE_MENU = [
+    { label: '员工管理', icon: Users, color: 'bg-pink-50 text-pink-500' },
+    { label: '门店管理', icon: Store, color: 'bg-orange-50 text-orange-500' },
+    { label: '客户车辆', icon: Car, color: 'bg-red-50 text-red-500' },
+    { label: '配件管理', icon: Wrench, color: 'bg-blue-50 text-blue-500' },
+    { label: '工时管理', icon: Clock, color: 'bg-purple-50 text-purple-500' },
+];
+
+export const PROFILE_STATS = [
+    { label: '产值', value: '0.00' },
+    { label: '实收', value: '0.00' },
+    { label: '台次', value: '0' },
+    { label: '客单价', value: '0.00' },
 ];

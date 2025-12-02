@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+import { Settings, ChevronRight } from 'lucide-react';
+import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
+
+interface ProfileProps {
+  onSettingsClick: () => void;
+}
+
+const Profile: React.FC<ProfileProps> = ({ onSettingsClick }) => {
+  const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
+
+  return (
+    <div className="flex flex-col h-full bg-gray-50 pb-24">
+      {/* Header Profile Section */}
+      <div className="bg-white px-6 pt-16 pb-8 relative">
+        <button 
+            onClick={onSettingsClick}
+            className="absolute top-12 right-6 text-gray-700 p-2"
+        >
+            <Settings className="w-6 h-6" />
+        </button>
+
+        <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden border border-gray-100">
+                <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xs">头像</div>
+            </div>
+            <div className="flex-1">
+                <h1 className="text-xl font-bold text-gray-900 mb-1">邹飞龙</h1>
+                <p className="text-sm text-gray-500">广州市黄埔区车公馆汽车美容店</p>
+            </div>
+        </div>
+      </div>
+
+      <div className="p-4 space-y-4">
+        {/* My Orders */}
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex justify-between items-center mb-5">
+                <h2 className="font-bold text-gray-800 text-sm">我的订单</h2>
+                <div className="flex items-center text-xs text-gray-400 cursor-pointer">
+                    全部订单
+                    <ChevronRight className="w-3 h-3 ml-0.5" />
+                </div>
+            </div>
+            <div className="flex justify-between px-2">
+                {PROFILE_ORDERS.map((item, idx) => (
+                    <div key={idx} className="flex flex-col items-center gap-2 relative cursor-pointer group">
+                        <item.icon className="w-6 h-6 text-secondary" strokeWidth={1.5} />
+                        {item.badge && (
+                            <span className="absolute -top-1.5 right-0 min-w-[16px] h-4 bg-secondary text-white text-[10px] flex items-center justify-center rounded-full px-0.5 border-2 border-white">
+                                {item.badge}
+                            </span>
+                        )}
+                        <span className="text-xs text-gray-600 font-medium group-hover:text-gray-900">{item.label}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+        {/* Store Management */}
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="mb-5">
+                <h2 className="font-bold text-gray-800 text-sm">门店管理</h2>
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+                {PROFILE_MENU.map((item, idx) => (
+                    <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer group">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${item.color}`}>
+                            <item.icon className="w-5 h-5" strokeWidth={2} />
+                        </div>
+                        <span className="text-[10px] text-gray-600 text-center font-medium group-hover:text-gray-900">{item.label}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+
+        {/* Stats */}
+        <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-2">
+                <div className="flex gap-6">
+                    {(['today', 'yesterday', 'month'] as const).map(period => (
+                        <div 
+                            key={period}
+                            onClick={() => setStatsPeriod(period)}
+                            className={`text-sm font-medium pb-2 cursor-pointer relative transition-colors ${statsPeriod === period ? 'text-secondary font-bold' : 'text-gray-500'}`}
+                        >
+                            {period === 'today' ? '今天' : period === 'yesterday' ? '昨天' : '本月'}
+                            {statsPeriod === period && (
+                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-secondary rounded-full"></div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+                <div className="flex items-center text-xs text-gray-400 cursor-pointer">
+                    更多
+                    <ChevronRight className="w-3 h-3 ml-0.5" />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-4 divide-x divide-gray-100">
+                {PROFILE_STATS.map((stat, idx) => (
+                    <div key={idx} className="flex flex-col items-center gap-1 py-1">
+                        <span className="text-lg font-bold text-gray-900">{stat.value}</span>
+                        <span className="text-xs text-gray-400">{stat.label}</span>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
