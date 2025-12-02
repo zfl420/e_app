@@ -130,7 +130,7 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
             return (
               <div 
                 key={category} 
-                ref={(el) => (sectionRefs.current[category] = el)}
+                ref={(el) => { sectionRefs.current[category] = el; }}
                 className="px-4 pt-6 pb-2"
               >
                 {/* Hot Categories Header */}

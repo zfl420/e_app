@@ -4,7 +4,7 @@ import {
   Droplets, Battery, Disc, CircleDot, Database, Filter, Gauge, LayoutGrid,
   Home, MessageCircle, Plus, FileQuestion, User
 } from 'lucide-react';
-import { MenuItem, TaskItem, NavItem, VideoItem } from './types';
+import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage } from './types';
 
 export const TOP_ACTIONS: MenuItem[] = [
   { id: 'pay', label: '快捷收款', icon: CircleDollarSign },
@@ -68,7 +68,7 @@ export const VIDEO_FEED: VideoItem[] = [
 ];
 
 export const NAV_ITEMS: NavItem[] = [
-  { id: 'home', label: '首页', icon: Home, isActive: true },
+  { id: 'home', label: '首页', icon: Home },
   { id: 'chat', label: '沟通', icon: MessageCircle },
   { id: 'publish', label: '发布询价', icon: Plus, isPrimary: true },
   { id: 'inquiry', label: '询价单', icon: FileQuestion },
@@ -156,7 +156,6 @@ export const CATEGORY_SECTIONS: Record<string, CategoryData> = {
   }
 };
 
-// Fill missing categories with generic data for demonstration
 SIDEBAR_CATEGORIES.forEach(cat => {
     if (!CATEGORY_SECTIONS[cat]) {
         CATEGORY_SECTIONS[cat] = {
@@ -165,3 +164,32 @@ SIDEBAR_CATEGORIES.forEach(cat => {
         };
     }
 });
+
+// --- Chat Data ---
+
+export const CHAT_THREADS: ChatThread[] = [
+  { id: 'sys', name: '系统通知', isSystem: true, type: 'system' },
+  { id: 'ai_buy', name: '智能采购', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&q=80', time: '11/27', lastMessage: '[图片]' },
+  { id: 'guide', name: '开思导购', avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=150&h=150&fit=crop&q=80', time: '11/19', lastMessage: '[询价单]' },
+  { id: 'store1', name: '布雷博专卖店 (福建、新疆)', avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '没有' },
+  { id: 'store2', name: '天津美实创新汽配', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '[商品]' },
+  { id: 'store3', name: '开思严选专营店-东莞博辉', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '[询价单]' },
+  { id: 'store4', name: '开思严选专营店-广州博辉', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '[询价单]' },
+  { id: 'expert', name: '新能源技术专家', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '您好，有什么新能源技术问题，都...' },
+];
+
+export const CONTACTS_DATA: Contact[] = [
+  { id: 'c1', name: '张经理', role: '供应商', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&q=80', company: '杭州汽配城' },
+  { id: 'c2', name: '李师傅', role: '技术支持', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&q=80', company: '博世服务中心' },
+  { id: 'c3', name: '王小姐', role: '销售', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&q=80', company: '美孚润滑油' },
+];
+
+export const SAMPLE_CHAT_HISTORY: ChatMessage[] = [
+  { id: 'm1', text: '您好，请问这款刹车片有现货吗？', isMe: true, time: '10:30', type: 'text' },
+  { id: 'm2', text: '有的，请问您需要什么车型的？', isMe: false, time: '10:31', type: 'text' },
+  { id: 'm3', text: '2020款 奥迪A4L 40TFSI', isMe: true, time: '10:32', type: 'text' },
+  { id: 'm4', text: '稍等，我帮您查一下库存', isMe: false, time: '10:32', type: 'text' },
+  { id: 'm5', text: '已确认，仓库有货，今天下午可以发货。', isMe: false, time: '10:35', type: 'text' },
+  { id: 'm6', text: '好的，麻烦帮我开个单', isMe: true, time: '10:36', type: 'text' },
+  { id: 'm7', text: '[询价单]', isMe: true, time: '10:36', type: 'system' },
+];

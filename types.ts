@@ -27,6 +27,33 @@ export interface NavItem {
   id: string;
   label: string;
   icon: LucideIcon;
-  isActive?: boolean;
+  isActive?: boolean; // Deprecated in favor of props
   isPrimary?: boolean; // For the big middle button
+}
+
+export interface ChatThread {
+  id: string;
+  name: string;
+  avatar?: string;
+  isSystem?: boolean;
+  type?: 'system' | 'service' | 'user';
+  lastMessage?: string;
+  time?: string;
+  unreadCount?: number;
+}
+
+export interface Contact {
+  id: string;
+  name: string;
+  avatar: string;
+  role: string;
+  company?: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  text: string;
+  isMe: boolean;
+  time: string;
+  type: 'text' | 'image' | 'system';
 }
