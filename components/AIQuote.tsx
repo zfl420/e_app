@@ -131,9 +131,9 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100 sticky top-0 z-20">
         <div className="flex items-center gap-3">
-            <button className="p-1"><Menu className="w-6 h-6 text-gray-700" /></button>
+            <button className="p-1" onClick={onBack}><ChevronLeft className="w-6 h-6 text-gray-700" /></button>
         </div>
-        <h1 className="text-base font-bold text-gray-900">快准E站</h1>
+        <h1 className="text-base font-bold text-gray-900">AI报价</h1>
         <div className="w-8"></div>
       </div>
 
