@@ -13,6 +13,11 @@ import Profile from './components/Profile';
 import Settings from './components/Settings';
 import ArrivalList from './components/ArrivalList';
 import AIQuote from './components/AIQuote';
+import ProductList from './components/ProductList';
+import { CATEGORIES } from './constants';
+import CustomerVehicle from './components/CustomerVehicle';
+import FourSPrice from './components/FourSPrice';
+import Maintenance from './components/Maintenance';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -20,10 +25,24 @@ const App: React.FC = () => {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [settingsViewVisible, setSettingsViewVisible] = useState(false);
   const [arrivalViewVisible, setArrivalViewVisible] = useState(false);
+  const [productListVisible, setProductListVisible] = useState(false);
+  const [productCategory, setProductCategory] = useState<{ id: string; label: string } | null>(null);
+  const [customerVehicleVisible, setCustomerVehicleVisible] = useState(false);
+  const [customerVehicleTab, setCustomerVehicleTab] = useState<'customer' | 'vehicle'>('customer');
+  const [fsPriceVisible, setFsPriceVisible] = useState(false);
+  const [maintenanceVisible, setMaintenanceVisible] = useState(false);
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
       setPartsViewVisible(true);
+      return;
+    }
+
+    const category = CATEGORIES.find((c) => c.id === id);
+    if (category) {
+      setProductCategory({ id: category.id, label: category.label });
+      setProductListVisible(true);
+      return;
     }
   };
 
@@ -34,6 +53,11 @@ const App: React.FC = () => {
     setSelectedChatId(null);
     setSettingsViewVisible(false);
     setArrivalViewVisible(false);
+    setProductListVisible(false);
+    setProductCategory(null);
+    setCustomerVehicleVisible(false);
+    setFsPriceVisible(false);
+    setMaintenanceVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -84,6 +108,56 @@ const App: React.FC = () => {
       );
   }
 
+  if (productListVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <ProductList 
+            onBack={() => {
+              setProductListVisible(false);
+              setProductCategory(null);
+            }} 
+            categoryId={productCategory?.id || 'oil'} 
+            categoryLabel={productCategory?.label || '汽机油'} 
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (customerVehicleVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <CustomerVehicle
+            initialTab={customerVehicleTab}
+            onBack={() => setCustomerVehicleVisible(false)}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (fsPriceVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <FourSPrice onBack={() => setFsPriceVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (maintenanceVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <Maintenance onBack={() => setMaintenanceVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
   // AI Quote View (Main Tab)
   if (activeTab === 'ai_quote') {
       return (
@@ -101,8 +175,27 @@ const App: React.FC = () => {
       <div className="w-full max-w-md bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
         {activeTab === 'home' && (
           <div className="flex-1 overflow-y-auto no-scrollbar">
-            <Header />
-            <StoreCard onArrivalClick={() => setArrivalViewVisible(true)} />
+            <Header
+              onTopActionClick={(id) => {
+                if (id === 'price') {
+                  setFsPriceVisible(true);
+                } else if (id === 'maintain') {
+                  setMaintenanceVisible(true);
+                } 
+              }}
+            />
+            <StoreCard
+              onArrivalClick={() => setArrivalViewVisible(true)}
+              onManagementClick={(id) => {
+                if (id === 'customer_manage') {
+                  setCustomerVehicleTab('customer');
+                  setCustomerVehicleVisible(true);
+                } else if (id === 'vehicle_manage') {
+                  setCustomerVehicleTab('vehicle');
+                  setCustomerVehicleVisible(true);
+                }
+              }}
+            />
             <Banner />
             <CategoryGrid onCategoryClick={handleCategoryClick} />
             <VideoFeed />

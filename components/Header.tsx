@@ -2,7 +2,11 @@ import React from 'react';
 import { ShoppingCart, ScanLine, Search } from 'lucide-react';
 import { TOP_ACTIONS } from '../constants';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onTopActionClick?: (id: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onTopActionClick }) => {
   return (
     <div className="bg-primary pt-12 pb-24 px-4 rounded-b-[2.5rem] shadow-md relative z-0">
       {/* Search Bar Row */}
@@ -25,12 +29,16 @@ const Header: React.FC = () => {
       {/* Top Actions Grid */}
       <div className="grid grid-cols-4 gap-2">
         {TOP_ACTIONS.map((action) => (
-          <div key={action.id} className="flex flex-col items-center gap-2 group cursor-pointer">
+          <button
+            key={action.id}
+            className="flex flex-col items-center gap-2 group cursor-pointer"
+            onClick={() => onTopActionClick && onTopActionClick(action.id)}
+          >
             <div className="p-2 rounded-xl bg-white/10 group-hover:bg-white/20 transition-colors">
               <action.icon className="w-6 h-6 text-white" strokeWidth={1.5} />
             </div>
             <span className="text-xs font-medium text-white/90">{action.label}</span>
-          </div>
+          </button>
         ))}
       </div>
     </div>

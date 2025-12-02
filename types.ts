@@ -88,3 +88,34 @@ export interface ArrivalItem {
   workOrderSummary: string;
   location: string;
 }
+
+export interface ProductItem {
+  id: string;
+  title: string;
+  image: string;
+  tags: string[];
+  price: string;
+  priceNoTax: string;
+  promo?: string;
+  volume: string;
+  sold: string;
+  shop: string;
+  location: string;
+}
+
+export interface CustomerItem {
+  id: string;
+  name: string;
+  phone: string;
+  summary: string;
+  tags?: string[];
+}
+
+export interface VehicleItem {
+  id: string;
+  plate: string;
+  ownerName: string;
+  phone: string;
+  model: string;
+  brandLogo?: string;
+}

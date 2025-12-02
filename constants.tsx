@@ -6,7 +6,7 @@ import {
   Wallet, Truck, Gift, MessageSquareText, RotateCcw,
   UserCog, Wrench, Clock, Users, Bot, Sparkles
 } from 'lucide-react';
-import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem } from './types';
+import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem, ProductItem, CustomerItem, VehicleItem } from './types';
 
 export const TOP_ACTIONS: MenuItem[] = [
   { id: 'price', label: '查4S价', icon: Store },
@@ -44,32 +44,32 @@ export const CATEGORIES: MenuItem[] = [
 
 export const VIDEO_FEED: VideoItem[] = [
   { 
-    id: '1', 
-    title: '拳王间的透修理不踩漏', 
-    author: '吴明阳', 
-    // Mechanic working / garage
-    imageUrl: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=400&h=600&q=80' 
+    id: '1',
+    title: '更换机油 别踩坑！',
+    author: '快准车服官方',
+    // 静态物料图 1（请将图片放在 public/feeds/feed1.jpg）
+    imageUrl: '/feeds/feed1.png'
   },
   { 
-    id: '2', 
+    id: '2',
     title: '换刹车片怕被忽悠？', 
-    author: '吴明阳', 
-    // Car parts / brakes
-    imageUrl: 'https://images.unsplash.com/photo-1486262715619-01b80258e0a5?auto=format&fit=crop&w=400&h=600&q=80' 
+    author: '快准车服官方', 
+    // 静态物料图 2
+    imageUrl: '/feeds/feed2.png'
   },
   { 
-    id: '3', 
+    id: '3',
     title: '轮胎鼓包/裂纹 千万别“凑合”', 
-    author: '佳通轮胎', 
-    // Tire close up
-    imageUrl: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?auto=format&fit=crop&w=400&h=600&q=80' 
+    author: '快准车服官方', 
+    // 静态物料图 3
+    imageUrl: '/feeds/feed3.png'
   },
   { 
-    id: '4', 
-    title: '什么是好门店', 
-    author: '波哥八点半', 
-    // Professional manager
-    imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&h=600&q=80' 
+    id: '4',
+    title: '花纹磨平？立即换新！', 
+    author: '快准车服官方', 
+    // 静态物料图 4
+    imageUrl: '/feeds/feed4.png'
   },
 ];
 
@@ -339,3 +339,220 @@ export const ARRIVAL_LIST_DATA: ArrivalItem[] = [
       location: '天猫养车 (分店-城西)'
     }))
   ];
+
+// --- Product List Data ---
+
+export const OIL_PRODUCTS: ProductItem[] = [
+  {
+    id: 'p1',
+    title: '国行/大陆 美孚 美孚1号 金装 0W-40 全合成机油 1L 装 经典表现 成功挑战20,000公里换油周期',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/111308/34/21436/120094/621f4cf3E6b8c3b1c/b2f9d19c52c9e4b2.jpg',
+    tags: ['0W-40', '全合成机油', '国行/大陆'],
+    price: '67.50',
+    priceNoTax: '60.00',
+    promo: '秒杀',
+    volume: '1L',
+    sold: '月销 2,345',
+    shop: '油好油品专营店',
+    location: '广州白云仓',
+  },
+  {
+    id: 'p2',
+    title: '进口/马来西亚 嘉实多 极护 钛流体 0W-20 SP 1L 全合成机油 机油润滑油 24瓶/箱',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/163324/30/31259/164248/63fdc3bfEa5a1d752/4f38ebb9ba4c6ebe.jpg',
+    tags: ['0W-20', '全合成机油', '进口/马来西亚'],
+    price: '44.68',
+    priceNoTax: '43.80',
+    promo: '活动',
+    volume: '1L',
+    sold: '月销 1,023',
+    shop: '联睿行商城旗舰店',
+    location: '广州白云仓',
+  },
+  {
+    id: 'p3',
+    title: '进口/韩国 嘉实多 极护 5W-30 1L SN 全合成机油 新款包装 12瓶/箱 常规版',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/113783/30/24097/121595/621f4d3aE09fddfb1/4e3b725f0c1a72ed.jpg',
+    tags: ['5W-30', '全合成机油', '进口/韩国'],
+    price: '38.20',
+    priceNoTax: '36.00',
+    promo: '',
+    volume: '1L',
+    sold: '月销 856',
+    shop: '联睿行商城旗舰店',
+    location: '广州白云仓',
+  },
+];
+
+export const BATTERY_PRODUCTS: ProductItem[] = [
+  {
+    id: 'b1',
+    title: '瓦尔塔 蓄电池 汽车电瓶 55B24L 12V 45Ah 启停/非启停通用 以换代修',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/177113/20/24361/132657/624fd0b2Eca9e02c8/40d7c2f5a7d44b5c.jpg',
+    tags: ['12V', '45Ah', '免维护'],
+    price: '398.00',
+    priceNoTax: '352.21',
+    promo: '热销',
+    volume: '1只',
+    sold: '月销 1,586',
+    shop: '瓦尔塔旗舰店',
+    location: '华东仓',
+  },
+  {
+    id: 'b2',
+    title: '风帆 蓄电池 6-QW-60(550) 12V 60Ah 免维护 汽车电瓶 以旧换新',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/22563/37/19495/146076/628c6f4aE4a5e8e2d/4a2dd2c3f1dfbec2.jpg',
+    tags: ['12V', '60Ah', '免维护'],
+    price: '428.00',
+    priceNoTax: '378.76',
+    promo: '',
+    volume: '1只',
+    sold: '月销 963',
+    shop: '风帆官方旗舰店',
+    location: '华南仓',
+  },
+  {
+    id: 'b3',
+    title: '骆驼 汽车蓄电池 6-QW-70(700) 12V 70Ah 启停电瓶 AGM',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/125875/27/28243/141522/6253f31fE1a0e0b57/ddee1cec6363bc0d.jpg',
+    tags: ['12V', '70Ah', 'AGM 启停'],
+    price: '768.00',
+    priceNoTax: '680.53',
+    promo: '',
+    volume: '1只',
+    sold: '月销 527',
+    shop: '骆驼电池京东自营旗舰店',
+    location: '全国多仓',
+  },
+];
+
+export const BRAKE_PAD_PRODUCTS: ProductItem[] = [
+  {
+    id: 'bp1',
+    title: '博世 刹车片前片 雨燕/天语SX4/奥拓 0986AB1234 盘式制动片',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/111502/35/20579/163020/61f8e4d0Ed0b0a4f5/9a1aefdd0b2e6900.jpg',
+    tags: ['前片', '博世', '盘式'],
+    price: '138.00',
+    priceNoTax: '122.12',
+    promo: '',
+    volume: '1套',
+    sold: '月销 1,205',
+    shop: '博世汽车配件旗舰店',
+    location: '华东仓',
+  },
+  {
+    id: 'bp2',
+    title: '菲罗多 刹车片 前片 本田雅阁/思域专用 FDB1234',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/112233/29/20548/143210/61f8e534E0c3bc6e2/af6f4a5aa4b2c3e6.jpg',
+    tags: ['前片', '菲罗多', '低粉尘'],
+    price: '268.00',
+    priceNoTax: '237.17',
+    promo: '秒杀',
+    volume: '1套',
+    sold: '月销 643',
+    shop: '菲罗多官方旗舰店',
+    location: '华南仓',
+  },
+  {
+    id: 'bp3',
+    title: '开思严选 陶瓷刹车片 前片 大众速腾/高尔夫7 专用',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/148037/12/19413/132223/5ff6a37bE0de9a2ce/6fd5c2aed4c0f6d3.jpg',
+    tags: ['前片', '陶瓷配方', '静音'],
+    price: '198.00',
+    priceNoTax: '175.22',
+    promo: '',
+    volume: '1套',
+    sold: '月销 389',
+    shop: '开思严选旗舰店',
+    location: '华北仓',
+  },
+];
+
+export const BRAKE_DISC_PRODUCTS: ProductItem[] = [
+  {
+    id: 'bd1',
+    title: 'TRW 刹车盘 前轮盘 适配大众朗逸/帕萨特 单片装',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/135642/1/23121/126540/61f8e5a2E2f5b14e9/c4b0bcd8dfd6bc16.jpg',
+    tags: ['前轮', 'TRW', '通风盘'],
+    price: '320.00',
+    priceNoTax: '283.19',
+    promo: '',
+    volume: '1只',
+    sold: '月销 276',
+    shop: 'TRW旗舰店',
+    location: '华东仓',
+  },
+  {
+    id: 'bd2',
+    title: '布雷博 刹车盘 前轮盘 思域/思铂睿 专用 高碳钢',
+    image: 'https://img10.360buyimg.com/n7/jfs/t1/192212/9/20546/151223/6110ac7cEb4c32a5f/0f5e0b8f58bd2d96.jpg',
+    tags: ['前轮', '布雷博', '高碳'],
+    price: '598.00',
+    priceNoTax: '529.20',
+    promo: '活动',
+    volume: '1只',
+    sold: '月销 198',
+    shop: 'Brembo官方旗舰店',
+    location: '华南仓',
+  },
+];
+
+export const CATEGORY_PRODUCT_MAP: Record<string, ProductItem[]> = {
+  oil: OIL_PRODUCTS,
+  battery: BATTERY_PRODUCTS,
+  brake_pad: BRAKE_PAD_PRODUCTS,
+  brake_disc: BRAKE_DISC_PRODUCTS,
+};
+
+// --- Customer & Vehicle List Data ---
+
+export const CUSTOMER_LIST_DATA: CustomerItem[] = [
+  {
+    id: 'c1',
+    name: '飞龙',
+    phone: '18707087255',
+    summary: '本田 飞度 1.3L 2011 1.3 手动 舒适版',
+    tags: ['潜在客户'],
+  },
+  {
+    id: 'c2',
+    name: '云GFK136',
+    phone: '18900010002',
+    summary: '广汽传祺 E8新能源 2.0L 2024 2.0 自动 150km MAX',
+    tags: ['潜在客户'],
+  },
+  {
+    id: 'c3',
+    name: '先生',
+    phone: '18888888888',
+    summary: '丰田 亚洲龙 2.5L 2019 双擎 2.5 无级 Limited旗舰版',
+    tags: ['潜在客户'],
+  },
+];
+
+export const VEHICLE_LIST_DATA: VehicleItem[] = [
+  {
+    id: 'v1',
+    plate: '粤AF62762',
+    ownerName: '先生',
+    phone: '18888888888',
+    model: '理想 L9 1.5T 2024 Pro',
+    brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Li_Auto_Logo.svg',
+  },
+  {
+    id: 'v2',
+    plate: '粤E8K96H',
+    ownerName: '先生',
+    phone: '18888888888',
+    model: '大众 朗逸 1.5L 2025 新锐 1.5 手自一体 出众新逸版',
+    brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Volkswagen_logo_2019.svg',
+  },
+  {
+    id: 'v3',
+    plate: '粤BCK2339',
+    ownerName: '先生',
+    phone: '18888888888',
+    model: '特斯拉 Model 3 电动 2023 焕新版 后轮驱动',
+    brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg',
+  },
+];

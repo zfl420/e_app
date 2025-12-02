@@ -4,9 +4,10 @@ import { MANAGEMENT_ACTIONS, RECENT_TASKS } from '../constants';
 
 interface StoreCardProps {
   onArrivalClick?: () => void;
+  onManagementClick?: (id: string) => void;
 }
 
-const StoreCard: React.FC<StoreCardProps> = ({ onArrivalClick }) => {
+const StoreCard: React.FC<StoreCardProps> = ({ onArrivalClick, onManagementClick }) => {
   return (
     <div className="mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4">
       {/* Card Header */}
@@ -20,7 +21,11 @@ const StoreCard: React.FC<StoreCardProps> = ({ onArrivalClick }) => {
       {/* Main Actions */}
       <div className="grid grid-cols-4 gap-4 mb-6">
         {MANAGEMENT_ACTIONS.map((action) => (
-          <div key={action.id} className="flex flex-col items-center gap-2 cursor-pointer group">
+          <div
+            key={action.id}
+            className="flex flex-col items-center gap-2 cursor-pointer group"
+            onClick={() => onManagementClick && onManagementClick(action.id)}
+          >
             <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm">
               <action.icon className={`w-6 h-6 ${action.color}`} />
             </div>
