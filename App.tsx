@@ -12,6 +12,7 @@ import InquiryList from './components/InquiryList';
 import Profile from './components/Profile';
 import Settings from './components/Settings';
 import ArrivalList from './components/ArrivalList';
+import AIQuote from './components/AIQuote';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -27,7 +28,6 @@ const App: React.FC = () => {
   };
 
   const handleTabChange = (id: string) => {
-    if (id === 'publish') return; // Placeholder for main action
     setActiveTab(id);
     // Reset secondary views when switching tabs
     setPartsViewVisible(false);
@@ -80,6 +80,17 @@ const App: React.FC = () => {
           <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
             <ArrivalList onBack={() => setArrivalViewVisible(false)} />
           </div>
+        </div>
+      );
+  }
+
+  // AI Quote View (Main Tab)
+  if (activeTab === 'ai_quote') {
+      return (
+        <div className="min-h-screen bg-background flex justify-center">
+            <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+                <AIQuote onBack={() => setActiveTab('home')} />
+            </div>
         </div>
       );
   }

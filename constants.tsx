@@ -4,7 +4,7 @@ import {
   Droplets, Battery, Disc, CircleDot, Database, Filter, Gauge, LayoutGrid,
   Home, MessageCircle, Plus, FileQuestion, User,
   Wallet, Truck, Gift, MessageSquareText, RotateCcw,
-  UserCog, Wrench, Clock, Users
+  UserCog, Wrench, Clock, Users, Bot, Sparkles
 } from 'lucide-react';
 import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem } from './types';
 
@@ -72,7 +72,7 @@ export const VIDEO_FEED: VideoItem[] = [
 export const NAV_ITEMS: NavItem[] = [
   { id: 'home', label: '首页', icon: Home },
   { id: 'chat', label: '沟通', icon: MessageCircle },
-  { id: 'publish', label: '发布询价', icon: Plus, isPrimary: true },
+  { id: 'ai_quote', label: 'AI报价', icon: Bot, isPrimary: true },
   { id: 'inquiry', label: '询价单', icon: FileQuestion },
   { id: 'profile', label: '我的', icon: User },
 ];
