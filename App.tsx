@@ -8,6 +8,7 @@ import BottomNav from './components/BottomNav';
 import PartsList from './components/PartsList';
 import ChatList from './components/ChatList';
 import ChatDetail from './components/ChatDetail';
+import InquiryList from './components/InquiryList';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -73,9 +74,13 @@ const App: React.FC = () => {
         {activeTab === 'chat' && (
            <ChatList onChatClick={handleChatClick} />
         )}
+        
+        {activeTab === 'inquiry' && (
+           <InquiryList />
+        )}
 
         {/* Placeholders for other tabs */}
-        {(activeTab === 'inquiry' || activeTab === 'profile') && (
+        {(activeTab === 'profile') && (
            <div className="flex-1 flex items-center justify-center text-gray-400">
              Coming Soon
            </div>

@@ -4,7 +4,7 @@ import {
   Droplets, Battery, Disc, CircleDot, Database, Filter, Gauge, LayoutGrid,
   Home, MessageCircle, Plus, FileQuestion, User
 } from 'lucide-react';
-import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage } from './types';
+import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem } from './types';
 
 export const TOP_ACTIONS: MenuItem[] = [
   { id: 'pay', label: '快捷收款', icon: CircleDollarSign },
@@ -192,4 +192,50 @@ export const SAMPLE_CHAT_HISTORY: ChatMessage[] = [
   { id: 'm5', text: '已确认，仓库有货，今天下午可以发货。', isMe: false, time: '10:35', type: 'text' },
   { id: 'm6', text: '好的，麻烦帮我开个单', isMe: true, time: '10:36', type: 'text' },
   { id: 'm7', text: '[询价单]', isMe: true, time: '10:36', type: 'system' },
+];
+
+// --- Inquiry List Data ---
+
+export const INQUIRY_LIST_DATA: InquiryItem[] = [
+  {
+    id: 'i1',
+    brandName: 'Nissan',
+    carModel: '日产 轩逸 2012 1.6 无级 XE 舒适版',
+    vin: 'LGBH52E0XCY033143',
+    status: 'quoted',
+    parts: [
+      { name: '水管三通', code: '19372102917(B251201137542)', date: '12/01' }
+    ]
+  },
+  {
+    id: 'i2',
+    brandName: 'Benz',
+    carModel: '奔驰 GLC 300 Coupe 4MATIC 2020 2.0T 手自一体',
+    vin: 'W1N0J8EB4LF836975',
+    status: 'expired',
+    parts: [
+      { name: '节温器', code: '19372102917(B25112066489)', date: '11/20' }
+    ]
+  },
+  {
+    id: 'i3',
+    brandName: 'Peugeot',
+    carModel: '标致 308 2016 1.6 手自一体 豪华版',
+    vin: 'LDC983T43G1571126',
+    status: 'expired',
+    parts: [
+      { name: '右机脚', code: '19372102917(B25112024505)', date: '11/20' }
+    ]
+  },
+  {
+    id: 'i4',
+    brandName: 'Volkswagen',
+    carModel: '大众 T-Cross(途铠) 2019 1.5 手自一体 舒适版',
+    vin: 'LSVUB6C10K2053790',
+    status: 'expired',
+    showCart: true,
+    parts: [
+      { name: '发动机机脚胶', code: '19372102917(B25112012612)', date: '11/20' }
+    ]
+  }
 ];

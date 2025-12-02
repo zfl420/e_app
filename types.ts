@@ -57,3 +57,19 @@ export interface ChatMessage {
   time: string;
   type: 'text' | 'image' | 'system';
 }
+
+export interface InquiryPart {
+  name: string;
+  code: string;
+  date: string;
+}
+
+export interface InquiryItem {
+  id: string;
+  brandName: string; // Used for placeholder logo
+  carModel: string;
+  vin: string;
+  status: 'quoted' | 'expired';
+  parts: InquiryPart[];
+  showCart?: boolean;
+}
