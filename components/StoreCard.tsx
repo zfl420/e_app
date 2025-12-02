@@ -1,6 +1,6 @@
 import React from 'react';
-import { ChevronRight, Car } from 'lucide-react';
-import { MANAGEMENT_ACTIONS } from '../constants';
+import { ChevronRight } from 'lucide-react';
+import { MANAGEMENT_ACTIONS, RECENT_TASKS } from '../constants';
 
 const StoreCard: React.FC = () => {
   return (
@@ -25,7 +25,32 @@ const StoreCard: React.FC = () => {
         ))}
       </div>
 
-      {/* Merged "More" Option for Vehicles */}
-      <div className="border-t border-gray-50 pt-2">
-        <button className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-50 transition-colors group">
-           <div
+      {/* Recent Tasks List */}
+      <div className="flex items-center justify-between">
+        <div className="flex-1 space-y-3">
+          {RECENT_TASKS.map((task) => (
+            <div key={task.id} className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-gray-800 font-mono tracking-tight">{task.plate}</span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-md border ${
+                task.status === 'pending_pay' 
+                  ? 'border-secondary text-secondary bg-red-50' 
+                  : 'border-orange-400 text-orange-500 bg-orange-50'
+              }`}>
+                {task.status === 'pending_pay' ? '待收款' : '待施工'}
+              </span>
+              <span className="text-sm text-gray-500">{task.serviceType}</span>
+            </div>
+          ))}
+        </div>
+        
+        {/* Merged Navigation Action */}
+        <div className="flex items-center pl-3 cursor-pointer group">
+          <span className="text-[10px] bg-secondary text-white px-1.5 py-0.5 rounded mr-1 shadow-sm animate-pulse">99+</span>
+          <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default StoreCard;

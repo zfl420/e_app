@@ -37,10 +37,34 @@ export const CATEGORIES: MenuItem[] = [
 ];
 
 export const VIDEO_FEED: VideoItem[] = [
-  { id: '1', title: '拳王间的透修理不踩漏', author: '吴明阳', imageUrl: 'https://picsum.photos/400/600?random=1' },
-  { id: '2', title: '换刹车片怕被忽悠？', author: '吴明阳', imageUrl: 'https://picsum.photos/400/600?random=2' },
-  { id: '3', title: '轮胎鼓包/裂纹 千万别“凑合”', author: '佳通轮胎', imageUrl: 'https://picsum.photos/400/600?random=3' },
-  { id: '4', title: '什么是好门店', author: '波哥八点半', imageUrl: 'https://picsum.photos/400/600?random=4' },
+  { 
+    id: '1', 
+    title: '拳王间的透修理不踩漏', 
+    author: '吴明阳', 
+    // Mechanic working / garage
+    imageUrl: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=400&h=600&q=80' 
+  },
+  { 
+    id: '2', 
+    title: '换刹车片怕被忽悠？', 
+    author: '吴明阳', 
+    // Car parts / brakes
+    imageUrl: 'https://images.unsplash.com/photo-1486262715619-01b80258e0a5?auto=format&fit=crop&w=400&h=600&q=80' 
+  },
+  { 
+    id: '3', 
+    title: '轮胎鼓包/裂纹 千万别“凑合”', 
+    author: '佳通轮胎', 
+    // Tire close up
+    imageUrl: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?auto=format&fit=crop&w=400&h=600&q=80' 
+  },
+  { 
+    id: '4', 
+    title: '什么是好门店', 
+    author: '波哥八点半', 
+    // Professional manager
+    imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&h=600&q=80' 
+  },
 ];
 
 export const NAV_ITEMS: NavItem[] = [
@@ -49,4 +73,36 @@ export const NAV_ITEMS: NavItem[] = [
   { id: 'publish', label: '发布询价', icon: Plus, isPrimary: true },
   { id: 'inquiry', label: '询价单', icon: FileQuestion },
   { id: 'profile', label: '我的', icon: User },
+];
+
+// New data for Parts List page
+export const SIDEBAR_CATEGORIES = [
+  '油品', '蓄电池', '轮胎', '滤清系统', '点火系统', '制动系统', '养护用品', '雨刮系统', '照明系统', '正时附件', '悬挂系统', '传动系统', '工具耗材', '其他'
+];
+
+export const HOT_CATEGORIES_DATA = [
+  { name: '机油', img: 'https://images.unsplash.com/photo-1560579183-c288f3435c24?w=150&h=150&fit=crop&q=80' },
+  { name: '刹车油', img: 'https://images.unsplash.com/photo-1626127027471-7eb9277d3394?w=150&h=150&fit=crop&q=80' },
+  { name: '波箱油', img: 'https://images.unsplash.com/photo-1608613437533-332997c452df?w=150&h=150&fit=crop&q=80' },
+  { name: '齿轮油', img: 'https://images.unsplash.com/photo-1580228026131-081036df5295?w=150&h=150&fit=crop&q=80' },
+  { name: '方向机油', img: 'https://images.unsplash.com/photo-1609630985558-86d4e8c18731?w=150&h=150&fit=crop&q=80' },
+  { name: '差速器油', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=150&h=150&fit=crop&q=80' },
+];
+
+export const HOT_BRANDS_DATA = [
+  { name: '0769滤清器', code: '0769' },
+  { name: '1942', code: '1942' },
+  { name: 'KLG', code: 'KLG' },
+  { name: '0769', code: '0769' }, // Placeholder for repeated brands or different lines
+  { name: '1942', code: '1942' },
+  { name: 'KLG_', code: 'KLG' },
+  { name: '555', code: '555' },
+  { name: 'AC 德科', code: 'ACDelco' },
+  { name: '爱驰易', code: 'Aicheyi' },
+  { name: '爱信', code: 'AISIN' },
+  { name: '安索', code: 'AMSOIL' },
+  { name: '安赛途', code: 'Ansetu' },
+  { name: 'Ate', code: 'Ate' },
+  { name: 'Audi', code: 'Audi' },
+  { name: 'AUI车养护', code: 'AUI' },
 ];
