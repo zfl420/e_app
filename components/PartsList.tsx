@@ -140,16 +140,15 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
                   <div className="h-px w-8 bg-gray-200" />
                 </div>
                 
-                {/* Categories Grid - Updated to Box Style */}
+                {/* Categories Grid - Updated to Box Style with Text Icon */}
                 <div className="grid grid-cols-3 gap-y-6 gap-x-4 mb-8">
                   {data.subcategories.map((sub, idx) => (
                     <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer group">
-                      <div className="w-full aspect-square bg-gray-50 border border-gray-100 rounded-lg p-2 flex items-center justify-center relative overflow-hidden">
-                        <img 
-                            src={sub.img} 
-                            alt={sub.name} 
-                            className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-300" 
-                        />
+                      <div className="w-full aspect-square bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center relative overflow-hidden group-hover:bg-white group-hover:border-primary/30 group-hover:shadow-sm transition-all duration-300">
+                         {/* Replaced Image with Text Block */}
+                         <span className="text-sm font-bold text-slate-400 group-hover:text-primary transition-colors">
+                            {sub.name}
+                         </span>
                       </div>
                       <span className="text-xs text-gray-600 font-medium">{sub.name}</span>
                     </div>
