@@ -2,6 +2,7 @@ import React from 'react';
 import { ShoppingCart, ScanLine, Search } from 'lucide-react';
 import { TOP_ACTIONS } from '../constants';
 import StatusBar from './StatusBar';
+import { getVersionStyles } from '../versionStyles';
 
 interface HeaderProps {
   appVersion?: number;
@@ -10,12 +11,14 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCartClick }) => {
+  const styles = getVersionStyles(appVersion);
+  
   return (
-    <div className="bg-primary pb-24 px-4 rounded-b-[2.5rem] shadow-md relative z-0">
+    <div className={`${styles.header.container} ${styles.header.paddingBottom} px-4 rounded-b-[2.5rem] shadow-md relative z-0`}>
       {/* Status Bar */}
       <StatusBar />
       {/* Search Bar Row */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className={`flex items-center gap-3 ${styles.header.searchBarMargin}`}>
         <div className="flex-1 bg-white/95 backdrop-blur-sm h-10 rounded-full flex items-center px-4 shadow-sm border border-white/20">
           <Search className="w-5 h-5 text-gray-400 mr-2" />
           <input 
@@ -31,9 +34,9 @@ const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCar
         </button>
       </div>
 
-      {/* Top Actions Grid - 只在版本4显示 */}
-      {appVersion >= 4 && (
-      <div className="grid grid-cols-4 gap-2">
+      {/* Top Actions Grid - 版本2和版本4显示 */}
+      {appVersion >= 2 && (
+      <div className={`grid grid-cols-4 gap-2 mt-4 ${appVersion === 2 ? 'mb-5' : ''}`}>
         {TOP_ACTIONS.map((action) => (
           <button
             key={action.id}

@@ -4,7 +4,7 @@ import {
   Droplets, Battery, Disc, CircleDot, Database, Filter, Gauge, LayoutGrid,
   Home, MessageCircle, Plus, FileQuestion, User,
   Wallet, Truck, Gift, MessageSquareText, RotateCcw,
-  UserCog, Wrench, Clock, Users, Bot, Sparkles
+  UserCog, Wrench, Clock, Users, Bot, Sparkles, Calculator, Grid3x3
 } from 'lucide-react';
 import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem, ProductItem, CustomerItem, VehicleItem, WorkOrderItem } from './types';
 
@@ -84,7 +84,7 @@ export const NAV_ITEMS: NavItem[] = [
 // --- Parts List Data ---
 
 export const SIDEBAR_CATEGORIES = [
-  '油品', '蓄电池', '轮胎', '滤清系统', '点火系统', '制动系统', '养护用品', '雨刮系统', '照明系统', '正时附件', '悬挂系统', '传动系统', '工具耗材', '其他'
+  '汽车油品', '供电系统', '车轮系统', '过滤系统', '制动系统', '正时系统', '底盘系统', '热管理系统', '电子电器', '启发点火', '化工养护', '车身配件', '工具设备', '周边产品', '发动机系统'
 ];
 
 interface CategoryData {
@@ -108,14 +108,17 @@ const GENERIC_BRANDS = [
 ];
 
 export const CATEGORY_SECTIONS: Record<string, CategoryData> = {
-  '油品': {
+  '汽车油品': {
     subcategories: [
-      { name: '机油', img: 'https://images.unsplash.com/photo-1560579183-c288f3435c24?w=150&h=150&fit=crop&q=80' },
-      { name: '刹车油', img: 'https://images.unsplash.com/photo-1626127027471-7eb9277d3394?w=150&h=150&fit=crop&q=80' },
-      { name: '波箱油', img: 'https://images.unsplash.com/photo-1608613437533-332997c452df?w=150&h=150&fit=crop&q=80' },
-      { name: '齿轮油', img: 'https://images.unsplash.com/photo-1580228026131-081036df5295?w=150&h=150&fit=crop&q=80' },
-      { name: '方向机油', img: 'https://images.unsplash.com/photo-1609630985558-86d4e8c18731?w=150&h=150&fit=crop&q=80' },
-      { name: '差速器油', img: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=150&h=150&fit=crop&q=80' },
+      { name: '汽机油', img: '' },
+      { name: '柴机油', img: '' },
+      { name: '自动变速箱油', img: '' },
+      { name: '齿轮油', img: '' },
+      { name: '助力油', img: '' },
+      { name: '减速器油', img: '' },
+      { name: '清洗油', img: '' },
+      { name: '润滑脂', img: '' },
+      { name: '液压油', img: '' },
     ],
     brands: [
       { name: '0769滤清器', code: '0769' },
@@ -135,11 +138,12 @@ export const CATEGORY_SECTIONS: Record<string, CategoryData> = {
       { name: 'AUI车养护', code: 'AUI' },
     ]
   },
-  '蓄电池': {
+  '供电系统': {
     subcategories: [
-      { name: 'AGM电池', img: 'https://images.unsplash.com/photo-1622383849929-79841f3e9c5f?w=150&h=150&fit=crop&q=80' },
-      { name: '免维护电池', img: 'https://images.unsplash.com/photo-1614741118868-607c31c885ea?w=150&h=150&fit=crop&q=80' },
-      { name: 'EFB电池', img: 'https://images.unsplash.com/photo-1622383849929-79841f3e9c5f?w=150&h=150&fit=crop&q=80' },
+      { name: '启停蓄电池', img: '' },
+      { name: '免维护蓄电池', img: '' },
+      { name: '辅助电池', img: '' },
+      { name: '电瓶底座', img: '' },
     ],
     brands: [
         { name: '瓦尔塔', code: 'VARTA' },
@@ -147,11 +151,9 @@ export const CATEGORY_SECTIONS: Record<string, CategoryData> = {
         { name: '风帆', code: 'Sail' },
     ]
   },
-  '轮胎': {
+  '车轮系统': {
       subcategories: [
-          { name: '四季胎', img: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=150&h=150&fit=crop&q=80' },
-          { name: '雪地胎', img: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=150&h=150&fit=crop&q=80' },
-          { name: '防爆胎', img: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=150&h=150&fit=crop&q=80' },
+          { name: '乘用车轮胎', img: '' },
       ],
       brands: [
           { name: '米其林', code: 'Michelin' },
@@ -159,6 +161,164 @@ export const CATEGORY_SECTIONS: Record<string, CategoryData> = {
           { name: '固特异', code: 'Goodyear' },
           { name: '马牌', code: 'Continental' },
       ]
+  },
+  '过滤系统': {
+    subcategories: [
+      { name: '机油滤清器', img: '' },
+      { name: '燃油滤清器', img: '' },
+      { name: '变速箱滤清器', img: '' },
+      { name: '空气滤清器', img: '' },
+      { name: '空调滤清器', img: '' },
+      { name: '波箱滤网盖', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '制动系统': {
+    subcategories: [
+      { name: '前刹车片', img: '' },
+      { name: '后刹车片', img: '' },
+      { name: '前刹车盘', img: '' },
+      { name: '后刹车盘', img: '' },
+      { name: '报警线', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '正时系统': {
+    subcategories: [
+      { name: '正时皮带', img: '' },
+      { name: '正时惰轮', img: '' },
+      { name: '正时张紧轮', img: '' },
+      { name: '正时皮带套包', img: '' },
+      { name: '正时水泵套包', img: '' },
+      { name: '正时盖板', img: '' },
+      { name: '正时链条张紧器', img: '' },
+      { name: '附件皮带', img: '' },
+      { name: '附件惰轮', img: '' },
+      { name: '附件张紧轮', img: '' },
+      { name: '附件系统维修套装', img: '' },
+      { name: '正时含水套装', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '底盘系统': {
+    subcategories: [
+      { name: '控制臂', img: '' },
+      { name: '内拉杆', img: '' },
+      { name: '平衡杆', img: '' },
+      { name: '外球头', img: '' },
+      { name: '悬挂球头', img: '' },
+      { name: '开口胶', img: '' },
+      { name: '侧拉杆总成', img: '' },
+      { name: '悬挂系统附件', img: '' },
+      { name: '摆臂胶套', img: '' },
+      { name: '顶胶', img: '' },
+      { name: '缓冲块+防尘罩', img: '' },
+      { name: '减振器', img: '' },
+      { name: '配件', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '热管理系统': {
+    subcategories: [
+      { name: '散热器', img: '' },
+      { name: '水泵', img: '' },
+      { name: '密封垫', img: '' },
+      { name: '变速箱油管', img: '' },
+      { name: '水箱盖', img: '' },
+      { name: '暖风水箱', img: '' },
+      { name: '干燥瓶', img: '' },
+      { name: '空调管', img: '' },
+      { name: '鼓风机电阻', img: '' },
+      { name: '风扇继电器', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '电子电器': {
+    subcategories: [
+      { name: '卤素灯', img: '' },
+      { name: '卤素升级灯', img: '' },
+      { name: '白炽灯', img: '' },
+      { name: 'LED灯', img: '' },
+      { name: '氙气灯', img: '' },
+      { name: '灯泡卡座', img: '' },
+      { name: '解码器', img: '' },
+      { name: '防尘罩', img: '' },
+      { name: '通用喇叭', img: '' },
+      { name: '专用喇叭', img: '' },
+      { name: '喇叭转接线', img: '' },
+      { name: '传感器', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '启发点火': {
+    subcategories: [
+      { name: '火花塞', img: '' },
+      { name: '点火线圈', img: '' },
+      { name: '高压线', img: '' },
+      { name: '发电机', img: '' },
+      { name: '启动机', img: '' },
+      { name: '起动机电枢', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '化工养护': {
+    subcategories: [
+      { name: '化油器清洗剂', img: '' },
+      { name: '多功能泡沫清洗剂', img: '' },
+      { name: '表板蜡', img: '' },
+      { name: '发动机外部清洗剂', img: '' },
+      { name: '除锈剂', img: '' },
+      { name: '柏油沥青清洗剂', img: '' },
+      { name: '轮胎清洗剂', img: '' },
+      { name: '黏胶去除剂', img: '' },
+      { name: '其他清洗剂', img: '' },
+      { name: '空调系统养护', img: '' },
+      { name: '冷却系统养护', img: '' },
+      { name: '发动机养护', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '车身配件': {
+    subcategories: [
+      { name: '前雨刮卡扣', img: '' },
+      { name: '前雨刮片', img: '' },
+      { name: '后雨刮片', img: '' },
+      { name: '后雨刮卡扣', img: '' },
+      { name: '升降器支架', img: '' },
+      { name: '升降器电机', img: '' },
+      { name: '升降器总成', img: '' },
+      { name: '升降器开关', img: '' },
+      { name: '紧固件', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '工具设备': {
+    subcategories: [
+      { name: '通用工具', img: '' },
+      { name: '专用工具', img: '' },
+      { name: '检测分析设备', img: '' },
+      { name: '更换加注设备', img: '' },
+      { name: '养护清洗设备', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '周边产品': {
+    subcategories: [
+      { name: '广宣品', img: '' },
+      { name: '其他', img: '' },
+    ],
+    brands: GENERIC_BRANDS
+  },
+  '发动机系统': {
+    subcategories: [
+      { name: '燃油泵总成', img: '' },
+      { name: '碳罐电磁阀', img: '' },
+      { name: '燃油管', img: '' },
+      { name: '空气进气管', img: '' },
+      { name: '副空气泵', img: '' },
+      { name: '凸轮轴调节器', img: '' },
+    ],
+    brands: GENERIC_BRANDS
   }
 };
 

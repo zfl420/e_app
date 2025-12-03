@@ -136,7 +136,7 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
                 {/* Hot Categories Header */}
                 <div className="flex items-center justify-center gap-4 mb-6">
                   <div className="h-px w-8 bg-gray-200" />
-                  <h3 className="text-sm font-bold text-gray-800">热门分类</h3>
+                  <h3 className="text-sm font-bold text-gray-800">{category}</h3>
                   <div className="h-px w-8 bg-gray-200" />
                 </div>
                 
@@ -154,29 +154,6 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
                     </div>
                   ))}
                 </div>
-
-                {/* Hot Brands Header */}
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  <div className="h-px w-8 bg-gray-200" />
-                  <h3 className="text-sm font-bold text-gray-800">热门品牌</h3>
-                  <div className="h-px w-8 bg-gray-200" />
-                </div>
-                
-                {/* Brands Grid */}
-                <div className="grid grid-cols-3 gap-y-6 gap-x-4 mb-8">
-                  {data.brands.map((brand, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer hover:opacity-80">
-                      <div className="w-full aspect-[2/1] flex items-center justify-center bg-gray-50 border border-gray-100 px-1 rounded-sm">
-                         <span className="font-sans font-black text-gray-400 text-sm italic tracking-tighter opacity-80 uppercase truncate w-full text-center">
-                            {brand.code}
-                         </span>
-                      </div>
-                      <span className="text-[10px] text-gray-400 text-center truncate w-full">{brand.name}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="h-px bg-gray-100 w-full mb-4"></div>
               </div>
             );
           })}

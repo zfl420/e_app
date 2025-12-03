@@ -38,6 +38,7 @@ import PartsManagement from './components/PartsManagement';
 import WorkHourList from './components/WorkHourList';
 import MyOrders from './components/MyOrders';
 import { OrderTab } from './components/MyOrders';
+import { getVersionStyles } from './versionStyles';
 
 const App: React.FC = () => {
   const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
@@ -74,6 +75,9 @@ const App: React.FC = () => {
   const [purchaseOrderDetailVisible, setPurchaseOrderDetailVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
+  // 获取当前版本的样式配置
+  const versionStyles = getVersionStyles(appVersion);
+
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
       setPartsViewVisible(true);
@@ -93,6 +97,7 @@ const App: React.FC = () => {
     if (appVersion === 1 && (id === 'chat' || id === 'inquiry')) {
       return;
     }
+    // 版本2允许切换到chat或inquiry标签页
     setActiveTab(id);
     // Reset secondary views when switching tabs
     setPartsViewVisible(false);
@@ -145,6 +150,7 @@ const App: React.FC = () => {
       if (version === 1 && (activeTab === 'chat' || activeTab === 'inquiry')) {
         setActiveTab('home');
       }
+      // 版本2允许chat和inquiry，不需要跳转
     };
     
     return (
@@ -169,8 +175,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <PartsList onBack={() => setPartsViewVisible(false)} />
           </div>
         </div>
@@ -182,8 +188,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <ChatDetail 
               chatId={selectedChatId} 
               onBack={() => setSelectedChatId(null)} 
@@ -198,8 +204,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Settings onBack={() => setSettingsViewVisible(false)} />
           </div>
         </div>
@@ -211,8 +217,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <OrderDetail 
               onBack={() => {
                 setOrderDetailVisible(false);
@@ -229,8 +235,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <ArrivalList 
               onBack={() => setArrivalViewVisible(false)} 
               onCreateOrder={() => {
@@ -248,8 +254,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <ProductList 
               onBack={() => {
                 setProductListVisible(false);
@@ -273,8 +279,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <CustomerVehicle
               initialTab={customerVehicleTab}
               onBack={() => setCustomerVehicleVisible(false)}
@@ -289,8 +295,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <FourSPrice onBack={() => setFsPriceVisible(false)} />
           </div>
         </div>
@@ -302,8 +308,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Maintenance onBack={() => setMaintenanceVisible(false)} />
           </div>
         </div>
@@ -315,8 +321,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Catalog 
               onBack={() => setCatalogVisible(false)} 
               onCartClick={() => {
@@ -334,8 +340,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <InventoryQuery onBack={() => setInventoryVisible(false)} />
           </div>
         </div>
@@ -367,8 +373,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
           </div>
         </div>
@@ -380,8 +386,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <ProductDetail onBack={() => setProductDetailVisible(false)} />
           </div>
         </div>
@@ -393,8 +399,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
           </div>
         </div>
@@ -406,8 +412,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
           </div>
         </div>
@@ -419,8 +425,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Marketing onBack={() => setMarketingVisible(false)} />
           </div>
         </div>
@@ -432,8 +438,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
           </div>
         </div>
@@ -445,8 +451,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
           </div>
         </div>
@@ -477,8 +483,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <PurchaseOrderDetail 
               onBack={() => {
                 setPurchaseOrderDetailVisible(false);
@@ -496,8 +502,8 @@ const App: React.FC = () => {
     return (
       <>
         <LeftSideButtons />
-        <div className="min-h-screen bg-background flex justify-center">
-          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <MyOrders 
               onBack={() => setMyOrdersVisible(false)} 
               initialTab={myOrdersTab}
@@ -517,8 +523,8 @@ const App: React.FC = () => {
       return (
         <>
           <LeftSideButtons />
-          <div className="min-h-screen bg-background flex justify-center">
-              <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+              <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
                   <AIQuote 
                     onBack={() => setActiveTab('home')} 
                     onViewOrderDetail={() => {
@@ -536,8 +542,8 @@ const App: React.FC = () => {
   return (
     <>
       <LeftSideButtons />
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
+      <div className={`min-h-screen ${versionStyles.mainContainer.background} flex justify-center`}>
+        <div className={`w-full max-w-md ${versionStyles.mainContainer.container} min-h-screen relative shadow-2xl overflow-hidden flex flex-col`}>
         {activeTab === 'home' && (
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <Header
@@ -555,8 +561,9 @@ const App: React.FC = () => {
               }}
               onCartClick={() => setShoppingCartVisible(true)}
             />
-            {appVersion >= 4 && (
+            {appVersion >= 3 && (
               <StoreCard
+                appVersion={appVersion}
                 onArrivalClick={() => setArrivalViewVisible(true)}
                 onManagementClick={(id) => {
                   if (id === 'customer_manage') {
@@ -581,8 +588,8 @@ const App: React.FC = () => {
                 }}
               />
             )}
-            <Banner onClick={() => setProductDetailVisible(true)} />
-            <CategoryGrid onCategoryClick={handleCategoryClick} />
+            <CategoryGrid appVersion={appVersion} onCategoryClick={handleCategoryClick} />
+            <Banner appVersion={appVersion} onClick={() => setProductDetailVisible(true)} />
             <VideoFeed 
               onFeedClick={(feedId) => {
                 setSelectedFeedId(feedId);
@@ -592,11 +599,11 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'chat' && appVersion >= 4 && (
+        {activeTab === 'chat' && appVersion >= 2 && (
            <ChatList onChatClick={handleChatClick} />
         )}
         
-        {activeTab === 'inquiry' && appVersion >= 4 && (
+        {activeTab === 'inquiry' && appVersion >= 2 && (
            <InquiryList onCartClick={() => setShoppingCartVisible(true)} />
         )}
 

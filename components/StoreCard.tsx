@@ -1,15 +1,45 @@
-import React from 'react';
-import { ChevronRight } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { ChevronRight, Grid3x3, Calculator } from 'lucide-react';
 import { MANAGEMENT_ACTIONS, RECENT_TASKS } from '../constants';
+import { getVersionStyles } from '../versionStyles';
 
 interface StoreCardProps {
+  appVersion?: number;
   onArrivalClick?: () => void;
   onManagementClick?: (id: string) => void;
 }
 
-const StoreCard: React.FC<StoreCardProps> = ({ onArrivalClick, onManagementClick }) => {
+const StoreCard: React.FC<StoreCardProps> = ({ appVersion = 4, onArrivalClick, onManagementClick }) => {
+  const styles = getVersionStyles(appVersion);
+  
+  // 根据版本过滤和修改管理操作列表
+  const displayActions = useMemo(() => {
+    if (appVersion === 3) {
+      // 版本3：按照指定顺序排列
+      // 第一排：接车开单、工单列表、车辆管理、快捷收款
+      // 第二排：快速报价、客户管理、查报表、全部应用
+      const actionMap = new Map(MANAGEMENT_ACTIONS.map(action => [action.id, action]));
+      
+      const orderedActions = [
+        actionMap.get('bill'),           // 接车开单
+        actionMap.get('workorders'),     // 工单列表
+        actionMap.get('vehicle_manage'), // 车辆管理
+        actionMap.get('fast_pay'),       // 快捷收款
+        { id: 'quick_quote', label: '快速报价', icon: Calculator, color: 'text-gray-900' }, // 快速报价
+        actionMap.get('customer_manage'), // 客户管理
+        actionMap.get('reports'),        // 查报表
+        { id: 'all_apps', label: '全部应用', icon: Grid3x3, color: 'text-gray-900' }, // 全部应用
+      ];
+      
+      // 过滤掉可能的 undefined 值
+      return orderedActions.filter((action): action is NonNullable<typeof action> => action !== undefined);
+    }
+    // 版本4显示所有操作
+    return MANAGEMENT_ACTIONS;
+  }, [appVersion]);
+  
   return (
-    <div className="mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4">
+    <div className={styles.storeCard.container}>
       {/* Card Header */}
       <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-50">
         <h2 className="font-bold text-gray-800 text-lg">门店管理</h2>
@@ -20,7 +50,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ onArrivalClick, onManagementClick
 
       {/* Main Actions */}
       <div className="grid grid-cols-4 gap-4 mb-6">
-        {MANAGEMENT_ACTIONS.map((action) => (
+        {displayActions.map((action) => (
           <div
             key={action.id}
             className="flex flex-col items-center gap-2 cursor-pointer group"

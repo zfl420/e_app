@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Settings, ChevronRight } from 'lucide-react';
 import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
 import StatusBar from './StatusBar';
+import { getVersionStyles } from '../versionStyles';
 
 interface ProfileProps {
   appVersion?: number;
@@ -12,14 +13,15 @@ interface ProfileProps {
 
 const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick }) => {
   const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
+  const styles = getVersionStyles(appVersion);
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 pb-24">
+    <div className={`flex flex-col h-full ${styles.profile.container} pb-24`}>
       {/* Status Bar */}
       <StatusBar variant="white" />
       
       {/* Header Profile Section */}
-      <div className="bg-white px-6 pt-6 pb-8 relative">
+      <div className={`${styles.profile.headerSection} px-6 pt-6 pb-8 relative`}>
         <button 
             onClick={onSettingsClick}
             className="absolute top-6 right-6 text-gray-700 p-2"
@@ -81,8 +83,8 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
             </div>
         </div>
 
-        {/* Store Management - 只在版本4显示 */}
-        {appVersion >= 4 && (
+        {/* Store Management - 版本3和版本4显示 */}
+        {appVersion >= 3 && (
         <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="mb-5">
                 <h2 className="font-bold text-gray-800 text-base">门店管理</h2>

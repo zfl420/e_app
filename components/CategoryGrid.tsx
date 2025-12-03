@@ -1,13 +1,17 @@
 import React from 'react';
 import { CATEGORIES } from '../constants';
+import { getVersionStyles } from '../versionStyles';
 
 interface CategoryGridProps {
+  appVersion?: number;
   onCategoryClick?: (id: string) => void;
 }
 
-const CategoryGrid: React.FC<CategoryGridProps> = ({ onCategoryClick }) => {
+const CategoryGrid: React.FC<CategoryGridProps> = ({ appVersion = 4, onCategoryClick }) => {
+  const styles = getVersionStyles(appVersion);
+  
   return (
-    <div className="mx-4 mb-6 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <div className={styles.categoryGrid.container}>
       <div className="grid grid-cols-4 gap-x-2 gap-y-6">
         {CATEGORIES.map((cat) => (
           <div 

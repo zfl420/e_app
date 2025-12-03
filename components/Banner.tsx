@@ -1,13 +1,17 @@
 import React from 'react';
+import { getVersionStyles } from '../versionStyles';
 
 interface BannerProps {
+  appVersion?: number;
   onClick?: () => void;
 }
 
-const Banner: React.FC<BannerProps> = ({ onClick }) => {
+const Banner: React.FC<BannerProps> = ({ appVersion = 4, onClick }) => {
+  const styles = getVersionStyles(appVersion);
+  
   return (
     <div 
-      className="mx-4 mb-6 rounded-2xl overflow-hidden shadow-lg relative group h-32 cursor-pointer"
+      className={`${styles.banner.container} overflow-hidden shadow-lg relative group h-32 cursor-pointer`}
       onClick={onClick}
     >
       <img 

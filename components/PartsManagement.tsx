@@ -126,3 +126,5 @@ const PartsManagement: React.FC<PartsManagementProps> = ({ onBack }) => {
 export default PartsManagement;
 
 
+
+

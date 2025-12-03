@@ -150,3 +150,5 @@ const Inventory: React.FC<InventoryProps> = ({ onBack }) => {
 export default Inventory;
 
 
+
+
