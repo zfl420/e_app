@@ -34,17 +34,20 @@ const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCar
         </button>
       </div>
 
-      {/* Top Actions Grid - 版本2和版本4显示 */}
+      {/* Top Actions Grid - 版本2及以上显示 */}
       {appVersion >= 2 && (
-      <div className={`grid grid-cols-4 gap-2 mt-4 ${appVersion === 2 ? 'mb-5' : ''}`}>
-        {TOP_ACTIONS.map((action) => (
+      <div className={`grid ${appVersion >= 3 ? 'grid-cols-5' : 'grid-cols-4'} gap-2 mt-4 ${appVersion === 2 ? 'mb-5' : ''}`}>
+        {(appVersion >= 3
+          ? [{ id: 'quick_quote', label: '快速报价', icon: ShoppingCart }, ...TOP_ACTIONS]
+          : TOP_ACTIONS
+        ).map((action) => (
           <button
             key={action.id}
             className="flex flex-col items-center gap-2 group cursor-pointer"
             onClick={() => onTopActionClick && onTopActionClick(action.id)}
           >
-            <div className="p-2 rounded-xl bg-white/10 group-hover:bg-white/20 transition-colors">
-              <action.icon className="w-6 h-6 text-white" strokeWidth={1.5} />
+            <div className="w-14 h-14 rounded-2xl bg-white/10 group-hover:bg-white/20 transition-colors flex items-center justify-center">
+              <action.icon className="w-7 h-7 text-white" strokeWidth={1.5} />
             </div>
             <span className="text-sm font-medium text-white/90">{action.label}</span>
           </button>

@@ -1,36 +1,34 @@
 import React from 'react';
-import { Search, Filter, FileText, ShoppingCart, CarFront } from 'lucide-react';
+import { Search, ShoppingCart, CarFront, Plus } from 'lucide-react';
 import { INQUIRY_LIST_DATA } from '../constants';
 import StatusBar from './StatusBar';
 
 interface InquiryListProps {
   onCartClick?: () => void;
+  onAddInquiry?: () => void;
 }
 
-const InquiryList: React.FC<InquiryListProps> = ({ onCartClick }) => {
+const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) => {
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
       {/* Status Bar */}
       <StatusBar variant="white" />
       
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 sticky top-0 z-10 border-b border-gray-100">
-        <div className="relative flex items-center justify-center mb-4">
-          <h1 className="text-lg font-bold text-gray-900">询价单</h1>
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
-            <div className="flex flex-col items-center cursor-pointer">
-              <FileText className="w-5 h-5 text-gray-700" strokeWidth={1.5} />
-              <span className="text-xs text-gray-500 mt-0.5">车主报价单</span>
-            </div>
-            <div className="flex flex-col items-center cursor-pointer">
-              <Filter className="w-5 h-5 text-gray-700" strokeWidth={1.5} />
-              <span className="text-xs text-gray-500 mt-0.5">筛选</span>
-            </div>
-          </div>
+      <div className="bg-gray-50 px-4 pt-4 pb-3 sticky top-0 z-10">
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-xl font-bold text-gray-900">询价单</h1>
+          <button
+            type="button"
+            onClick={onAddInquiry}
+            className="w-8 h-8 rounded-full flex items-center justify-center bg-white shadow-sm border border-gray-200 active:scale-95 transition-transform"
+          >
+            <Plus className="w-5 h-5 text-gray-900" strokeWidth={2} />
+          </button>
         </div>
 
         {/* Search Bar */}
-        <div className="bg-gray-100 rounded-full h-10 flex items-center px-4">
+        <div className="bg-white rounded-full h-10 flex items-center px-4 shadow-sm border border-gray-100">
           <Search className="w-4 h-4 text-gray-400 mr-2" />
           <input 
             type="text" 

@@ -43,7 +43,7 @@ export const version1Styles: VersionStyles = {
     searchBarMargin: 'mb-0',
   },
   banner: {
-    container: 'mx-4 mb-4 rounded-2xl',
+    container: 'mx-4 mt-4 mb-4 rounded-2xl',
     margin: 'mx-4',
     borderRadius: 'rounded-2xl',
   },
@@ -65,7 +65,7 @@ export const version1Styles: VersionStyles = {
     container: 'bg-white',
   },
   categoryGrid: {
-    container: 'mx-4 mt-4 mb-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
+    container: 'mx-4 mb-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
   },
   storeCard: {
     container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4',
@@ -80,7 +80,7 @@ export const version2Styles: VersionStyles = {
     searchBarMargin: 'mb-6',
   },
   banner: {
-    container: 'mx-4 mb-6 rounded-2xl',
+    container: 'mx-4 mt-3 mb-3 rounded-2xl',
     margin: 'mx-4',
     borderRadius: 'rounded-2xl',
   },
@@ -102,7 +102,7 @@ export const version2Styles: VersionStyles = {
     container: 'bg-white',
   },
   categoryGrid: {
-    container: 'mx-4 mt-5 mb-6 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
+    container: 'mx-4 mb-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
   },
   storeCard: {
     container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4',

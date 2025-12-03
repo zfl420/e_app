@@ -39,6 +39,7 @@ import WorkHourList from './components/WorkHourList';
 import MyOrders from './components/MyOrders';
 import { OrderTab } from './components/MyOrders';
 import { getVersionStyles } from './versionStyles';
+import AllApps from './components/AllApps';
 
 const App: React.FC = () => {
   const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
@@ -74,6 +75,7 @@ const App: React.FC = () => {
   const [myOrdersTab, setMyOrdersTab] = useState<OrderTab>('all');
   const [purchaseOrderDetailVisible, setPurchaseOrderDetailVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [allAppsVisible, setAllAppsVisible] = useState(false);
 
   // 获取当前版本的样式配置
   const versionStyles = getVersionStyles(appVersion);
@@ -129,6 +131,7 @@ const App: React.FC = () => {
     setMyOrdersVisible(false);
     setPurchaseOrderDetailVisible(false);
     setSelectedOrderId(null);
+    setAllAppsVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -146,11 +149,39 @@ const App: React.FC = () => {
     
     const handleVersionChange = (version: number) => {
       setAppVersion(version);
-      // 如果切换到版本1，且当前在chat或inquiry标签页，则跳转到home
-      if (version === 1 && (activeTab === 'chat' || activeTab === 'inquiry')) {
-        setActiveTab('home');
-      }
-      // 版本2允许chat和inquiry，不需要跳转
+      // 切换版本时，统一回到该版本的首页
+      setActiveTab('home');
+
+      // 重置所有二级页面/弹层状态，回到首页初始态
+      setPartsViewVisible(false);
+      setSelectedChatId(null);
+      setSettingsViewVisible(false);
+      setArrivalViewVisible(false);
+      setProductListVisible(false);
+      setProductCategory(null);
+      setCustomerVehicleVisible(false);
+      setFsPriceVisible(false);
+      setMaintenanceVisible(false);
+      setCatalogVisible(false);
+      setInventoryVisible(false);
+      setVinScanVisible(false);
+      setProductDetailVisible(false);
+      setServiceCollectionVisible(false);
+      setMaintenanceManualVisible(false);
+      setBusinessAnalysisVisible(false);
+      setMarketingVisible(false);
+      setOrderDetailVisible(false);
+      setWorkOrderListVisible(false);
+      setShoppingCartVisible(false);
+      setFeedDetailVisible(false);
+      setSelectedFeedId(null);
+      setEmployeeManagementVisible(false);
+      setStoreSettingsVisible(false);
+      setPartsManagementVisible(false);
+      setWorkHourListVisible(false);
+      setMyOrdersVisible(false);
+      setPurchaseOrderDetailVisible(false);
+      setSelectedOrderId(null);
     };
     
     return (
@@ -498,6 +529,19 @@ const App: React.FC = () => {
     );
   }
 
+  if (allAppsVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <AllApps onBack={() => setAllAppsVisible(false)} />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   if (myOrdersVisible) {
     return (
       <>
@@ -549,6 +593,10 @@ const App: React.FC = () => {
             <Header
               appVersion={appVersion}
               onTopActionClick={(id) => {
+                if (id === 'quick_quote') {
+                  setActiveTab('ai_quote');
+                  return;
+                }
                 if (id === 'price') {
                   setBusinessAnalysisVisible(true);
                 } else if (id === 'maintain') {
@@ -562,34 +610,41 @@ const App: React.FC = () => {
               onCartClick={() => setShoppingCartVisible(true)}
             />
             {appVersion >= 3 && (
-              <StoreCard
-                appVersion={appVersion}
-                onArrivalClick={() => setArrivalViewVisible(true)}
-                onManagementClick={(id) => {
-                  if (id === 'customer_manage') {
-                    setCustomerVehicleTab('customer');
-                    setCustomerVehicleVisible(true);
-                  } else if (id === 'vehicle_manage') {
-                    setCustomerVehicleTab('vehicle');
-                    setCustomerVehicleVisible(true);
-                  } else if (id === 'bill') {
-                    setVinScanVisible(true);
-                  } else if (id === 'workorders') {
-                    setWorkOrderListVisible(true);
-                  } else if (id === 'fast_pay') {
-                    setServiceCollectionVisible(true);
-                  } else if (id === 'manual') {
-                    setMaintenanceManualVisible(true);
-                  } else if (id === 'reports') {
-                    setBusinessAnalysisVisible(true);
-                  } else if (id === 'marketing') {
-                    setMarketingVisible(true);
-                  }
-                }}
-              />
+              <>
+                <StoreCard
+                  appVersion={appVersion}
+                  onArrivalClick={() => setArrivalViewVisible(true)}
+                  onManagementClick={(id) => {
+                    if (id === 'customer_manage') {
+                      setCustomerVehicleTab('customer');
+                      setCustomerVehicleVisible(true);
+                    } else if (id === 'vehicle_manage') {
+                      setCustomerVehicleTab('vehicle');
+                      setCustomerVehicleVisible(true);
+                    } else if (id === 'bill') {
+                      setVinScanVisible(true);
+                    } else if (id === 'workorders') {
+                      setWorkOrderListVisible(true);
+                    } else if (id === 'fast_pay') {
+                      setServiceCollectionVisible(true);
+                    } else if (id === 'manual') {
+                      setMaintenanceManualVisible(true);
+                    } else if (id === 'reports') {
+                      setBusinessAnalysisVisible(true);
+                    } else if (id === 'marketing') {
+                      setMarketingVisible(true);
+                    } else if (id === 'all_apps') {
+                      setAllAppsVisible(true);
+                    }
+                  }}
+                />
+                <Banner appVersion={appVersion} onClick={() => setProductDetailVisible(true)} />
+              </>
+            )}
+            {appVersion < 3 && (
+              <Banner appVersion={appVersion} onClick={() => setProductDetailVisible(true)} />
             )}
             <CategoryGrid appVersion={appVersion} onCategoryClick={handleCategoryClick} />
-            <Banner appVersion={appVersion} onClick={() => setProductDetailVisible(true)} />
             <VideoFeed 
               onFeedClick={(feedId) => {
                 setSelectedFeedId(feedId);

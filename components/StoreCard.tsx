@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ChevronRight, Grid3x3, Calculator } from 'lucide-react';
+import { ChevronRight, Grid3x3 } from 'lucide-react';
 import { MANAGEMENT_ACTIONS, RECENT_TASKS } from '../constants';
 import { getVersionStyles } from '../versionStyles';
 
@@ -15,26 +15,44 @@ const StoreCard: React.FC<StoreCardProps> = ({ appVersion = 4, onArrivalClick, o
   // 根据版本过滤和修改管理操作列表
   const displayActions = useMemo(() => {
     if (appVersion === 3) {
-      // 版本3：按照指定顺序排列
-      // 第一排：接车开单、工单列表、车辆管理、快捷收款
-      // 第二排：快速报价、客户管理、查报表、全部应用
+      // 版本3：
+      // 第一排：接车开单、工单列表、车辆管理、客户管理
+      // 第二排：快捷收款、维修手册、查报表、全部应用
       const actionMap = new Map(MANAGEMENT_ACTIONS.map(action => [action.id, action]));
       
       const orderedActions = [
-        actionMap.get('bill'),           // 接车开单
-        actionMap.get('workorders'),     // 工单列表
-        actionMap.get('vehicle_manage'), // 车辆管理
-        actionMap.get('fast_pay'),       // 快捷收款
-        { id: 'quick_quote', label: '快速报价', icon: Calculator, color: 'text-gray-900' }, // 快速报价
+        actionMap.get('bill'),            // 接车开单
+        actionMap.get('workorders'),      // 工单列表
+        actionMap.get('vehicle_manage'),  // 车辆管理
         actionMap.get('customer_manage'), // 客户管理
-        actionMap.get('reports'),        // 查报表
+        actionMap.get('fast_pay'),        // 快捷收款
+        actionMap.get('manual'),          // 维修手册
+        actionMap.get('reports'),         // 查报表
         { id: 'all_apps', label: '全部应用', icon: Grid3x3, color: 'text-gray-900' }, // 全部应用
       ];
       
       // 过滤掉可能的 undefined 值
       return orderedActions.filter((action): action is NonNullable<typeof action> => action !== undefined);
+    } else if (appVersion === 4) {
+      // 版本4：
+      // 第一排：接车开单、工单列表、车辆管理、客户管理
+      // 第二排：快捷收款、维修手册、做营销、全部应用
+      const actionMap = new Map(MANAGEMENT_ACTIONS.map(action => [action.id, action]));
+
+      const orderedActions = [
+        actionMap.get('bill'),            // 接车开单
+        actionMap.get('workorders'),      // 工单列表
+        actionMap.get('vehicle_manage'),  // 车辆管理
+        actionMap.get('customer_manage'), // 客户管理
+        actionMap.get('fast_pay'),        // 快捷收款
+        actionMap.get('manual'),          // 维修手册
+        actionMap.get('marketing'),       // 做营销
+        { id: 'all_apps', label: '全部应用', icon: Grid3x3, color: 'text-gray-900' }, // 全部应用（替代查报表）
+      ];
+
+      return orderedActions.filter((action): action is NonNullable<typeof action> => action !== undefined);
     }
-    // 版本4显示所有操作
+    // 其他版本直接使用默认配置
     return MANAGEMENT_ACTIONS;
   }, [appVersion]);
   
