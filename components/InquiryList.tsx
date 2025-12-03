@@ -2,7 +2,11 @@ import React from 'react';
 import { Search, Filter, FileText, ShoppingCart, CarFront } from 'lucide-react';
 import { INQUIRY_LIST_DATA } from '../constants';
 
-const InquiryList: React.FC = () => {
+interface InquiryListProps {
+  onCartClick?: () => void;
+}
+
+const InquiryList: React.FC<InquiryListProps> = ({ onCartClick }) => {
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
       {/* Header */}
@@ -72,7 +76,10 @@ const InquiryList: React.FC = () => {
             {/* Cart Button (Absolute) */}
             {item.showCart && (
                 <div className="absolute bottom-4 right-4">
-                    <button className="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm text-secondary hover:bg-gray-50">
+                    <button 
+                      onClick={onCartClick}
+                      className="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm text-secondary hover:bg-gray-50"
+                    >
                         <ShoppingCart className="w-4 h-4" />
                     </button>
                 </div>

@@ -20,6 +20,15 @@ import FourSPrice from './components/FourSPrice';
 import Maintenance from './components/Maintenance';
 import Catalog from './components/Catalog';
 import InventoryQuery from './components/InventoryQuery';
+import VINScan from './components/VINScan';
+import ServiceCollection from './components/ServiceCollection';
+import ProductDetail from './components/ProductDetail';
+import MaintenanceManual from './components/MaintenanceManual';
+import BusinessAnalysis from './components/BusinessAnalysis';
+import Marketing from './components/Marketing';
+import OrderDetail from './components/OrderDetail';
+import WorkOrderList from './components/WorkOrderList';
+import ShoppingCart from './components/ShoppingCart';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -35,6 +44,15 @@ const App: React.FC = () => {
   const [maintenanceVisible, setMaintenanceVisible] = useState(false);
   const [catalogVisible, setCatalogVisible] = useState(false);
   const [inventoryVisible, setInventoryVisible] = useState(false);
+  const [vinScanVisible, setVinScanVisible] = useState(false);
+  const [serviceCollectionVisible, setServiceCollectionVisible] = useState(false);
+  const [productDetailVisible, setProductDetailVisible] = useState(false);
+  const [maintenanceManualVisible, setMaintenanceManualVisible] = useState(false);
+  const [businessAnalysisVisible, setBusinessAnalysisVisible] = useState(false);
+  const [marketingVisible, setMarketingVisible] = useState(false);
+  const [orderDetailVisible, setOrderDetailVisible] = useState(false);
+  const [workOrderListVisible, setWorkOrderListVisible] = useState(false);
+  const [shoppingCartVisible, setShoppingCartVisible] = useState(false);
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
@@ -64,6 +82,15 @@ const App: React.FC = () => {
     setMaintenanceVisible(false);
     setCatalogVisible(false);
     setInventoryVisible(false);
+    setVinScanVisible(false);
+    setProductDetailVisible(false);
+    setServiceCollectionVisible(false);
+    setMaintenanceManualVisible(false);
+    setBusinessAnalysisVisible(false);
+    setMarketingVisible(false);
+    setOrderDetailVisible(false);
+    setWorkOrderListVisible(false);
+    setShoppingCartVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -104,11 +131,32 @@ const App: React.FC = () => {
       );
   }
 
+  if (orderDetailVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <OrderDetail 
+            onBack={() => {
+              setOrderDetailVisible(false);
+              setActiveTab('home');
+            }} 
+          />
+        </div>
+      </div>
+    );
+  }
+
   if (arrivalViewVisible) {
     return (
         <div className="min-h-screen bg-background flex justify-center">
           <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-            <ArrivalList onBack={() => setArrivalViewVisible(false)} />
+            <ArrivalList 
+              onBack={() => setArrivalViewVisible(false)} 
+              onCreateOrder={() => {
+                setArrivalViewVisible(false);
+                setVinScanVisible(true);
+              }}
+            />
           </div>
         </div>
       );
@@ -184,6 +232,93 @@ const App: React.FC = () => {
     );
   }
 
+  if (vinScanVisible) {
+    return (
+      <div className="min-h-screen bg-black flex justify-center">
+        <div className="w-full max-w-md min-h-screen relative overflow-hidden">
+          <VINScan 
+            onBack={() => setVinScanVisible(false)}
+            initialTab="vin"
+            onSkip={() => {
+              setVinScanVisible(false);
+              setOrderDetailVisible(true);
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  if (serviceCollectionVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (productDetailVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <ProductDetail onBack={() => setProductDetailVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (maintenanceManualVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (businessAnalysisVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (marketingVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <Marketing onBack={() => setMarketingVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (workOrderListVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (shoppingCartVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
   // AI Quote View (Main Tab)
   if (activeTab === 'ai_quote') {
       return (
@@ -204,7 +339,7 @@ const App: React.FC = () => {
             <Header
               onTopActionClick={(id) => {
                 if (id === 'price') {
-                  setFsPriceVisible(true);
+                  setBusinessAnalysisVisible(true);
                 } else if (id === 'maintain') {
                   setMaintenanceVisible(true);
                 } else if (id === 'catalog') {
@@ -213,6 +348,7 @@ const App: React.FC = () => {
                   setInventoryVisible(true);
                 }
               }}
+              onCartClick={() => setShoppingCartVisible(true)}
             />
             <StoreCard
               onArrivalClick={() => setArrivalViewVisible(true)}
@@ -223,10 +359,22 @@ const App: React.FC = () => {
                 } else if (id === 'vehicle_manage') {
                   setCustomerVehicleTab('vehicle');
                   setCustomerVehicleVisible(true);
+                } else if (id === 'bill') {
+                  setVinScanVisible(true);
+                } else if (id === 'workorders') {
+                  setWorkOrderListVisible(true);
+                } else if (id === 'fast_pay') {
+                  setServiceCollectionVisible(true);
+                } else if (id === 'manual') {
+                  setMaintenanceManualVisible(true);
+                } else if (id === 'reports') {
+                  setBusinessAnalysisVisible(true);
+                } else if (id === 'marketing') {
+                  setMarketingVisible(true);
                 }
               }}
             />
-            <Banner />
+            <Banner onClick={() => setProductDetailVisible(true)} />
             <CategoryGrid onCategoryClick={handleCategoryClick} />
             <VideoFeed />
           </div>
@@ -237,7 +385,7 @@ const App: React.FC = () => {
         )}
         
         {activeTab === 'inquiry' && (
-           <InquiryList />
+           <InquiryList onCartClick={() => setShoppingCartVisible(true)} />
         )}
 
         {activeTab === 'profile' && (

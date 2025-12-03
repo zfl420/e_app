@@ -6,7 +6,7 @@ import {
   Wallet, Truck, Gift, MessageSquareText, RotateCcw,
   UserCog, Wrench, Clock, Users, Bot, Sparkles
 } from 'lucide-react';
-import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem, ProductItem, CustomerItem, VehicleItem } from './types';
+import { MenuItem, TaskItem, NavItem, VideoItem, ChatThread, Contact, ChatMessage, InquiryItem, ArrivalItem, ProductItem, CustomerItem, VehicleItem, WorkOrderItem } from './types';
 
 export const TOP_ACTIONS: MenuItem[] = [
   { id: 'price', label: '查4S价', icon: Store },
@@ -554,5 +554,72 @@ export const VEHICLE_LIST_DATA: VehicleItem[] = [
     phone: '18888888888',
     model: '特斯拉 Model 3 电动 2023 焕新版 后轮驱动',
     brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg',
+  },
+];
+
+// --- Work Order List Data ---
+
+export const WORK_ORDER_LIST_DATA: WorkOrderItem[] = [
+  {
+    id: 'wo1',
+    brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
+    plate: '川G7WJH82',
+    customerName: '测试交石',
+    price: '350',
+    orderStatus: 'billed',
+    vehicleInfo: '2011款 华晨宝马 华晨宝马5系 三厢 2.5L 手...',
+    receptionTime: '2025-12-03 09:19',
+    receptionStaff: '刘创',
+    projects: [
+      { id: 'p1', name: '1.250H保养', technician: '刘创', status: 'not_started' }
+    ],
+    expandable: true,
+  },
+  {
+    id: 'wo2',
+    brandLogo: '',
+    plate: '津FMF123',
+    customerName: '客服小傅测试',
+    price: '0',
+    orderStatus: 'cancelled',
+    vehicleInfo: '无车型信息',
+    receptionTime: '2025-12-03 06:27',
+    receptionStaff: '刘创',
+    projects: [
+      { id: 'p2', name: '1.更换左下球头', status: 'not_started' }
+    ],
+  },
+  {
+    id: 'wo3',
+    brandLogo: '',
+    plate: '云A98392',
+    customerName: '西西',
+    price: '310',
+    orderStatus: 'billed',
+    vehicleInfo: '圣路 圣路运钞车 2.8L 129马力 厢式专用车...',
+    receptionTime: '2025-12-03 06:26',
+    receptionStaff: '刘创',
+    projects: [
+      { id: 'p3', name: '1.更换刹车片', status: 'not_started' },
+      { id: 'p4', name: '2.更换空气滤芯', status: 'not_started' },
+      { id: 'p5', name: '3.线路检查及维修', status: 'not_started' }
+    ],
+    expandable: true,
+  },
+  {
+    id: 'wo4',
+    brandLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/1200px-BMW.svg.png',
+    plate: 'HD7',
+    customerName: '吴总Jdhxbx',
+    price: '1,182',
+    orderStatus: 'paid',
+    vehicleInfo: '宝马525Li 2017 2.0T 手自一体 豪华设计...',
+    receptionTime: '2025-12-02 14:30',
+    receptionStaff: '李师傅',
+    projects: [
+      { id: 'p6', name: '1.机油更换', technician: '李师傅', status: 'completed' },
+      { id: 'p7', name: '2.空滤更换', technician: '李师傅', status: 'completed' }
+    ],
+    expandable: true,
   },
 ];

@@ -4,9 +4,10 @@ import { ARRIVAL_LIST_DATA } from '../constants';
 
 interface ArrivalListProps {
   onBack: () => void;
+  onCreateOrder?: () => void;
 }
 
-const ArrivalList: React.FC<ArrivalListProps> = ({ onBack }) => {
+const ArrivalList: React.FC<ArrivalListProps> = ({ onBack, onCreateOrder }) => {
   const [activeTab, setActiveTab] = useState('pending');
 
   return (
@@ -147,7 +148,10 @@ const ArrivalList: React.FC<ArrivalListProps> = ({ onBack }) => {
 
       {/* Bottom Button */}
       <div className="bg-white border-t border-gray-100 p-4 sticky bottom-0 z-20 pb-safe">
-        <button className="w-full bg-secondary text-white py-3 rounded-xl font-bold text-lg shadow-lg shadow-red-100 active:scale-[0.99] transition-transform">
+        <button 
+          onClick={onCreateOrder}
+          className="w-full bg-secondary text-white py-3 rounded-xl font-bold text-lg shadow-lg shadow-red-100 active:scale-[0.99] transition-transform"
+        >
             接车开单
         </button>
       </div>

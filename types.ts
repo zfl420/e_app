@@ -119,3 +119,44 @@ export interface VehicleItem {
   model: string;
   brandLogo?: string;
 }
+
+export interface WorkOrderProject {
+  id: string;
+  name: string;
+  technician?: string;
+  status: 'not_started' | 'in_progress' | 'completed';
+}
+
+export interface WorkOrderItem {
+  id: string;
+  brandLogo: string;
+  plate: string;
+  customerName: string;
+  price: string;
+  orderStatus: 'billed' | 'cancelled' | 'paid' | 'pending';
+  vehicleInfo: string;
+  receptionTime: string;
+  receptionStaff: string;
+  projects: WorkOrderProject[];
+  accessories?: { name: string; quantity: number; price: string }[];
+  expandable?: boolean;
+}
+
+export interface CartItem {
+  id: string;
+  storeName: string;
+  storeLocation: string;
+  cutOffTimes: string[];
+  productId: string;
+  productName: string;
+  productImage: string;
+  brandPartNumber: string;
+  originalPartNumber: string;
+  brandPart: string;
+  location: string;
+  price: number;
+  quantity: number;
+  selected: boolean;
+  returnPolicy?: string;
+  guarantees?: string[];
+}

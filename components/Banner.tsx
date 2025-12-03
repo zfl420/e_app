@@ -1,8 +1,15 @@
 import React from 'react';
 
-const Banner: React.FC = () => {
+interface BannerProps {
+  onClick?: () => void;
+}
+
+const Banner: React.FC<BannerProps> = ({ onClick }) => {
   return (
-    <div className="mx-4 mb-6 rounded-2xl overflow-hidden shadow-lg relative group h-32 cursor-pointer">
+    <div 
+      className="mx-4 mb-6 rounded-2xl overflow-hidden shadow-lg relative group h-32 cursor-pointer"
+      onClick={onClick}
+    >
       <img 
         src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=800&q=80" 
         alt="Banner" 
