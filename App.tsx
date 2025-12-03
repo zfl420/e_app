@@ -659,7 +659,10 @@ const App: React.FC = () => {
         )}
         
         {activeTab === 'inquiry' && appVersion >= 2 && (
-           <InquiryList onCartClick={() => setShoppingCartVisible(true)} />
+           <InquiryList 
+             onCartClick={() => setShoppingCartVisible(true)} 
+             onAddInquiry={() => setActiveTab('ai_quote')}
+           />
         )}
 
         {activeTab === 'profile' && (
