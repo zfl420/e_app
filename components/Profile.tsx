@@ -4,12 +4,13 @@ import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
 import StatusBar from './StatusBar';
 
 interface ProfileProps {
+  appVersion?: number;
   onSettingsClick: () => void;
   onMenuClick?: (menuId: string) => void;
   onOrderClick?: (orderType: 'all' | 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund') => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ onSettingsClick, onMenuClick, onOrderClick }) => {
+const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick }) => {
   const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
 
   return (
@@ -80,7 +81,8 @@ const Profile: React.FC<ProfileProps> = ({ onSettingsClick, onMenuClick, onOrder
             </div>
         </div>
 
-        {/* Store Management */}
+        {/* Store Management - 只在版本4显示 */}
+        {appVersion >= 4 && (
         <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="mb-5">
                 <h2 className="font-bold text-gray-800 text-base">门店管理</h2>
@@ -100,6 +102,7 @@ const Profile: React.FC<ProfileProps> = ({ onSettingsClick, onMenuClick, onOrder
                 ))}
             </div>
         </div>
+        )}
 
         {/* Stats */}
         <div className="bg-white rounded-xl p-4 shadow-sm">

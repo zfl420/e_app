@@ -40,6 +40,7 @@ import MyOrders from './components/MyOrders';
 import { OrderTab } from './components/MyOrders';
 
 const App: React.FC = () => {
+  const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
   const [activeTab, setActiveTab] = useState<string>('home');
   const [partsViewVisible, setPartsViewVisible] = useState(false);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
@@ -88,6 +89,10 @@ const App: React.FC = () => {
   };
 
   const handleTabChange = (id: string) => {
+    // 版本1不允许切换到chat或inquiry标签页
+    if (appVersion === 1 && (id === 'chat' || id === 'inquiry')) {
+      return;
+    }
     setActiveTab(id);
     // Reset secondary views when switching tabs
     setPartsViewVisible(false);
@@ -126,18 +131,38 @@ const App: React.FC = () => {
   };
 
   // Left Side Buttons Component
-  const LeftSideButtons = () => (
-    <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
-      {[1, 2, 3, 4].map((num) => (
-        <button
-          key={num}
-          className="w-10 h-10 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center text-gray-700 font-semibold text-sm hover:bg-gray-50 active:scale-95 transition-all"
-        >
-          {num}
-        </button>
-      ))}
-    </div>
-  );
+  const LeftSideButtons = () => {
+    const buttonColors = [
+      'bg-gray-100', // 按钮1 - 最浅
+      'bg-gray-200', // 按钮2
+      'bg-gray-300', // 按钮3
+      'bg-gray-400', // 按钮4 - 最深
+    ];
+    
+    const handleVersionChange = (version: number) => {
+      setAppVersion(version);
+      // 如果切换到版本1，且当前在chat或inquiry标签页，则跳转到home
+      if (version === 1 && (activeTab === 'chat' || activeTab === 'inquiry')) {
+        setActiveTab('home');
+      }
+    };
+    
+    return (
+      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+        {[1, 2, 3, 4].map((num) => (
+          <button
+            key={num}
+            onClick={() => handleVersionChange(num)}
+            className={`w-10 h-10 ${buttonColors[num - 1]} rounded-xl shadow-lg border-2 ${
+              appVersion === num ? 'border-secondary' : 'border-gray-200'
+            } flex items-center justify-center text-gray-700 font-semibold text-sm hover:opacity-80 active:scale-95 transition-all`}
+          >
+            {num}
+          </button>
+        ))}
+      </div>
+    );
+  };
 
   // Render Full Screen Overlays
   if (partsViewVisible) {
@@ -516,6 +541,7 @@ const App: React.FC = () => {
         {activeTab === 'home' && (
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <Header
+              appVersion={appVersion}
               onTopActionClick={(id) => {
                 if (id === 'price') {
                   setBusinessAnalysisVisible(true);
@@ -529,30 +555,32 @@ const App: React.FC = () => {
               }}
               onCartClick={() => setShoppingCartVisible(true)}
             />
-            <StoreCard
-              onArrivalClick={() => setArrivalViewVisible(true)}
-              onManagementClick={(id) => {
-                if (id === 'customer_manage') {
-                  setCustomerVehicleTab('customer');
-                  setCustomerVehicleVisible(true);
-                } else if (id === 'vehicle_manage') {
-                  setCustomerVehicleTab('vehicle');
-                  setCustomerVehicleVisible(true);
-                } else if (id === 'bill') {
-                  setVinScanVisible(true);
-                } else if (id === 'workorders') {
-                  setWorkOrderListVisible(true);
-                } else if (id === 'fast_pay') {
-                  setServiceCollectionVisible(true);
-                } else if (id === 'manual') {
-                  setMaintenanceManualVisible(true);
-                } else if (id === 'reports') {
-                  setBusinessAnalysisVisible(true);
-                } else if (id === 'marketing') {
-                  setMarketingVisible(true);
-                }
-              }}
-            />
+            {appVersion >= 4 && (
+              <StoreCard
+                onArrivalClick={() => setArrivalViewVisible(true)}
+                onManagementClick={(id) => {
+                  if (id === 'customer_manage') {
+                    setCustomerVehicleTab('customer');
+                    setCustomerVehicleVisible(true);
+                  } else if (id === 'vehicle_manage') {
+                    setCustomerVehicleTab('vehicle');
+                    setCustomerVehicleVisible(true);
+                  } else if (id === 'bill') {
+                    setVinScanVisible(true);
+                  } else if (id === 'workorders') {
+                    setWorkOrderListVisible(true);
+                  } else if (id === 'fast_pay') {
+                    setServiceCollectionVisible(true);
+                  } else if (id === 'manual') {
+                    setMaintenanceManualVisible(true);
+                  } else if (id === 'reports') {
+                    setBusinessAnalysisVisible(true);
+                  } else if (id === 'marketing') {
+                    setMarketingVisible(true);
+                  }
+                }}
+              />
+            )}
             <Banner onClick={() => setProductDetailVisible(true)} />
             <CategoryGrid onCategoryClick={handleCategoryClick} />
             <VideoFeed 
@@ -564,16 +592,17 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'chat' && (
+        {activeTab === 'chat' && appVersion >= 4 && (
            <ChatList onChatClick={handleChatClick} />
         )}
         
-        {activeTab === 'inquiry' && (
+        {activeTab === 'inquiry' && appVersion >= 4 && (
            <InquiryList onCartClick={() => setShoppingCartVisible(true)} />
         )}
 
         {activeTab === 'profile' && (
            <Profile 
+             appVersion={appVersion}
              onSettingsClick={() => setSettingsViewVisible(true)}
              onOrderClick={(orderType) => {
                setMyOrdersTab(orderType);
@@ -582,7 +611,7 @@ const App: React.FC = () => {
            />
         )}
 
-        <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
+        <BottomNav appVersion={appVersion} activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       </div>
     </>

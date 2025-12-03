@@ -2,15 +2,25 @@ import React from 'react';
 import { NAV_ITEMS } from '../constants';
 
 interface BottomNavProps {
+  appVersion?: number;
   activeTab?: string;
   onTabChange?: (id: string) => void;
 }
 
-const BottomNav: React.FC<BottomNavProps> = ({ activeTab = 'home', onTabChange }) => {
+const BottomNav: React.FC<BottomNavProps> = ({ appVersion = 4, activeTab = 'home', onTabChange }) => {
+  // 根据版本过滤导航项
+  const filteredNavItems = NAV_ITEMS.filter((item) => {
+    // 版本1不显示沟通和询价单
+    if (appVersion === 1) {
+      return item.id !== 'chat' && item.id !== 'inquiry';
+    }
+    return true;
+  });
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe pt-2 px-6 z-50 max-w-md mx-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
       <div className="flex justify-between items-end h-16 pb-2">
-        {NAV_ITEMS.map((item) => {
+        {filteredNavItems.map((item) => {
           if (item.isPrimary) {
             return (
               <div key={item.id} className="relative -top-5 group cursor-pointer" onClick={() => onTabChange && onTabChange(item.id)}>

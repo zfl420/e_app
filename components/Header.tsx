@@ -4,11 +4,12 @@ import { TOP_ACTIONS } from '../constants';
 import StatusBar from './StatusBar';
 
 interface HeaderProps {
+  appVersion?: number;
   onTopActionClick?: (id: string) => void;
   onCartClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onTopActionClick, onCartClick }) => {
+const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCartClick }) => {
   return (
     <div className="bg-primary pb-24 px-4 rounded-b-[2.5rem] shadow-md relative z-0">
       {/* Status Bar */}
@@ -30,7 +31,8 @@ const Header: React.FC<HeaderProps> = ({ onTopActionClick, onCartClick }) => {
         </button>
       </div>
 
-      {/* Top Actions Grid */}
+      {/* Top Actions Grid - 只在版本4显示 */}
+      {appVersion >= 4 && (
       <div className="grid grid-cols-4 gap-2">
         {TOP_ACTIONS.map((action) => (
           <button
@@ -45,6 +47,7 @@ const Header: React.FC<HeaderProps> = ({ onTopActionClick, onCartClick }) => {
           </button>
         ))}
       </div>
+      )}
     </div>
   );
 };
