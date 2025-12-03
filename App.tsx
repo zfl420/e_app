@@ -18,6 +18,8 @@ import { CATEGORIES } from './constants';
 import CustomerVehicle from './components/CustomerVehicle';
 import FourSPrice from './components/FourSPrice';
 import Maintenance from './components/Maintenance';
+import Catalog from './components/Catalog';
+import InventoryQuery from './components/InventoryQuery';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -31,6 +33,8 @@ const App: React.FC = () => {
   const [customerVehicleTab, setCustomerVehicleTab] = useState<'customer' | 'vehicle'>('customer');
   const [fsPriceVisible, setFsPriceVisible] = useState(false);
   const [maintenanceVisible, setMaintenanceVisible] = useState(false);
+  const [catalogVisible, setCatalogVisible] = useState(false);
+  const [inventoryVisible, setInventoryVisible] = useState(false);
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
@@ -58,6 +62,8 @@ const App: React.FC = () => {
     setCustomerVehicleVisible(false);
     setFsPriceVisible(false);
     setMaintenanceVisible(false);
+    setCatalogVisible(false);
+    setInventoryVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -158,6 +164,26 @@ const App: React.FC = () => {
     );
   }
 
+  if (catalogVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <Catalog onBack={() => setCatalogVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
+  if (inventoryVisible) {
+    return (
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+          <InventoryQuery onBack={() => setInventoryVisible(false)} />
+        </div>
+      </div>
+    );
+  }
+
   // AI Quote View (Main Tab)
   if (activeTab === 'ai_quote') {
       return (
@@ -181,7 +207,11 @@ const App: React.FC = () => {
                   setFsPriceVisible(true);
                 } else if (id === 'maintain') {
                   setMaintenanceVisible(true);
-                } 
+                } else if (id === 'catalog') {
+                  setCatalogVisible(true);
+                } else if (id === 'inventory') {
+                  setInventoryVisible(true);
+                }
               }}
             />
             <StoreCard

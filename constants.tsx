@@ -17,12 +17,12 @@ export const TOP_ACTIONS: MenuItem[] = [
 
 export const MANAGEMENT_ACTIONS: MenuItem[] = [
   { id: 'bill', label: '接车开单', icon: FileSignature, color: 'text-gray-900' },
-  { id: 'vehicle_manage', label: '车辆管理', icon: Car, color: 'text-gray-900' },
   { id: 'workorders', label: '工单列表', icon: ClipboardList, color: 'text-gray-900' },
+  { id: 'vehicle_manage', label: '车辆管理', icon: Car, color: 'text-gray-900' },
+  { id: 'customer_manage', label: '客户管理', icon: Users, color: 'text-gray-900' },
   { id: 'fast_pay', label: '快捷收款', icon: CircleDollarSign, color: 'text-gray-900' },
   { id: 'manual', label: '维修手册', icon: Wrench, color: 'text-gray-900' },
   { id: 'reports', label: '查报表', icon: FileText, color: 'text-gray-900' },
-  { id: 'customer_manage', label: '客户管理', icon: Users, color: 'text-gray-900' },
   { id: 'marketing', label: '做营销', icon: Share2, color: 'text-gray-900' },
 ];
 
