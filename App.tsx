@@ -598,7 +598,7 @@ const App: React.FC = () => {
                   return;
                 }
                 if (id === 'price') {
-                  setBusinessAnalysisVisible(true);
+                  setFsPriceVisible(true);
                 } else if (id === 'maintain') {
                   setMaintenanceVisible(true);
                 } else if (id === 'catalog') {
