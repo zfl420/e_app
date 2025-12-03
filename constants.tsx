@@ -16,14 +16,15 @@ export const TOP_ACTIONS: MenuItem[] = [
 ];
 
 export const MANAGEMENT_ACTIONS: MenuItem[] = [
-  { id: 'bill', label: '接车开单', icon: FileSignature, color: 'text-gray-900' },
-  { id: 'workorders', label: '工单列表', icon: ClipboardList, color: 'text-gray-900' },
-  { id: 'vehicle_manage', label: '车辆管理', icon: Car, color: 'text-gray-900' },
-  { id: 'customer_manage', label: '客户管理', icon: Users, color: 'text-gray-900' },
-  { id: 'fast_pay', label: '快捷收款', icon: CircleDollarSign, color: 'text-gray-900' },
-  { id: 'manual', label: '维修手册', icon: Wrench, color: 'text-gray-900' },
-  { id: 'reports', label: '查报表', icon: FileText, color: 'text-gray-900' },
-  { id: 'marketing', label: '做营销', icon: Share2, color: 'text-gray-900' },
+  // 使用品牌色，让门店管理区块的图标更“彩色”更醒目
+  { id: 'bill', label: '接车开单', icon: FileSignature, color: 'text-red-500' },
+  { id: 'workorders', label: '工单列表', icon: ClipboardList, color: 'text-blue-500' },
+  { id: 'vehicle_manage', label: '车辆管理', icon: Car, color: 'text-emerald-500' },
+  { id: 'customer_manage', label: '客户管理', icon: Users, color: 'text-orange-500' },
+  { id: 'fast_pay', label: '快捷收款', icon: CircleDollarSign, color: 'text-amber-500' },
+  { id: 'manual', label: '维修手册', icon: Wrench, color: 'text-purple-500' },
+  { id: 'reports', label: '查报表', icon: FileText, color: 'text-cyan-500' },
+  { id: 'marketing', label: '做营销', icon: Share2, color: 'text-pink-500' },
 ];
 
 export const RECENT_TASKS: TaskItem[] = [
@@ -657,11 +658,101 @@ export const BRAKE_DISC_PRODUCTS: ProductItem[] = [
   },
 ];
 
+export const CHASSIS_PRODUCTS: ProductItem[] = [
+  {
+    id: 'ch1',
+    title: '开思严选 控制臂总成 前下臂 大众 速腾/高尔夫7 专用 加强型原位升级',
+    image: 'https://images.unsplash.com/photo-1519955964864-1c1fdfbb4a09?w=300&h=300&fit=crop&q=80',
+    tags: ['控制臂', '加强型', '适配多车型'],
+    price: '268.00',
+    priceNoTax: '237.17',
+    promo: '热销',
+    volume: '1支',
+    sold: '月销 312',
+    shop: '开思底盘件旗舰店',
+    location: '华东仓',
+  },
+  {
+    id: 'ch2',
+    title: 'TRW 悬挂球头 前下臂球头 雅阁/思域 专用 原厂品质',
+    image: 'https://images.unsplash.com/photo-1511726267273-5fc3b46a8a01?w=300&h=300&fit=crop&q=80',
+    tags: ['悬挂球头', 'TRW', '原厂品质'],
+    price: '168.00',
+    priceNoTax: '148.67',
+    promo: '',
+    volume: '1只',
+    sold: '月销 159',
+    shop: 'TRW官方旗舰店',
+    location: '华南仓',
+  },
+];
+
+export const FILTER_PRODUCTS: ProductItem[] = [
+  {
+    id: 'f1',
+    title: '曼牌 机油滤清器 适配宝马3系/5系 专用 HU816X 全合成机油专用',
+    image: 'https://images.unsplash.com/photo-1589935447067-5531195b44c0?w=300&h=300&fit=crop&q=80',
+    tags: ['机油滤清器', '曼牌', '原厂配套'],
+    price: '88.00',
+    priceNoTax: '77.88',
+    promo: '',
+    volume: '1个',
+    sold: '月销 2,018',
+    shop: '曼牌滤清器京东自营旗舰店',
+    location: '全国多仓',
+  },
+  {
+    id: 'f2',
+    title: '博世 空气滤清器 大众朗逸/帕萨特 专用 高效过滤',
+    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=300&h=300&fit=crop&q=80',
+    tags: ['空气滤清器', '博世', '高效过滤'],
+    price: '69.00',
+    priceNoTax: '61.06',
+    promo: '活动',
+    volume: '1个',
+    sold: '月销 1,325',
+    shop: '博世汽车配件旗舰店',
+    location: '华东仓',
+  },
+];
+
+export const SENSOR_PRODUCTS: ProductItem[] = [
+  {
+    id: 's1',
+    title: '原厂款 胎压传感器 433MHz 本田思域/雅阁 专用 一件代发 支持编程匹配',
+    image: 'https://images.unsplash.com/photo-1483721310020-03333e577078?w=300&h=300&fit=crop&q=80',
+    tags: ['胎压传感器', '433MHz', '本田专用'],
+    price: '158.00',
+    priceNoTax: '139.82',
+    promo: '',
+    volume: '1只',
+    sold: '月销 489',
+    shop: '开思电子电器专营店',
+    location: '华南仓',
+  },
+  {
+    id: 's2',
+    title: '通用型 胎压监测外置气嘴套装 适配多车型 无需拆胎 即装即用',
+    image: 'https://images.unsplash.com/photo-1542282088-72c9c27ed0cd?w=300&h=300&fit=crop&q=80',
+    tags: ['通用胎压', '外置', '即装即用'],
+    price: '198.00',
+    priceNoTax: '175.22',
+    promo: '秒杀',
+    volume: '1套',
+    sold: '月销 732',
+    shop: '开思严选旗舰店',
+    location: '全国多仓',
+  },
+];
+
 export const CATEGORY_PRODUCT_MAP: Record<string, ProductItem[]> = {
   oil: OIL_PRODUCTS,
   battery: BATTERY_PRODUCTS,
   brake_pad: BRAKE_PAD_PRODUCTS,
   brake_disc: BRAKE_DISC_PRODUCTS,
+   chassis: CHASSIS_PRODUCTS,
+   filter: FILTER_PRODUCTS,
+   sensor: SENSOR_PRODUCTS,
 };
 
 // --- Customer & Vehicle List Data ---

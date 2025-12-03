@@ -4,9 +4,13 @@ import { SIDEBAR_CATEGORIES, CATEGORY_SECTIONS } from '../constants';
 
 interface PartsListProps {
   onBack: () => void;
+  /**
+   * 点击右侧任一配件小类时触发，方便跳转到商品列表页
+   */
+  onSubcategoryClick?: (parentCategory: string, subcategoryName: string) => void;
 }
 
-const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
+const PartsList: React.FC<PartsListProps> = ({ onBack, onSubcategoryClick }) => {
   const [activeCategory, setActiveCategory] = useState(SIDEBAR_CATEGORIES[0]);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -143,7 +147,11 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
                 {/* Categories Grid - Updated to Box Style with Text Icon */}
                 <div className="grid grid-cols-3 gap-y-6 gap-x-4 mb-8">
                   {data.subcategories.map((sub, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer group">
+                    <div
+                      key={idx}
+                      className="flex flex-col items-center gap-2 cursor-pointer group"
+                      onClick={() => onSubcategoryClick?.(category, sub.name)}
+                    >
                       <div className="w-full aspect-square bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center relative overflow-hidden group-hover:bg-white group-hover:border-primary/30 group-hover:shadow-sm transition-all duration-300">
                          {/* Replaced Image with Text Block */}
                          <span className="text-sm font-bold text-slate-400 group-hover:text-primary transition-colors">

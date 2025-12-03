@@ -22,6 +22,7 @@ import Catalog from './components/Catalog';
 import InventoryQuery from './components/InventoryQuery';
 import VINScan from './components/VINScan';
 import ServiceCollection from './components/ServiceCollection';
+import QuickQuoteProjects from './components/QuickQuoteProjects';
 import ProductDetail from './components/ProductDetail';
 import MaintenanceManual from './components/MaintenanceManual';
 import BusinessAnalysis from './components/BusinessAnalysis';
@@ -40,6 +41,8 @@ import MyOrders from './components/MyOrders';
 import { OrderTab } from './components/MyOrders';
 import { getVersionStyles } from './versionStyles';
 import AllApps from './components/AllApps';
+import JoinForm from './components/JoinForm';
+import FeedbackForm from './components/FeedbackForm';
 
 const App: React.FC = () => {
   const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
@@ -76,6 +79,10 @@ const App: React.FC = () => {
   const [purchaseOrderDetailVisible, setPurchaseOrderDetailVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [allAppsVisible, setAllAppsVisible] = useState(false);
+  const [quickQuoteProjectsVisible, setQuickQuoteProjectsVisible] = useState(false);
+  const [vinScanMode, setVinScanMode] = useState<'order' | 'quick_quote'>('order');
+  const [joinFormVisible, setJoinFormVisible] = useState(false);
+  const [feedbackVisible, setFeedbackVisible] = useState(false);
 
   // 获取当前版本的样式配置
   const versionStyles = getVersionStyles(appVersion);
@@ -132,6 +139,9 @@ const App: React.FC = () => {
     setPurchaseOrderDetailVisible(false);
     setSelectedOrderId(null);
     setAllAppsVisible(false);
+    setQuickQuoteProjectsVisible(false);
+    setJoinFormVisible(false);
+    setFeedbackVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -182,6 +192,8 @@ const App: React.FC = () => {
       setMyOrdersVisible(false);
       setPurchaseOrderDetailVisible(false);
       setSelectedOrderId(null);
+      setJoinFormVisible(false);
+      setFeedbackVisible(false);
     };
     
     return (
@@ -208,7 +220,24 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <PartsList onBack={() => setPartsViewVisible(false)} />
+            <PartsList 
+              onBack={() => setPartsViewVisible(false)} 
+              onSubcategoryClick={(parentCategory, subcategoryName) => {
+                // 根据大类简单映射到已有的商品数据分类，其他大类统一用汽机油数据做占位
+                let targetCategoryId: string = 'oil';
+                if (parentCategory === '供电系统') {
+                  targetCategoryId = 'battery';
+                } else if (parentCategory === '制动系统') {
+                  targetCategoryId = 'brake_pad';
+                } else if (parentCategory === '车轮系统') {
+                  targetCategoryId = 'brake_disc';
+                }
+
+                setPartsViewVisible(false);
+                setProductCategory({ id: targetCategoryId, label: subcategoryName });
+                setProductListVisible(true);
+              }}
+            />
           </div>
         </div>
       </>
@@ -272,6 +301,7 @@ const App: React.FC = () => {
               onBack={() => setArrivalViewVisible(false)} 
               onCreateOrder={() => {
                 setArrivalViewVisible(false);
+                setVinScanMode('order');
                 setVinScanVisible(true);
               }}
             />
@@ -328,7 +358,17 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <FourSPrice onBack={() => setFsPriceVisible(false)} />
+            <FourSPrice
+              onBack={() => setFsPriceVisible(false)}
+              onInquiryClick={() => {
+                setFsPriceVisible(false);
+                setActiveTab('ai_quote');
+              }}
+              onCreateOrderClick={() => {
+                setFsPriceVisible(false);
+                setOrderDetailVisible(true);
+              }}
+            />
           </div>
         </div>
       </>
@@ -391,7 +431,15 @@ const App: React.FC = () => {
               initialTab="vin"
               onSkip={() => {
                 setVinScanVisible(false);
-                setOrderDetailVisible(true);
+                if (vinScanMode === 'order') {
+                  setOrderDetailVisible(true);
+                } else if (vinScanMode === 'quick_quote') {
+                  setQuickQuoteProjectsVisible(true);
+                }
+              }}
+              onMockScan={() => {
+                setVinScanVisible(false);
+                setQuickQuoteProjectsVisible(true);
               }}
             />
           </div>
@@ -542,6 +590,50 @@ const App: React.FC = () => {
     );
   }
 
+  if (quickQuoteProjectsVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <QuickQuoteProjects
+              onBack={() => {
+                setQuickQuoteProjectsVisible(false);
+                setVinScanVisible(true);
+              }}
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (joinFormVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <JoinForm onBack={() => setJoinFormVisible(false)} />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (feedbackVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <FeedbackForm onBack={() => setFeedbackVisible(false)} />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   if (myOrdersVisible) {
     return (
       <>
@@ -594,7 +686,9 @@ const App: React.FC = () => {
               appVersion={appVersion}
               onTopActionClick={(id) => {
                 if (id === 'quick_quote') {
-                  setActiveTab('ai_quote');
+                  // 版本3、4快速报价：先进入VIN扫码页（图1）
+                  setVinScanMode('quick_quote');
+                  setVinScanVisible(true);
                   return;
                 }
                 if (id === 'price') {
@@ -622,6 +716,7 @@ const App: React.FC = () => {
                       setCustomerVehicleTab('vehicle');
                       setCustomerVehicleVisible(true);
                     } else if (id === 'bill') {
+                      setVinScanMode('order');
                       setVinScanVisible(true);
                     } else if (id === 'workorders') {
                       setWorkOrderListVisible(true);
@@ -673,6 +768,8 @@ const App: React.FC = () => {
                setMyOrdersTab(orderType);
                setMyOrdersVisible(true);
              }}
+             onJoinClick={() => setJoinFormVisible(true)}
+             onFeedbackClick={() => setFeedbackVisible(true)}
            />
         )}
 

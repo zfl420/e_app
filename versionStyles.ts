@@ -68,7 +68,7 @@ export const version1Styles: VersionStyles = {
     container: 'mx-4 mb-4 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
   },
   storeCard: {
-    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4',
+    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4',
   },
 };
 
@@ -105,7 +105,7 @@ export const version2Styles: VersionStyles = {
     container: 'mx-4 mb-3 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
   },
   storeCard: {
-    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4',
+    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4',
   },
 };
 
@@ -142,7 +142,7 @@ export const version3Styles: VersionStyles = {
     container: 'mx-4 mb-6 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
   },
   storeCard: {
-    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4',
+    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4',
   },
 };
 
@@ -179,7 +179,7 @@ export const version4Styles: VersionStyles = {
     container: 'mx-4 mb-6 bg-white rounded-2xl p-6 shadow-sm border border-gray-100',
   },
   storeCard: {
-    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-xl border border-gray-100 p-4 mb-4',
+    container: 'mx-4 -mt-16 relative z-10 bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4',
   },
 };
 

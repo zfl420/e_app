@@ -81,9 +81,11 @@ type Step = 'vin_list' | 'vin_detail';
 
 interface FourSPriceProps {
   onBack: () => void;
+  onInquiryClick?: () => void;
+  onCreateOrderClick?: () => void;
 }
 
-const FourSPrice: React.FC<FourSPriceProps> = ({ onBack }) => {
+const FourSPrice: React.FC<FourSPriceProps> = ({ onBack, onInquiryClick, onCreateOrderClick }) => {
   const [step, setStep] = useState<Step>('vin_list');
   const [selectedVin, setSelectedVin] = useState<VinHistoryItem | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -121,8 +123,9 @@ const FourSPrice: React.FC<FourSPriceProps> = ({ onBack }) => {
         >
           <ArrowLeft className="w-5 h-5 text-gray-800" />
         </button>
-        <div className="text-base font-semibold text-gray-900">查4S价</div>
-        <button className="text-xs text-gray-500">纠错</button>
+        <div className="flex-1 text-center text-base font-semibold text-gray-900 mr-7">
+          查4S价
+        </div>
       </div>
 
       {/* Content */}
@@ -148,11 +151,11 @@ const FourSPrice: React.FC<FourSPriceProps> = ({ onBack }) => {
                     onClick={() => handleVinClick(item)}
                     className="min-w-[240px] bg-gray-50 rounded-xl px-3 py-3 flex items-center gap-3 border border-gray-100 active:bg-gray-100"
                   >
-                    <img
-                      src={item.brandLogo}
-                      alt="brand"
-                      className="w-8 h-8 rounded-full bg-white object-contain border border-gray-100"
-                    />
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center border border-gray-100">
+                      <span className="text-[11px] text-gray-700 font-medium">
+                        {item.title.slice(0, 2)}
+                      </span>
+                    </div>
                     <div className="flex-1 text-left">
                       <div className="text-[11px] text-gray-500 font-mono">
                         {item.vin}
@@ -183,11 +186,11 @@ const FourSPrice: React.FC<FourSPriceProps> = ({ onBack }) => {
           <>
             {/* Vehicle Card */}
             <div className="mx-4 mt-4 bg-white rounded-2xl p-4 shadow-sm flex gap-3">
-              <img
-                src={selectedVin.brandLogo}
-                alt="logo"
-                className="w-10 h-10 rounded-full bg-gray-50 object-contain border border-gray-100"
-              />
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center border border-gray-100">
+                <span className="text-xs text-gray-800 font-semibold">
+                  {selectedVin.title.slice(0, 2)}
+                </span>
+              </div>
               <div className="flex-1">
                 <div className="text-[11px] text-gray-500 font-mono mb-0.5">
                   {selectedVin.vin}
@@ -280,10 +283,16 @@ const FourSPrice: React.FC<FourSPriceProps> = ({ onBack }) => {
               </button>
 
               <div className="mt-6 w-full px-6 flex gap-3">
-                <button className="flex-1 h-11 rounded-full border border-gray-300 text-sm text-gray-800 bg-white">
+                <button
+                  className="flex-1 h-11 rounded-full border border-gray-300 text-sm text-gray-800 bg-white"
+                  onClick={onCreateOrderClick}
+                >
                   新建工单
                 </button>
-                <button className="flex-1 h-11 rounded-full bg-red-500 text-white text-sm font-semibold shadow-md">
+                <button
+                  className="flex-1 h-11 rounded-full bg-red-500 text-white text-sm font-semibold shadow-md"
+                  onClick={onInquiryClick}
+                >
                   询价
                 </button>
               </div>

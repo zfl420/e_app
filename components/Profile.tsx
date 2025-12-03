@@ -9,9 +9,11 @@ interface ProfileProps {
   onSettingsClick: () => void;
   onMenuClick?: (menuId: string) => void;
   onOrderClick?: (orderType: 'all' | 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund') => void;
+  onJoinClick: () => void;
+  onFeedbackClick: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick }) => {
+const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick, onJoinClick, onFeedbackClick }) => {
   const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
   const styles = getVersionStyles(appVersion);
 
@@ -106,38 +108,67 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
         </div>
         )}
 
-        {/* Stats */}
-        <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-2">
-                <div className="flex gap-6">
-                    {(['today', 'yesterday', 'month'] as const).map(period => (
-                        <div 
-                            key={period}
-                            onClick={() => setStatsPeriod(period)}
-                            className={`text-sm font-medium pb-2 cursor-pointer relative transition-colors ${statsPeriod === period ? 'text-secondary font-bold' : 'text-gray-500'}`}
-                        >
-                            {period === 'today' ? '今天' : period === 'yesterday' ? '昨天' : '本月'}
-                            {statsPeriod === period && (
-                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-secondary rounded-full"></div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-                <div className="flex items-center text-xs text-gray-400 cursor-pointer">
-                    更多
-                    <ChevronRight className="w-3 h-3 ml-0.5" />
-                </div>
-            </div>
+        {/* Stats - 版本1不展示，版本2及以上展示 */}
+        {appVersion !== 1 && (
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+              <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-2">
+                  <div className="flex gap-6">
+                      {(['today', 'yesterday', 'month'] as const).map(period => (
+                          <div 
+                              key={period}
+                              onClick={() => setStatsPeriod(period)}
+                              className={`text-sm font-medium pb-2 cursor-pointer relative transition-colors ${statsPeriod === period ? 'text-secondary font-bold' : 'text-gray-500'}`}
+                          >
+                              {period === 'today' ? '今天' : period === 'yesterday' ? '昨天' : '本月'}
+                              {statsPeriod === period && (
+                                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-secondary rounded-full"></div>
+                              )}
+                          </div>
+                      ))}
+                  </div>
+                  <div className="flex items-center text-xs text-gray-400 cursor-pointer">
+                      更多
+                      <ChevronRight className="w-3 h-3 ml-0.5" />
+                  </div>
+              </div>
 
-            <div className="grid grid-cols-4 divide-x divide-gray-100">
-                {PROFILE_STATS.map((stat, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-1 py-1">
-                        <span className="text-lg font-bold text-gray-900">{stat.value}</span>
-                        <span className="text-xs text-gray-400">{stat.label}</span>
-                    </div>
-                ))}
-            </div>
+              <div className="grid grid-cols-4 divide-x divide-gray-100">
+                  {PROFILE_STATS.map((stat, idx) => (
+                      <div key={idx} className="flex flex-col items-center gap-1 py-1">
+                          <span className="text-lg font-bold text-gray-900">{stat.value}</span>
+                          <span className="text-xs text-gray-400">{stat.label}</span>
+                      </div>
+                  ))}
+              </div>
+          </div>
+        )}
+
+        {/* 加盟快准 & 意见反馈合并模块 - 一个卡片，内部用分割线区分 */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <button
+            type="button"
+            className="w-full px-4 py-3 flex items-center justify-between active:bg-gray-50 transition-colors border-b border-gray-100"
+            onClick={onJoinClick}
+          >
+            <span className="text-sm font-medium text-gray-900">加盟快准</span>
+            <ChevronRight className="w-4 h-4 text-gray-400" />
+          </button>
+
+          <button
+            type="button"
+            className="w-full px-4 py-3 flex items-center justify-between active:bg-gray-50 transition-colors"
+            onClick={onFeedbackClick}
+          >
+            <span className="text-sm font-medium text-gray-900">意见反馈</span>
+            <ChevronRight className="w-4 h-4 text-gray-400" />
+          </button>
         </div>
+      </div>
+
+      {/* Service Hotline - 所有版本统一展示在最后一个模块下方，置于背景上 */}
+      <div className="px-4 pb-6 pt-2 text-center text-xs text-gray-400">
+        服务热线：
+        <span className="ml-1 font-medium text-gray-500">400-969-6661</span>
       </div>
     </div>
   );

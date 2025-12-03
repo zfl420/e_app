@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, X, VolumeX } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 
 interface VINScanProps {
   onBack: () => void;
   initialTab?: 'plate' | 'vin' | 'permit';
   onSkip?: () => void;
+  onMockScan?: () => void;
 }
 
-const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip }) => {
+const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip, onMockScan }) => {
   const [activeTab, setActiveTab] = useState<'plate' | 'vin' | 'permit'>(initialTab);
   const [scanProgress, setScanProgress] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
@@ -136,16 +137,26 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
               </div>
             </div>
           )}
+
+          {/* Skip Button - placed right below scan frame */}
+          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
+            <button
+              onClick={onSkip}
+              className="bg-white/90 backdrop-blur-sm text-gray-900 px-6 py-2.5 rounded-xl text-sm font-medium border-2 border-gray-200 shadow-lg active:scale-95 transition-transform"
+            >
+              跳过,直接开单
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Skip Button */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-24 z-20">
+      {/* Mock Scan Button - placed above bottom tab bar */}
+      <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20">
         <button 
-          onClick={onSkip}
-          className="bg-white/90 backdrop-blur-sm text-gray-900 px-6 py-2.5 rounded-xl text-sm font-medium border-2 border-gray-200 shadow-lg active:scale-95 transition-transform"
+          onClick={onMockScan}
+          className="bg-red-500/95 text-white px-7 py-2.5 rounded-xl text-sm font-semibold shadow-lg active:scale-95 transition-transform"
         >
-          跳过,直接开单
+          模拟扫码
         </button>
       </div>
 
@@ -180,15 +191,10 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
           </div>
 
           {/* Bottom Controls */}
-          <div className="flex items-center justify-between px-4 pb-4">
+          <div className="flex items-center justify-end px-4 pb-4">
             <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-              <VolumeX className="w-5 h-5 text-white" />
+              <ArrowLeft className="w-5 h-5 text-white" />
             </button>
-            <div className="flex items-center gap-2">
-              <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                <ArrowLeft className="w-5 h-5 text-white" />
-              </button>
-            </div>
           </div>
         </div>
       </div>
