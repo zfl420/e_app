@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ChevronRight, Grid3x3 } from 'lucide-react';
+import { ChevronRight, LayoutGrid } from 'lucide-react';
 import { MANAGEMENT_ACTIONS, RECENT_TASKS } from '../constants';
 import { getVersionStyles } from '../versionStyles';
 
@@ -28,7 +28,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ appVersion = 4, onArrivalClick, o
         actionMap.get('fast_pay'),        // 快捷收款
         actionMap.get('manual'),          // 维修手册
         actionMap.get('reports'),         // 查报表
-        { id: 'all_apps', label: '全部应用', icon: Grid3x3, color: 'text-indigo-500' }, // 全部应用
+        { id: 'all_apps', label: '全部应用', icon: LayoutGrid, color: 'text-indigo-500' }, // 全部应用
       ];
       
       // 过滤掉可能的 undefined 值
@@ -47,7 +47,7 @@ const StoreCard: React.FC<StoreCardProps> = ({ appVersion = 4, onArrivalClick, o
         actionMap.get('fast_pay'),        // 快捷收款
         actionMap.get('manual'),          // 维修手册
         actionMap.get('marketing'),       // 做营销
-        { id: 'all_apps', label: '全部应用', icon: Grid3x3, color: 'text-indigo-500' }, // 全部应用（替代查报表）
+        { id: 'all_apps', label: '全部应用', icon: LayoutGrid, color: 'text-indigo-500' }, // 全部应用（替代查报表）
       ];
 
       return orderedActions.filter((action): action is NonNullable<typeof action> => action !== undefined);
