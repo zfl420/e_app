@@ -20,8 +20,8 @@ const Banner: React.FC<BannerProps> = ({ onClick }) => {
         <div className="text-white">
           <div className="flex items-start gap-3 mb-1">
              <div className="bg-secondary p-1 rounded-lg text-center shadow-lg">
-                <div className="text-xs font-bold">11/30</div>
-                <div className="text-[10px] opacity-80">星期日</div>
+                <div className="text-sm font-bold">11/30</div>
+                <div className="text-xs opacity-80">星期日</div>
              </div>
              <div className="pt-0.5">
                <h3 className="font-bold text-lg leading-tight text-white drop-shadow-md">巨江银离子空调滤</h3>
@@ -30,7 +30,7 @@ const Banner: React.FC<BannerProps> = ({ onClick }) => {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] text-white/80">
+      <div className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-xs text-white/80">
         广告
       </div>
     </div>

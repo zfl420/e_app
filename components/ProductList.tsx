@@ -6,13 +6,27 @@ interface ProductListProps {
   onBack: () => void;
   categoryId: string;
   categoryLabel: string;
+  onCartClick?: () => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel }) => {
+const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel, onCartClick }) => {
   const [activeTopTab, setActiveTopTab] = useState<'all' | 'engine' | 'brake' | 'gear' | 'steer' | 'diff'>('engine');
   const [activeSort, setActiveSort] = useState<'comprehensive' | 'distance' | 'sales' | 'price'>('comprehensive');
 
   const products = useMemo(() => CATEGORY_PRODUCT_MAP[categoryId] || [], [categoryId]);
+
+  // 从商品标题中提取简短文字用于显示
+  const getProductDisplayText = (title: string): string => {
+    // 尝试提取品牌名（通常在标题开头）
+    const brandMatch = title.match(/^[^\/\s]+/);
+    if (brandMatch) {
+      const brand = brandMatch[0];
+      // 如果品牌名太长，取前4个字符
+      return brand.length > 4 ? brand.substring(0, 4) : brand;
+    }
+    // 如果没有品牌，取标题前4个字符
+    return title.length > 4 ? title.substring(0, 4) : title;
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -28,13 +42,16 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
             <input
               type="text"
               placeholder={`${categoryLabel} / 规格 / 品牌 关键字`}
-              className="flex-1 bg-transparent border-none outline-none text-xs text-gray-700 placeholder-gray-400"
+              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
             />
           </div>
 
-          <button className="ml-3 relative p-1">
+          <button 
+            onClick={onCartClick}
+            className="ml-3 relative p-1"
+          >
             <ShoppingCart className="w-6 h-6 text-gray-800" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary rounded-full text-[10px] text-white flex items-center justify-center border-2 border-white font-bold">
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary rounded-full text-xs text-white flex items-center justify-center border-2 border-white font-bold">
               1
             </span>
           </button>
@@ -68,7 +85,7 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
 
         {/* Sort bar + filter */}
         <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-gray-100">
-          <div className="flex items-center text-[13px] text-gray-700">
+          <div className="flex items-center text-sm text-gray-700">
             {[
               { id: 'comprehensive', label: '综合排序' },
               { id: 'distance', label: '距离' },
@@ -90,7 +107,7 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
             ))}
           </div>
 
-          <button className="flex items-center text-[13px] text-gray-700">
+          <button className="flex items-center text-sm text-gray-700">
             <Filter className="w-4 h-4 mr-1" />
             筛选
           </button>
@@ -98,19 +115,19 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
 
         {/* Sub filters */}
         <div className="flex items-center gap-2 px-4 py-2 bg-white border-b border-gray-100 overflow-x-auto no-scrollbar">
-          <button className="px-3 py-1 rounded-full border border-secondary text-secondary bg-red-50 text-[11px] shrink-0">
+          <button className="px-3 py-1 rounded-full border border-secondary text-secondary bg-red-50 text-xs shrink-0">
             适用车型
           </button>
-          <button className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 text-[11px] shrink-0">
+          <button className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 text-xs shrink-0">
             品牌
           </button>
-          <button className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 text-[11px] shrink-0">
+          <button className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 text-xs shrink-0">
             粘度
           </button>
-          <button className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 text-[11px] shrink-0">
+          <button className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 text-xs shrink-0">
             规格
           </button>
-          <button className="ml-auto px-3 py-1 rounded-full bg-gray-50 text-gray-500 text-[11px] shrink-0">
+          <button className="ml-auto px-3 py-1 rounded-full bg-gray-50 text-gray-500 text-xs shrink-0">
             仅看有票
           </button>
         </div>
@@ -121,8 +138,10 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
         {products.map((item) => (
           <div key={item.id} className="bg-white px-4 py-3 mb-2">
             <div className="flex gap-3">
-              <div className="w-24 h-24 bg-gray-50 rounded-lg overflow-hidden border border-gray-100 flex-shrink-0">
-                <img src={item.image} alt={item.title} className="w-full h-full object-contain" />
+              <div className="w-24 h-24 bg-slate-50 rounded-lg border border-slate-100 flex-shrink-0 flex items-center justify-center">
+                <span className="text-sm font-bold text-slate-400">
+                  {getProductDisplayText(item.title)}
+                </span>
               </div>
 
               <div className="flex-1 min-w-0">
@@ -134,7 +153,7 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                   {item.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="px-1.5 py-0.5 rounded-sm bg-gray-50 text-[10px] text-gray-500 border border-gray-100"
+                      className="px-1.5 py-0.5 rounded-sm bg-gray-50 text-xs text-gray-500 border border-gray-100"
                     >
                       {tag}
                     </span>
@@ -147,14 +166,14 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                       <span className="text-[13px] mr-0.5">¥</span>
                       {item.price}
                     </div>
-                    <div className="text-[11px] text-gray-400 mt-0.5">
+                    <div className="text-xs text-gray-400 mt-0.5">
                       不含税价：¥{item.priceNoTax}
                     </div>
                   </div>
 
                   <div className="flex flex-col items-end gap-1">
                     {item.promo && (
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] text-white bg-secondary">
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs text-white bg-secondary">
                         秒杀价
                       </span>
                     )}
@@ -166,7 +185,7 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
               </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-between text-[11px] text-gray-500">
+            <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
               <div className="truncate">
                 {item.shop} <span className="mx-1">·</span>
                 {item.location}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Search, Plus, Bell } from 'lucide-react';
 import { CHAT_THREADS, CONTACTS_DATA } from '../constants';
+import StatusBar from './StatusBar';
 
 interface ChatListProps {
   onChatClick: (id: string) => void;
@@ -11,12 +12,15 @@ const ChatList: React.FC<ChatListProps> = ({ onChatClick }) => {
 
   return (
     <div className="flex flex-col h-full bg-white pb-24">
+      {/* Status Bar */}
+      <StatusBar variant="white" />
+      
       {/* Header */}
-      <div className="flex items-center justify-between px-4 pt-12 pb-4 bg-white sticky top-0 z-10">
+      <div className="flex items-center justify-between px-4 pt-4 pb-4 bg-white sticky top-0 z-10">
         <div className="flex items-end gap-6">
           <button 
             onClick={() => setActiveTab('messages')}
-            className={`text-xl font-bold relative pb-1 transition-colors ${activeTab === 'messages' ? 'text-gray-900' : 'text-gray-400'}`}
+            className={`text-lg font-bold relative pb-1 transition-colors ${activeTab === 'messages' ? 'text-gray-900' : 'text-gray-400'}`}
           >
             消息
             {activeTab === 'messages' && (
@@ -25,7 +29,7 @@ const ChatList: React.FC<ChatListProps> = ({ onChatClick }) => {
           </button>
           <button 
             onClick={() => setActiveTab('contacts')}
-            className={`text-lg font-medium relative pb-1 transition-colors ${activeTab === 'contacts' ? 'text-gray-900' : 'text-gray-400'}`}
+            className={`text-base font-medium relative pb-1 transition-colors ${activeTab === 'contacts' ? 'text-gray-900' : 'text-gray-400'}`}
           >
             联系人
           </button>
@@ -90,7 +94,7 @@ const ChatList: React.FC<ChatListProps> = ({ onChatClick }) => {
         ) : (
           <div>
             {/* Group Header Example */}
-            <div className="bg-gray-50 px-4 py-1 text-xs text-gray-500 font-medium">常用联系人</div>
+            <div className="bg-gray-50 px-4 py-1 text-sm text-gray-500 font-medium">常用联系人</div>
             {CONTACTS_DATA.map((contact) => (
               <div 
                 key={contact.id} 
@@ -105,7 +109,7 @@ const ChatList: React.FC<ChatListProps> = ({ onChatClick }) => {
                 <div className="flex-1">
                   <h3 className="text-sm font-semibold text-gray-900">{contact.name}</h3>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{contact.role}</span>
+                    <span className="text-xs text-red-600 bg-red-50 px-1.5 py-0.5 rounded">{contact.role}</span>
                     <span className="text-xs text-gray-400">{contact.company}</span>
                   </div>
                 </div>

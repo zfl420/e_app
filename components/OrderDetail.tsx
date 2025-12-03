@@ -10,9 +10,9 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
   const [mileage, setMileage] = useState<string>('');
 
   return (
-    <div className="flex flex-col h-screen bg-blue-50">
+    <div className="flex flex-col h-screen bg-red-50">
       {/* Header */}
-      <div className="bg-blue-600 pt-10 pb-3 px-4">
+      <div className="bg-red-600 pt-10 pb-3 px-4">
         <div className="flex items-center justify-between">
           <button onClick={onBack} className="p-1 -ml-1">
             <ArrowLeft className="w-5 h-5 text-white" />
@@ -29,13 +29,13 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
         {/* Vehicle Information Section */}
         <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-              <Car className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+              <Car className="w-5 h-5 text-red-600" />
             </div>
             <div className="flex-1">
               <div className="text-lg font-bold text-gray-900 font-mono mb-1">川G773728</div>
               <div className="flex items-center gap-2">
-                <span className="text-xs bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 rounded">
+                <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded">
                   等级:1级
                 </span>
               </div>
@@ -43,7 +43,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
             <div className="text-right">
               <span className="text-sm text-gray-500">有比较</span>
             </div>
-            <button className="text-blue-600 text-sm flex items-center gap-1">
+            <button className="text-red-600 text-sm flex items-center gap-1">
               更换
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -174,7 +174,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
 
       {/* Bottom Save Button */}
       <div className="bg-white border-t border-gray-100 p-4 sticky bottom-0 z-20 pb-safe">
-        <button className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-lg shadow-lg active:scale-[0.99] transition-transform">
+        <button className="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-lg shadow-lg active:scale-[0.99] transition-transform">
           保存
         </button>
       </div>

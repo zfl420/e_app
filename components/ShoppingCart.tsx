@@ -110,7 +110,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ onBack }) => {
             </div>
 
             {/* Cut-off Time */}
-            <div className="flex items-center gap-1 mb-3 text-xs text-orange-600">
+            <div className="flex items-center gap-1 mb-3 text-xs text-red-600">
               <AlertCircle className="w-3 h-3" />
               <span>商家截单时间: {item.cutOffTimes.join(' ')}</span>
             </div>

@@ -27,7 +27,7 @@ const CustomerVehicle: React.FC<CustomerVehicleProps> = ({ initialTab, onBack })
           <button onClick={onBack} className="p-1 -ml-2">
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <h1 className="text-lg font-bold text-gray-900">客户车辆</h1>
+          <h1 className="text-lg font-bold text-gray-900">库存管理</h1>
           <div className="flex items-center gap-4 text-gray-700 text-sm">
             {/* 右上角预留 ICON 区域 */}
           </div>
@@ -90,7 +90,7 @@ const CustomerVehicle: React.FC<CustomerVehicleProps> = ({ initialTab, onBack })
                       {item.tags.map((tag, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded text-[11px] border border-orange-300 text-orange-500 bg-orange-50"
+                          className="px-2 py-0.5 rounded text-xs border border-red-300 text-red-500 bg-red-50"
                         >
                           {tag}
                         </span>

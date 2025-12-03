@@ -44,9 +44,9 @@ const WorkOrderList: React.FC<WorkOrderListProps> = ({ onBack }) => {
       case 'cancelled':
         return 'text-gray-400';
       case 'paid':
-        return 'text-green-600';
+        return 'text-red-600';
       case 'pending':
-        return 'text-orange-500';
+        return 'text-red-500';
       default:
         return 'text-gray-600';
     }
@@ -157,7 +157,7 @@ const WorkOrderList: React.FC<WorkOrderListProps> = ({ onBack }) => {
               </div>
 
               {/* Car Icon Badge */}
-              <div className="w-4 h-4 bg-green-500 rounded flex items-center justify-center mt-1 shrink-0">
+              <div className="w-4 h-4 bg-red-500 rounded flex items-center justify-center mt-1 shrink-0">
                 <Car className="w-3 h-3 text-white" />
               </div>
 

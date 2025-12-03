@@ -63,16 +63,16 @@ const ArrivalList: React.FC<ArrivalListProps> = ({ onBack, onCreateOrder }) => {
 
         {/* Sub Filters */}
         <div className="flex gap-3 px-4 py-3 overflow-x-auto no-scrollbar bg-white">
-            <button className="bg-red-50 text-secondary border border-secondary/20 px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+            <button className="bg-red-50 text-secondary border border-secondary/20 px-4 py-1.5 rounded-md text-sm font-medium shrink-0">
                 全部 1
             </button>
-            <button className="bg-gray-50 text-gray-600 px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+            <button className="bg-gray-50 text-gray-600 px-4 py-1.5 rounded-md text-sm font-medium shrink-0">
                 维保 1
             </button>
-            <button className="bg-gray-50 text-gray-600 px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+            <button className="bg-gray-50 text-gray-600 px-4 py-1.5 rounded-md text-sm font-medium shrink-0">
                 洗车 0
             </button>
-            <button className="bg-gray-50 text-gray-600 px-4 py-1.5 rounded-md text-xs font-medium shrink-0">
+            <button className="bg-gray-50 text-gray-600 px-4 py-1.5 rounded-md text-sm font-medium shrink-0">
                 理赔 0
             </button>
         </div>
@@ -106,7 +106,7 @@ const ArrivalList: React.FC<ArrivalListProps> = ({ onBack, onCreateOrder }) => {
                                     <p className="text-xs text-gray-500 mt-0.5">{item.model}</p>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-[10px] text-gray-400 transform scale-90 origin-right whitespace-nowrap">{item.location}</div>
+                                    <div className="text-xs text-gray-400 origin-right whitespace-nowrap">{item.location}</div>
                                     <div className="text-xs text-gray-500 mt-0.5">{item.time}</div>
                                 </div>
                             </div>

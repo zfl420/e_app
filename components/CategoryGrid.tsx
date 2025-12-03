@@ -15,10 +15,10 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({ onCategoryClick }) => {
             className="flex flex-col items-center gap-2 cursor-pointer group"
             onClick={() => onCategoryClick && onCategoryClick(cat.id)}
           >
-             <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-600 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+             <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-600 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                 <cat.icon size={20} strokeWidth={1.5} />
              </div>
-            <span className="text-xs text-gray-600 group-hover:text-gray-900">{cat.label}</span>
+            <span className="text-sm text-gray-600 group-hover:text-gray-900">{cat.label}</span>
           </div>
         ))}
       </div>

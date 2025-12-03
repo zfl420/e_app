@@ -90,7 +90,7 @@ const ServiceCollection: React.FC<ServiceCollectionProps> = ({ onBack }) => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-blue-600 pt-10 pb-3 px-4">
+      <div className="bg-red-600 pt-10 pb-3 px-4">
         <div className="flex items-center justify-between">
           <button onClick={onBack} className="p-1 -ml-1">
             <ArrowLeft className="w-5 h-5 text-white" />
@@ -132,8 +132,8 @@ const ServiceCollection: React.FC<ServiceCollectionProps> = ({ onBack }) => {
             className="bg-white rounded-lg p-3 mb-3 shadow-sm flex items-center gap-3 active:bg-gray-50 transition-colors"
           >
             {/* Car Icon */}
-            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-              <Car className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
+              <Car className="w-5 h-5 text-red-600" />
             </div>
 
             {/* Middle Section */}

@@ -186,7 +186,7 @@ const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
             {campaign.description}
           </p>
         </div>
-        <button className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg whitespace-nowrap hover:bg-orange-600 transition-colors">
+        <button className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg whitespace-nowrap hover:bg-red-600 transition-colors">
           立即使用
         </button>
       </div>
@@ -219,7 +219,7 @@ const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
                           {campaign.description}
                         </p>
                       </div>
-                      <button className="px-4 py-2 bg-orange-500 text-white text-sm font-medium rounded-lg whitespace-nowrap hover:bg-orange-600 transition-colors">
+                      <button className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg whitespace-nowrap hover:bg-red-600 transition-colors">
                         立即使用
                       </button>
                     </div>
@@ -304,7 +304,7 @@ const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
       <div className="bg-white px-4 py-4 border-b border-gray-100">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-semibold text-gray-900">近30天数据</h3>
-          <button className="text-sm text-orange-500 font-medium flex items-center gap-1">
+          <button className="text-sm text-red-500 font-medium flex items-center gap-1">
             创建群发 <ChevronRight className="w-4 h-4" />
           </button>
         </div>
@@ -350,13 +350,13 @@ const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
               key={tab}
               onClick={() => setMainTab(tab)}
               className={`flex-1 py-3 text-sm font-semibold relative ${
-                mainTab === tab ? 'text-orange-500' : 'text-gray-500'
+                mainTab === tab ? 'text-red-500' : 'text-gray-500'
               }`}
             >
               {tab === 'recommended' && '推荐方案'}
               {tab === 'history' && '历史记录'}
               {mainTab === tab && (
-                <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-orange-500" />
+                <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-red-500" />
               )}
             </button>
           ))}
@@ -372,14 +372,14 @@ const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
                 key={tab}
                 onClick={() => setRecommendedSubTab(tab)}
                 className={`flex-1 py-3 text-sm font-medium relative ${
-                  recommendedSubTab === tab ? 'text-orange-500' : 'text-gray-500'
+                  recommendedSubTab === tab ? 'text-red-500' : 'text-gray-500'
                 }`}
               >
                 {tab === 'calendar' && '营销日历'}
                 {tab === 'owner' && '车主运营'}
                 {tab === 'store' && '门店事件'}
                 {recommendedSubTab === tab && (
-                  <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-orange-500" />
+                  <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-red-500" />
                 )}
               </button>
             ))}

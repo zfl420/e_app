@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { Settings, ChevronRight } from 'lucide-react';
 import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
+import StatusBar from './StatusBar';
 
 interface ProfileProps {
   onSettingsClick: () => void;
+  onMenuClick?: (menuId: string) => void;
+  onOrderClick?: (orderType: 'all' | 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund') => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ onSettingsClick }) => {
+const Profile: React.FC<ProfileProps> = ({ onSettingsClick, onMenuClick, onOrderClick }) => {
   const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
 
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
+      {/* Status Bar */}
+      <StatusBar variant="white" />
+      
       {/* Header Profile Section */}
-      <div className="bg-white px-6 pt-16 pb-8 relative">
+      <div className="bg-white px-6 pt-6 pb-8 relative">
         <button 
             onClick={onSettingsClick}
-            className="absolute top-12 right-6 text-gray-700 p-2"
+            className="absolute top-6 right-6 text-gray-700 p-2"
         >
             <Settings className="w-6 h-6" />
         </button>
@@ -25,7 +31,7 @@ const Profile: React.FC<ProfileProps> = ({ onSettingsClick }) => {
                 <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xs">头像</div>
             </div>
             <div className="flex-1">
-                <h1 className="text-xl font-bold text-gray-900 mb-1">邹飞龙</h1>
+                <h1 className="text-lg font-bold text-gray-900 mb-1">邹飞龙</h1>
                 <p className="text-sm text-gray-500">广州市黄埔区车公馆汽车美容店</p>
             </div>
         </div>
@@ -35,39 +41,61 @@ const Profile: React.FC<ProfileProps> = ({ onSettingsClick }) => {
         {/* My Orders */}
         <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="flex justify-between items-center mb-5">
-                <h2 className="font-bold text-gray-800 text-sm">我的订单</h2>
-                <div className="flex items-center text-xs text-gray-400 cursor-pointer">
+                <h2 className="font-bold text-gray-800 text-base">我的订单</h2>
+                <div 
+                    className="flex items-center text-xs text-gray-400 cursor-pointer"
+                    onClick={() => onOrderClick && onOrderClick('all')}
+                >
                     全部订单
                     <ChevronRight className="w-3 h-3 ml-0.5" />
                 </div>
             </div>
             <div className="flex justify-between px-2">
-                {PROFILE_ORDERS.map((item, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-2 relative cursor-pointer group">
-                        <item.icon className="w-6 h-6 text-secondary" strokeWidth={1.5} />
-                        {item.badge && (
-                            <span className="absolute -top-1.5 right-0 min-w-[16px] h-4 bg-secondary text-white text-[10px] flex items-center justify-center rounded-full px-0.5 border-2 border-white">
-                                {item.badge}
-                            </span>
-                        )}
-                        <span className="text-xs text-gray-600 font-medium group-hover:text-gray-900">{item.label}</span>
-                    </div>
-                ))}
+                {PROFILE_ORDERS.map((item, idx) => {
+                    const orderTypeMap: Record<string, 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund'> = {
+                        '待付款': 'pending_pay',
+                        '待发货': 'pending_ship',
+                        '待收货': 'pending_receive',
+                        '待评价': 'pending_review',
+                        '退款/售后': 'refund',
+                    };
+                    const orderType = orderTypeMap[item.label] as 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund' | undefined;
+                    
+                    return (
+                        <div 
+                            key={idx} 
+                            className="flex flex-col items-center gap-2 relative cursor-pointer group"
+                            onClick={() => orderType && onOrderClick && onOrderClick(orderType)}
+                        >
+                            <item.icon className="w-6 h-6 text-secondary" strokeWidth={1.5} />
+                            {item.badge && (
+                                <span className="absolute -top-1.5 right-0 min-w-[16px] h-4 bg-secondary text-white text-xs flex items-center justify-center rounded-full px-0.5 border-2 border-white">
+                                    {item.badge}
+                                </span>
+                            )}
+                            <span className="text-xs text-gray-600 font-medium group-hover:text-gray-900">{item.label}</span>
+                        </div>
+                    );
+                })}
             </div>
         </div>
 
         {/* Store Management */}
         <div className="bg-white rounded-xl p-4 shadow-sm">
             <div className="mb-5">
-                <h2 className="font-bold text-gray-800 text-sm">门店管理</h2>
+                <h2 className="font-bold text-gray-800 text-base">门店管理</h2>
             </div>
             <div className="grid grid-cols-5 gap-2">
                 {PROFILE_MENU.map((item, idx) => (
-                    <div key={idx} className="flex flex-col items-center gap-2 cursor-pointer group">
+                    <div 
+                        key={idx} 
+                        className="flex flex-col items-center gap-2 cursor-pointer group"
+                        onClick={() => onMenuClick && onMenuClick(item.label)}
+                    >
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${item.color}`}>
                             <item.icon className="w-5 h-5" strokeWidth={2} />
                         </div>
-                        <span className="text-[10px] text-gray-600 text-center font-medium group-hover:text-gray-900">{item.label}</span>
+                        <span className="text-xs text-gray-600 text-center font-medium group-hover:text-gray-900">{item.label}</span>
                     </div>
                 ))}
             </div>

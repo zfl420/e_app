@@ -37,12 +37,12 @@ const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`py-3 text-sm font-medium relative ${
-              activeTab === tab.id ? 'text-orange-500' : 'text-gray-500'
+              activeTab === tab.id ? 'text-red-500' : 'text-gray-500'
             }`}
           >
             {tab.label}
             {activeTab === tab.id && (
-              <span className="absolute left-0 right-0 -bottom-0.5 h-0.5 bg-orange-500" />
+              <span className="absolute left-0 right-0 -bottom-0.5 h-0.5 bg-red-500" />
             )}
           </button>
         ))}
@@ -51,7 +51,7 @@ const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
   );
 
   const renderSearchSection = () => (
-    <div className="bg-orange-500 px-4 py-4">
+    <div className="bg-red-500 px-4 py-4">
       <div className="relative mb-3">
         <input
           type="text"
@@ -113,7 +113,7 @@ const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
             <FileText className="w-6 h-6 text-gray-600" />
           </div>
           <span className="text-xs text-gray-700">传视频</span>
-          <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] px-1 rounded">领现金</span>
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1 rounded">领现金</span>
         </button>
       </div>
     </div>

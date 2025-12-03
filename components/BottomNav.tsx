@@ -17,7 +17,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab = 'home', onTabChange }
                 <div className="w-14 h-14 bg-secondary rounded-full flex items-center justify-center shadow-lg shadow-red-200 group-active:scale-95 transition-transform border-4 border-white">
                   <item.icon className="text-white w-7 h-7" strokeWidth={2.5} />
                 </div>
-                <span className="block text-center text-[10px] text-gray-500 mt-1 font-medium">{item.label}</span>
+                <span className="block text-center text-xs text-gray-500 mt-1 font-medium">{item.label}</span>
               </div>
             );
           }
@@ -34,7 +34,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ activeTab = 'home', onTabChange }
                 className={`w-6 h-6 transition-colors ${isActive ? 'text-secondary fill-current' : 'text-gray-400 group-hover:text-gray-600'}`} 
                 strokeWidth={isActive ? 2 : 1.5}
               />
-              <span className={`text-[10px] font-medium transition-colors ${isActive ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'}`}>
+              <span className={`text-xs font-medium transition-colors ${isActive ? 'text-gray-900' : 'text-gray-400 group-hover:text-gray-600'}`}>
                 {item.label}
               </span>
             </div>

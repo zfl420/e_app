@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingCart, ScanLine, Search } from 'lucide-react';
 import { TOP_ACTIONS } from '../constants';
+import StatusBar from './StatusBar';
 
 interface HeaderProps {
   onTopActionClick?: (id: string) => void;
@@ -9,7 +10,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onTopActionClick, onCartClick }) => {
   return (
-    <div className="bg-primary pt-12 pb-24 px-4 rounded-b-[2.5rem] shadow-md relative z-0">
+    <div className="bg-primary pb-24 px-4 rounded-b-[2.5rem] shadow-md relative z-0">
+      {/* Status Bar */}
+      <StatusBar />
       {/* Search Bar Row */}
       <div className="flex items-center gap-3 mb-6">
         <div className="flex-1 bg-white/95 backdrop-blur-sm h-10 rounded-full flex items-center px-4 shadow-sm border border-white/20">
@@ -38,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ onTopActionClick, onCartClick }) => {
             <div className="p-2 rounded-xl bg-white/10 group-hover:bg-white/20 transition-colors">
               <action.icon className="w-6 h-6 text-white" strokeWidth={1.5} />
             </div>
-            <span className="text-xs font-medium text-white/90">{action.label}</span>
+            <span className="text-sm font-medium text-white/90">{action.label}</span>
           </button>
         ))}
       </div>

@@ -124,9 +124,10 @@ const BRANDS: Brand[] = [
 
 interface CatalogProps {
   onBack: () => void;
+  onCartClick?: () => void;
 }
 
-const Catalog: React.FC<CatalogProps> = ({ onBack }) => {
+const Catalog: React.FC<CatalogProps> = ({ onBack, onCartClick }) => {
   const [activeTab, setActiveTab] = useState<TabType>('vin');
   const [step, setStep] = useState<Step>('query');
   const [vinInput, setVinInput] = useState('');
@@ -191,7 +192,15 @@ const Catalog: React.FC<CatalogProps> = ({ onBack }) => {
           <div className="flex-1 text-center text-base font-semibold text-gray-900">
             {selectedVehicle.title}
           </div>
-          <button className="text-xs text-gray-500">车型参数</button>
+          <button 
+            onClick={onCartClick}
+            className="relative p-1"
+          >
+            <ShoppingCart className="w-6 h-6 text-gray-800" />
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center border-2 border-white">
+              1
+            </span>
+          </button>
         </div>
       );
     }
@@ -236,7 +245,18 @@ const Catalog: React.FC<CatalogProps> = ({ onBack }) => {
             )}
           </button>
         </div>
-        <div className="w-10" />
+        {onCartClick && (
+          <button 
+            onClick={onCartClick}
+            className="relative p-1"
+          >
+            <ShoppingCart className="w-6 h-6 text-gray-800" />
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center border-2 border-white">
+              1
+            </span>
+          </button>
+        )}
+        {!onCartClick && <div className="w-10" />}
       </div>
     );
   };
@@ -273,11 +293,11 @@ const Catalog: React.FC<CatalogProps> = ({ onBack }) => {
               className="w-full bg-white rounded-lg p-3 flex items-center justify-between shadow-sm active:bg-gray-50"
             >
               <div className="flex items-center gap-3">
-                <img
-                  src={vehicle.brandLogo}
-                  alt="brand"
-                  className="w-10 h-10 rounded-full object-contain bg-gray-50"
-                />
+                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center shrink-0">
+                  <span className="text-xs text-gray-600 font-medium line-clamp-1 px-1 text-center">
+                    {vehicle.title.split(' ')[0]}
+                  </span>
+                </div>
                 <div className="text-left">
                   <div className="text-sm font-medium text-gray-900">{vehicle.title}</div>
                   <div className="text-xs text-gray-500 font-mono mt-0.5">{vehicle.vin}</div>
@@ -365,12 +385,10 @@ const Catalog: React.FC<CatalogProps> = ({ onBack }) => {
             onClick={() => handleBrandClick(brand)}
             className="flex flex-col items-center gap-2 active:opacity-80"
           >
-            <div className="w-14 h-14 rounded-lg bg-white border border-gray-200 flex items-center justify-center overflow-hidden">
-              <img
-                src={brand.logo}
-                alt={brand.name}
-                className="w-12 h-12 object-contain"
-              />
+            <div className="w-14 h-14 rounded-lg bg-gray-200 flex items-center justify-center">
+              <span className="text-[10px] text-gray-600 font-medium text-center px-1 leading-tight">
+                {brand.name.length > 4 ? brand.name.substring(0, 4) : brand.name}
+              </span>
             </div>
             <div className="text-[11px] text-gray-700 text-center leading-tight">
               {brand.name}

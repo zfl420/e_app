@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, X, VolumeX } from 'lucide-react';
 
 interface VINScanProps {
@@ -11,6 +11,7 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
   const [activeTab, setActiveTab] = useState<'plate' | 'vin' | 'permit'>(initialTab);
   const [scanProgress, setScanProgress] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     // 当切换到VIN码时，自动开始扫描
@@ -18,10 +19,15 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
       setIsScanning(true);
       setScanProgress(0);
       
-      const interval = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         setScanProgress(prev => {
           if (prev >= 100) {
             setIsScanning(false);
+            // 清除 interval 防止继续运行
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
             return 100;
           }
           return prev + 2;
@@ -30,7 +36,10 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
       
       // 清理函数
       return () => {
-        clearInterval(interval);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
         setIsScanning(false);
         setScanProgress(0);
       };
@@ -80,7 +89,7 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
       {/* Top Status Bar */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 z-30">
         <div className="bg-black/80 backdrop-blur-sm rounded-full px-4 py-1.5 flex items-center gap-2">
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
         </div>
       </div>
 
@@ -121,7 +130,7 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip })
             <div className="absolute bottom-4 left-4 right-4">
               <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-blue-500 rounded-full transition-all duration-300"
+                  className="h-full bg-red-500 rounded-full transition-all duration-300"
                   style={{ width: `${scanProgress}%` }}
                 ></div>
               </div>

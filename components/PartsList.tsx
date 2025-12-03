@@ -81,13 +81,13 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
           <input 
             type="text" 
             placeholder="可输入商品名称/品牌/OE号" 
-            className="flex-1 bg-transparent border-none outline-none text-xs text-gray-700 placeholder-gray-400"
+            className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
           />
         </div>
 
         <button className="relative p-1">
           <ShoppingCart className="w-6 h-6 text-gray-700" />
-          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary rounded-full text-[10px] text-white flex items-center justify-center border-2 border-white font-bold">
+          <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary rounded-full text-xs text-white flex items-center justify-center border-2 border-white font-bold">
             1
           </span>
         </button>
@@ -102,7 +102,7 @@ const PartsList: React.FC<PartsListProps> = ({ onBack }) => {
               key={item}
               onClick={() => handleSidebarClick(item)}
               className={`
-                relative py-4 text-center text-[13px] font-medium cursor-pointer transition-colors select-none
+                relative py-4 text-center text-sm font-medium cursor-pointer transition-colors select-none
                 ${activeCategory === item 
                   ? 'bg-white text-secondary font-bold' 
                   : 'text-gray-500 hover:text-gray-700'}

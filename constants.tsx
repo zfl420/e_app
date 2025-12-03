@@ -259,7 +259,7 @@ export const PROFILE_ORDERS = [
 export const PROFILE_MENU = [
     { label: '员工管理', icon: Users, color: 'bg-pink-50 text-pink-500' },
     { label: '门店管理', icon: Store, color: 'bg-orange-50 text-orange-500' },
-    { label: '客户车辆', icon: Car, color: 'bg-red-50 text-red-500' },
+    { label: '库存管理', icon: Car, color: 'bg-red-50 text-red-500' },
     { label: '配件管理', icon: Wrench, color: 'bg-blue-50 text-blue-500' },
     { label: '工时管理', icon: Clock, color: 'bg-purple-50 text-purple-500' },
 ];

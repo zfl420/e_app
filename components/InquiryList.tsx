@@ -1,6 +1,7 @@
 import React from 'react';
 import { Search, Filter, FileText, ShoppingCart, CarFront } from 'lucide-react';
 import { INQUIRY_LIST_DATA } from '../constants';
+import StatusBar from './StatusBar';
 
 interface InquiryListProps {
   onCartClick?: () => void;
@@ -9,19 +10,22 @@ interface InquiryListProps {
 const InquiryList: React.FC<InquiryListProps> = ({ onCartClick }) => {
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
+      {/* Status Bar */}
+      <StatusBar variant="white" />
+      
       {/* Header */}
-      <div className="bg-white px-4 pt-12 pb-3 sticky top-0 z-10 border-b border-gray-100">
+      <div className="bg-white px-4 pt-4 pb-3 sticky top-0 z-10 border-b border-gray-100">
         <div className="relative flex items-center justify-center mb-4">
-          <h1 className="text-xl font-bold text-gray-900">询价单</h1>
+          <h1 className="text-lg font-bold text-gray-900">询价单</h1>
           <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center gap-4">
-             <div className="flex flex-col items-center cursor-pointer">
-                <FileText className="w-5 h-5 text-gray-700" strokeWidth={1.5} />
-                <span className="text-[10px] text-gray-500 mt-0.5 scale-90">车主报价单</span>
-             </div>
-             <div className="flex flex-col items-center cursor-pointer">
-                <Filter className="w-5 h-5 text-gray-700" strokeWidth={1.5} />
-                <span className="text-[10px] text-gray-500 mt-0.5 scale-90">筛选</span>
-             </div>
+            <div className="flex flex-col items-center cursor-pointer">
+              <FileText className="w-5 h-5 text-gray-700" strokeWidth={1.5} />
+              <span className="text-xs text-gray-500 mt-0.5">车主报价单</span>
+            </div>
+            <div className="flex flex-col items-center cursor-pointer">
+              <Filter className="w-5 h-5 text-gray-700" strokeWidth={1.5} />
+              <span className="text-xs text-gray-500 mt-0.5">筛选</span>
+            </div>
           </div>
         </div>
 
@@ -50,7 +54,7 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick }) => {
               <div className="flex-1 min-w-0">
                  <div className="flex justify-between items-start">
                     <h3 className="text-sm font-bold text-gray-900 leading-snug pr-2">{item.carModel}</h3>
-                    <span className={`text-xs font-medium shrink-0 ${item.status === 'quoted' ? 'text-green-500' : 'text-gray-400'}`}>
+                    <span className={`text-xs font-medium shrink-0 ${item.status === 'quoted' ? 'text-red-500' : 'text-gray-400'}`}>
                         {item.status === 'quoted' ? '已报价' : '已过期'}
                     </span>
                  </div>

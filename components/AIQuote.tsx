@@ -3,6 +3,7 @@ import { ChevronLeft, Camera, AudioWaveform, Plus, ShoppingCart, CheckCircle, Ch
 
 interface AIQuoteProps {
   onBack: () => void;
+  onViewOrderDetail?: () => void;
 }
 
 type MessageType = 'text' | 'image' | 'vehicle_card' | 'selection_prompt' | 'quote_card' | 'success_card';
@@ -14,7 +15,7 @@ interface Message {
   isBot: boolean;
 }
 
-const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
+const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -26,6 +27,22 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
   ]);
   const [flowState, setFlowState] = useState<'idle' | 'analyzing' | 'selecting' | 'quoted' | 'success'>('idle');
   const [quantities, setQuantities] = useState<Record<string, number>>({ 'air': 4, 'oil': 2 });
+
+  // 从车型名称中提取品牌名
+  const getBrandName = (model: string): string => {
+    // 常见品牌列表
+    const brands = ['奔驰', '宝马', '奥迪', '大众', '丰田', '本田', '日产', '别克', '雪佛兰', '福特', '现代', '起亚', '标致', '雪铁龙', '雷诺', '沃尔沃', '路虎', '捷豹', '保时捷', '玛莎拉蒂', '法拉利', '兰博基尼', '特斯拉', '理想', '蔚来', '小鹏', '比亚迪', '吉利', '长城', '长安', '奇瑞', '传祺', '荣威', '名爵', '领克', '魏牌', '红旗'];
+    
+    for (const brand of brands) {
+      if (model.includes(brand)) {
+        return brand;
+      }
+    }
+    
+    // 如果没有匹配到，取第一个词（通常是品牌）
+    const firstWord = model.split(/\s+/)[0];
+    return firstWord.length > 4 ? firstWord.substring(0, 4) : firstWord;
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -46,7 +63,7 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
     const userImgMsg: Message = {
       id: Date.now().toString(),
       type: 'image',
-      content: 'https://images.unsplash.com/photo-1552952898-75c328570c0c?auto=format&fit=crop&w=600&q=80', // Simulated VIN image
+      content: '/vin/vin_scan.png', // VIN scan image
       isBot: false
     };
     setMessages(prev => [...prev, userImgMsg]);
@@ -175,8 +192,10 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                 {msg.type === 'vehicle_card' && (
                     <div className="max-w-[85%] bg-gray-100 rounded-xl p-3 border border-gray-200">
                         <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shrink-0">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png" className="w-6 h-6 object-contain" alt="logo" />
+                            <div className="w-10 h-10 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-center shrink-0">
+                                <span className="text-xs font-bold text-slate-400">
+                                    {getBrandName(msg.content.model)}
+                                </span>
                             </div>
                             <div>
                                 <h3 className="font-bold text-gray-900 text-sm">{msg.content.model}</h3>
@@ -206,7 +225,7 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                                 火花塞 <ChevronRight className="w-3 h-3" />
                              </button>
                          </div>
-                         <button className="text-secondary text-xs self-start px-2">查看全部配件 &gt;</button>
+                         <button className="text-secondary text-sm self-start px-2">查看全部配件 &gt;</button>
                     </div>
                 )}
 
@@ -216,16 +235,18 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                         {/* Quote Header */}
                         <div className="p-3 bg-gray-50 border-b border-gray-100">
                             <div className="flex items-start gap-2">
-                                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center border border-gray-100 shrink-0">
-                                   <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Benz_Logo_2010.svg/1200px-Mercedes-Benz_Logo_2010.svg.png" className="w-5 h-5 object-contain" alt="logo" />
+                                <div className="w-8 h-8 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-center shrink-0">
+                                   <span className="text-[10px] font-bold text-slate-400">
+                                       {getBrandName('奔驰 GLA 200 1.6T 2019 动感型')}
+                                   </span>
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="font-bold text-gray-900 text-xs">奔驰 GLA 200 1.6T 2019 动感型</h3>
-                                    <div className="text-[10px] text-gray-500 mt-0.5 flex items-center gap-1">
+                                    <h3 className="font-bold text-gray-900 text-sm">奔驰 GLA 200 1.6T 2019 动感型</h3>
+                                    <div className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
                                         LE4TG4DB9KL243278 <span className="bg-gray-200 px-0.5 rounded">EPC</span>
                                     </div>
                                 </div>
-                                <span className="text-[10px] bg-gray-200 px-2 py-0.5 rounded-full text-gray-600">2滤</span>
+                                <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full text-gray-600">2滤</span>
                             </div>
                             <div className="mt-2 text-xs text-gray-600 flex justify-between">
                                 <span>识别到以下配件，请选择:</span>
@@ -237,7 +258,7 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                         <div className="p-3 border-b border-gray-100">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="text-sm font-bold text-gray-800">空气滤芯 (3)</span>
-                                <span className="text-[10px] bg-red-50 text-secondary px-1.5 py-0.5 rounded">用量: 4</span>
+                                <span className="text-xs bg-red-50 text-secondary px-1.5 py-0.5 rounded">用量: 4</span>
                             </div>
                             <div className="space-y-3">
                                 <div className="flex justify-between items-center">
@@ -306,11 +327,11 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                              <div className="flex items-center gap-2">
                                  <div className="relative">
                                      <ShoppingCart className="w-6 h-6 text-secondary" />
-                                     <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-secondary text-white text-[9px] flex items-center justify-center rounded-full border border-white">2</span>
+                                     <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-secondary text-white text-xs flex items-center justify-center rounded-full border border-white">2</span>
                                  </div>
                                  <div>
                                      <div className="text-secondary font-bold text-lg leading-none">¥ 355.52</div>
-                                     <div className="text-[9px] text-gray-400">优惠 ¥0.00 &nbsp; 明细 ^</div>
+                                     <div className="text-xs text-gray-400">优惠 ¥0.00 &nbsp; 明细 ^</div>
                                  </div>
                              </div>
                              <button onClick={handleCheckout} className="bg-secondary text-white px-6 py-2 rounded-lg text-sm font-bold shadow-lg shadow-red-100">
@@ -324,7 +345,7 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                 {msg.type === 'success_card' && (
                     <div className="max-w-[85%] w-full bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                          <div className="flex items-center gap-2 mb-3">
-                             <CheckCircle className="w-5 h-5 text-green-500" />
+                             <CheckCircle className="w-5 h-5 text-red-500" />
                              <span className="font-bold text-gray-900">下单成功</span>
                          </div>
                          <div className="space-y-3 mb-4">
@@ -343,7 +364,10 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack }) => {
                                  </div>
                              </div>
                          </div>
-                         <button className="w-full border border-secondary text-secondary rounded-full py-2 text-xs font-medium">
+                         <button 
+                             onClick={() => onViewOrderDetail?.()}
+                             className="w-full border border-secondary text-secondary rounded-full py-2 text-xs font-medium active:bg-red-50 transition-colors"
+                         >
                              查看订单详情
                          </button>
                     </div>

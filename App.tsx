@@ -27,8 +27,17 @@ import MaintenanceManual from './components/MaintenanceManual';
 import BusinessAnalysis from './components/BusinessAnalysis';
 import Marketing from './components/Marketing';
 import OrderDetail from './components/OrderDetail';
+import PurchaseOrderDetail from './components/PurchaseOrderDetail';
 import WorkOrderList from './components/WorkOrderList';
 import ShoppingCart from './components/ShoppingCart';
+import FeedDetail from './components/FeedDetail';
+import EmployeeManagement from './components/EmployeeManagement';
+import StoreSettings from './components/StoreSettings';
+import Inventory from './components/Inventory';
+import PartsManagement from './components/PartsManagement';
+import WorkHourList from './components/WorkHourList';
+import MyOrders from './components/MyOrders';
+import { OrderTab } from './components/MyOrders';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('home');
@@ -53,6 +62,16 @@ const App: React.FC = () => {
   const [orderDetailVisible, setOrderDetailVisible] = useState(false);
   const [workOrderListVisible, setWorkOrderListVisible] = useState(false);
   const [shoppingCartVisible, setShoppingCartVisible] = useState(false);
+  const [feedDetailVisible, setFeedDetailVisible] = useState(false);
+  const [selectedFeedId, setSelectedFeedId] = useState<string | null>(null);
+  const [employeeManagementVisible, setEmployeeManagementVisible] = useState(false);
+  const [storeSettingsVisible, setStoreSettingsVisible] = useState(false);
+  const [partsManagementVisible, setPartsManagementVisible] = useState(false);
+  const [workHourListVisible, setWorkHourListVisible] = useState(false);
+  const [myOrdersVisible, setMyOrdersVisible] = useState(false);
+  const [myOrdersTab, setMyOrdersTab] = useState<OrderTab>('all');
+  const [purchaseOrderDetailVisible, setPurchaseOrderDetailVisible] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
@@ -91,63 +110,100 @@ const App: React.FC = () => {
     setOrderDetailVisible(false);
     setWorkOrderListVisible(false);
     setShoppingCartVisible(false);
+    setFeedDetailVisible(false);
+    setSelectedFeedId(null);
+    setEmployeeManagementVisible(false);
+    setStoreSettingsVisible(false);
+    setPartsManagementVisible(false);
+    setWorkHourListVisible(false);
+    setMyOrdersVisible(false);
+    setPurchaseOrderDetailVisible(false);
+    setSelectedOrderId(null);
   };
 
   const handleChatClick = (id: string) => {
     setSelectedChatId(id);
   };
 
+  // Left Side Buttons Component
+  const LeftSideButtons = () => (
+    <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+      {[1, 2, 3, 4].map((num) => (
+        <button
+          key={num}
+          className="w-10 h-10 bg-white rounded-xl shadow-lg border border-gray-200 flex items-center justify-center text-gray-700 font-semibold text-sm hover:bg-gray-50 active:scale-95 transition-all"
+        >
+          {num}
+        </button>
+      ))}
+    </div>
+  );
+
   // Render Full Screen Overlays
   if (partsViewVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <PartsList onBack={() => setPartsViewVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <PartsList onBack={() => setPartsViewVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (selectedChatId) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <ChatDetail 
-            chatId={selectedChatId} 
-            onBack={() => setSelectedChatId(null)} 
-          />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <ChatDetail 
+              chatId={selectedChatId} 
+              onBack={() => setSelectedChatId(null)} 
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (settingsViewVisible) {
     return (
+      <>
+        <LeftSideButtons />
         <div className="min-h-screen bg-background flex justify-center">
           <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
             <Settings onBack={() => setSettingsViewVisible(false)} />
           </div>
         </div>
-      );
+      </>
+    );
   }
 
   if (orderDetailVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <OrderDetail 
-            onBack={() => {
-              setOrderDetailVisible(false);
-              setActiveTab('home');
-            }} 
-          />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <OrderDetail 
+              onBack={() => {
+                setOrderDetailVisible(false);
+                setActiveTab('home');
+              }} 
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (arrivalViewVisible) {
     return (
+      <>
+        <LeftSideButtons />
         <div className="min-h-screen bg-background flex justify-center">
           <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
             <ArrivalList 
@@ -159,181 +215,304 @@ const App: React.FC = () => {
             />
           </div>
         </div>
-      );
+      </>
+    );
   }
 
   if (productListVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <ProductList 
-            onBack={() => {
-              setProductListVisible(false);
-              setProductCategory(null);
-            }} 
-            categoryId={productCategory?.id || 'oil'} 
-            categoryLabel={productCategory?.label || '汽机油'} 
-          />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <ProductList 
+              onBack={() => {
+                setProductListVisible(false);
+                setProductCategory(null);
+              }} 
+              categoryId={productCategory?.id || 'oil'} 
+              categoryLabel={productCategory?.label || '汽机油'}
+              onCartClick={() => {
+                setProductListVisible(false);
+                setProductCategory(null);
+                setShoppingCartVisible(true);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (customerVehicleVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <CustomerVehicle
-            initialTab={customerVehicleTab}
-            onBack={() => setCustomerVehicleVisible(false)}
-          />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <CustomerVehicle
+              initialTab={customerVehicleTab}
+              onBack={() => setCustomerVehicleVisible(false)}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (fsPriceVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <FourSPrice onBack={() => setFsPriceVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <FourSPrice onBack={() => setFsPriceVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (maintenanceVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <Maintenance onBack={() => setMaintenanceVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <Maintenance onBack={() => setMaintenanceVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (catalogVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <Catalog onBack={() => setCatalogVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <Catalog 
+              onBack={() => setCatalogVisible(false)} 
+              onCartClick={() => {
+                setCatalogVisible(false);
+                setShoppingCartVisible(true);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (inventoryVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <InventoryQuery onBack={() => setInventoryVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <InventoryQuery onBack={() => setInventoryVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (vinScanVisible) {
     return (
-      <div className="min-h-screen bg-black flex justify-center">
-        <div className="w-full max-w-md min-h-screen relative overflow-hidden">
-          <VINScan 
-            onBack={() => setVinScanVisible(false)}
-            initialTab="vin"
-            onSkip={() => {
-              setVinScanVisible(false);
-              setOrderDetailVisible(true);
-            }}
-          />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-black flex justify-center">
+          <div className="w-full max-w-md min-h-screen relative overflow-hidden">
+            <VINScan 
+              onBack={() => setVinScanVisible(false)}
+              initialTab="vin"
+              onSkip={() => {
+                setVinScanVisible(false);
+                setOrderDetailVisible(true);
+              }}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (serviceCollectionVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (productDetailVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <ProductDetail onBack={() => setProductDetailVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <ProductDetail onBack={() => setProductDetailVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (maintenanceManualVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (businessAnalysisVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (marketingVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <Marketing onBack={() => setMarketingVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <Marketing onBack={() => setMarketingVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (workOrderListVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   if (shoppingCartVisible) {
     return (
-      <div className="min-h-screen bg-background flex justify-center">
-        <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-          <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
+          </div>
         </div>
-      </div>
+      </>
+    );
+  }
+
+  if (feedDetailVisible && selectedFeedId) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-black flex justify-center">
+          <div className="w-full max-w-md min-h-screen relative overflow-hidden">
+            <FeedDetail 
+              feedId={selectedFeedId}
+              onBack={() => {
+                setFeedDetailVisible(false);
+                setSelectedFeedId(null);
+              }} 
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (purchaseOrderDetailVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <PurchaseOrderDetail 
+              onBack={() => {
+                setPurchaseOrderDetailVisible(false);
+                setSelectedOrderId(null);
+              }}
+              orderId={selectedOrderId || undefined}
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (myOrdersVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className="min-h-screen bg-background flex justify-center">
+          <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+            <MyOrders 
+              onBack={() => setMyOrdersVisible(false)} 
+              initialTab={myOrdersTab}
+              onOrderClick={(orderId) => {
+                setSelectedOrderId(orderId);
+                setPurchaseOrderDetailVisible(true);
+              }}
+            />
+          </div>
+        </div>
+      </>
     );
   }
 
   // AI Quote View (Main Tab)
   if (activeTab === 'ai_quote') {
       return (
-        <div className="min-h-screen bg-background flex justify-center">
-            <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
-                <AIQuote onBack={() => setActiveTab('home')} />
-            </div>
-        </div>
+        <>
+          <LeftSideButtons />
+          <div className="min-h-screen bg-background flex justify-center">
+              <div className="w-full max-w-md bg-white min-h-screen relative shadow-2xl overflow-hidden">
+                  <AIQuote 
+                    onBack={() => setActiveTab('home')} 
+                    onViewOrderDetail={() => {
+                      setSelectedOrderId(null);
+                      setPurchaseOrderDetailVisible(true);
+                    }}
+                  />
+              </div>
+          </div>
+        </>
       );
   }
 
   // Render Main Tabs
   return (
-    <div className="min-h-screen bg-background flex justify-center">
-      <div className="w-full max-w-md bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
+    <>
+      <LeftSideButtons />
+      <div className="min-h-screen bg-background flex justify-center">
+        <div className="w-full max-w-md bg-gray-50 min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
         {activeTab === 'home' && (
           <div className="flex-1 overflow-y-auto no-scrollbar">
             <Header
@@ -376,7 +555,12 @@ const App: React.FC = () => {
             />
             <Banner onClick={() => setProductDetailVisible(true)} />
             <CategoryGrid onCategoryClick={handleCategoryClick} />
-            <VideoFeed />
+            <VideoFeed 
+              onFeedClick={(feedId) => {
+                setSelectedFeedId(feedId);
+                setFeedDetailVisible(true);
+              }}
+            />
           </div>
         )}
 
@@ -389,12 +573,19 @@ const App: React.FC = () => {
         )}
 
         {activeTab === 'profile' && (
-           <Profile onSettingsClick={() => setSettingsViewVisible(true)} />
+           <Profile 
+             onSettingsClick={() => setSettingsViewVisible(true)}
+             onOrderClick={(orderType) => {
+               setMyOrdersTab(orderType);
+               setMyOrdersVisible(true);
+             }}
+           />
         )}
 
         <BottomNav activeTab={activeTab} onTabChange={handleTabChange} />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

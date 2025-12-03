@@ -47,14 +47,19 @@ const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack }) => {
   ];
 
   const handleDateChange = (direction: 'prev' | 'next') => {
-    // 简单的日期切换逻辑
-    const date = new Date(currentDate);
+    // 使用本地日期解析避免时区问题
+    const [year, month, day] = currentDate.split('-').map(Number);
+    const date = new Date(year, month - 1, day); // 月份从0开始
     if (direction === 'prev') {
       date.setDate(date.getDate() - 1);
     } else {
       date.setDate(date.getDate() + 1);
     }
-    setCurrentDate(date.toISOString().split('T')[0]);
+    // 使用本地日期格式化，避免时区转换
+    const newYear = date.getFullYear();
+    const newMonth = String(date.getMonth() + 1).padStart(2, '0');
+    const newDay = String(date.getDate()).padStart(2, '0');
+    setCurrentDate(`${newYear}-${newMonth}-${newDay}`);
   };
 
   const renderMetricCard = (label: string, value: string | number, unit?: string) => (
@@ -86,15 +91,15 @@ const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack }) => {
         </div>
         <div className="flex items-center justify-center gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-blue-500 rounded"></div>
+            <div className="w-3 h-3 bg-red-500 rounded"></div>
             <span className="text-gray-600">营业额</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-orange-500 rounded"></div>
+            <div className="w-3 h-3 bg-red-600 rounded"></div>
             <span className="text-gray-600">成本</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-500 rounded"></div>
+            <div className="w-3 h-3 bg-red-500 rounded"></div>
             <span className="text-gray-600">毛利</span>
           </div>
           <div className="flex items-center gap-1">
@@ -152,10 +157,10 @@ const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack }) => {
             {serviceData.map((item, idx) => (
               <div key={idx} className="flex flex-col items-center gap-1">
                 {item.visitCount > 0 && (
-                  <div className="w-6 bg-blue-500 rounded-t" style={{ height: `${item.visitCount * 20}px` }}></div>
+                  <div className="w-6 bg-red-500 rounded-t" style={{ height: `${item.visitCount * 20}px` }}></div>
                 )}
                 {item.unconsumeCount > 0 && (
-                  <div className="w-6 bg-green-500 rounded-t" style={{ height: `${item.unconsumeCount * 20}px` }}></div>
+                  <div className="w-6 bg-red-600 rounded-t" style={{ height: `${item.unconsumeCount * 20}px` }}></div>
                 )}
               </div>
             ))}
@@ -163,15 +168,15 @@ const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack }) => {
         </div>
         <div className="flex items-center justify-center gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-blue-500 rounded"></div>
+            <div className="w-3 h-3 bg-red-500 rounded"></div>
             <span className="text-gray-600">进店台次</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-orange-500 rounded"></div>
+            <div className="w-3 h-3 bg-red-600 rounded"></div>
             <span className="text-gray-600">消费台次</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-500 rounded"></div>
+            <div className="w-3 h-3 bg-red-500 rounded"></div>
             <span className="text-gray-600">未消费台次</span>
           </div>
           <div className="flex items-center gap-1">
