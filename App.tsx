@@ -192,6 +192,7 @@ const App: React.FC = () => {
       setMyOrdersVisible(false);
       setPurchaseOrderDetailVisible(false);
       setSelectedOrderId(null);
+      setAllAppsVisible(false);
       setJoinFormVisible(false);
       setFeedbackVisible(false);
     };
@@ -238,6 +239,32 @@ const App: React.FC = () => {
                 setProductListVisible(true);
               }}
             />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (employeeManagementVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <EmployeeManagement onBack={() => setEmployeeManagementVisible(false)} />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (storeSettingsVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <StoreSettings onBack={() => setStoreSettingsVisible(false)} />
           </div>
         </div>
       </>
@@ -764,6 +791,19 @@ const App: React.FC = () => {
            <Profile 
              appVersion={appVersion}
              onSettingsClick={() => setSettingsViewVisible(true)}
+             onMenuClick={(menuId) => {
+               if (menuId === '员工管理') {
+                 setEmployeeManagementVisible(true);
+               } else if (menuId === '门店管理') {
+                 setStoreSettingsVisible(true);
+               } else if (menuId === '库存管理') {
+                 setInventoryVisible(true);
+               } else if (menuId === '配件管理') {
+                 setPartsManagementVisible(true);
+               } else if (menuId === '工时管理') {
+                 setWorkHourListVisible(true);
+               }
+             }}
              onOrderClick={(orderType) => {
                setMyOrdersTab(orderType);
                setMyOrdersVisible(true);

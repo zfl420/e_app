@@ -15,7 +15,7 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) 
       <StatusBar variant="white" />
       
       {/* Header */}
-      <div className="bg-gray-50 px-4 pt-4 pb-3 sticky top-0 z-10">
+      <div className="bg-white px-4 pt-4 pb-3 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-3">
           <h1 className="text-xl font-bold text-gray-900">询价单</h1>
           <button
@@ -28,7 +28,7 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) 
         </div>
 
         {/* Search Bar */}
-        <div className="bg-white rounded-full h-10 flex items-center px-4 shadow-sm border border-gray-100">
+        <div className="bg-gray-100 rounded-full h-10 flex items-center px-4 shadow-sm border border-gray-100">
           <Search className="w-4 h-4 text-gray-400 mr-2" />
           <input 
             type="text" 

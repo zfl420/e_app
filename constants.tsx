@@ -342,7 +342,6 @@ export const CHAT_THREADS: ChatThread[] = [
   { id: 'store2', name: '天津美实创新汽配', avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '[商品]' },
   { id: 'store3', name: '开思严选专营店-东莞博辉', avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '[询价单]' },
   { id: 'store4', name: '开思严选专营店-广州博辉', avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '[询价单]' },
-  { id: 'expert', name: '新能源技术专家', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80', time: '11/13', lastMessage: '您好，有什么新能源技术问题，都...' },
 ];
 
 export const CONTACTS_DATA: Contact[] = [

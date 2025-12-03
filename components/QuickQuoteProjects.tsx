@@ -108,11 +108,14 @@ const QuickQuoteProjects: React.FC<QuickQuoteProjectsProps> = ({ onBack }) => {
             </div>
           </div>
           <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="请输入当前里程"
-              className="w-32 h-8 px-3 rounded-full border border-gray-300 text-xs text-right text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-red-400"
-            />
+            <div className="flex items-center justify-end gap-1 w-40 h-8 px-3 rounded-full border border-gray-300 bg-white">
+              <input
+                type="text"
+                placeholder="请输入当前里程"
+                className="w-24 bg-transparent text-right text-xs text-gray-800 placeholder-gray-400 focus:outline-none"
+              />
+              <span className="ml-1 text-xs text-gray-500">公里</span>
+            </div>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, ChevronRight } from 'lucide-react';
+import { Settings, ChevronRight, ClipboardList } from 'lucide-react';
 import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
 import StatusBar from './StatusBar';
 import { getVersionStyles } from '../versionStyles';
@@ -17,6 +17,24 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
   const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
   const styles = getVersionStyles(appVersion);
 
+  // 根据版本控制「门店管理」里的入口
+  // - 版本1：只展示前两个入口（员工管理、门店管理）
+  // - 版本2：去掉「工时管理」入口
+  // - 版本3、4：将「工时管理」改为「项目管理」，并更换图标
+  const profileMenuItems = (() => {
+    if (appVersion === 2) {
+      return PROFILE_MENU.filter((item) => item.label !== '工时管理');
+    }
+    if (appVersion >= 3) {
+      return PROFILE_MENU.map((item) =>
+        item.label === '工时管理'
+          ? { ...item, label: '项目管理', icon: ClipboardList }
+          : item
+      );
+    }
+    return PROFILE_MENU;
+  })();
+
   return (
     <div className={`flex flex-col h-full ${styles.profile.container} pb-24`}>
       {/* Status Bar */}
@@ -33,7 +51,11 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
 
         <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-gray-100 overflow-hidden border border-gray-100">
-                <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xs">头像</div>
+                <img 
+                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&h=150&fit=crop&q=80" 
+                  alt="用户头像" 
+                  className="w-full h-full object-cover"
+                />
             </div>
             <div className="flex-1">
                 <h1 className="text-lg font-bold text-gray-900 mb-1">邹飞龙</h1>
@@ -85,31 +107,53 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
             </div>
         </div>
 
-        {/* Store Management - 版本3和版本4显示 */}
-        {appVersion >= 3 && (
+        {/* Store Management */}
         <div className="bg-white rounded-xl p-4 shadow-sm">
-            <div className="mb-5">
-                <h2 className="font-bold text-gray-800 text-base">门店管理</h2>
-            </div>
-            <div className="grid grid-cols-5 gap-2">
-                {PROFILE_MENU.map((item, idx) => (
-                    <div 
-                        key={idx} 
-                        className="flex flex-col items-center gap-2 cursor-pointer group"
-                        onClick={() => onMenuClick && onMenuClick(item.label)}
-                    >
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${item.color}`}>
-                            <item.icon className="w-5 h-5" strokeWidth={2} />
-                        </div>
-                        <span className="text-xs text-gray-600 text-center font-medium group-hover:text-gray-900">{item.label}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-        )}
+          <div className="mb-5">
+            <h2 className="font-bold text-gray-800 text-base">门店管理</h2>
+          </div>
 
-        {/* Stats - 版本1不展示，版本2及以上展示 */}
-        {appVersion !== 1 && (
+          {/* 版本1：只展示两个入口（员工管理、门店管理），与视觉稿一致 */}
+          {appVersion === 1 ? (
+            <div className="flex gap-10">
+              {PROFILE_MENU.slice(0, 2).map((item, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className="flex flex-col items-center gap-2 cursor-pointer group"
+                  onClick={() => onMenuClick && onMenuClick(item.label)}
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center ${item.color}`}>
+                    <item.icon className="w-6 h-6" strokeWidth={2} />
+                  </div>
+                  <span className="text-sm text-gray-700 text-center font-medium group-hover:text-gray-900">
+                    {item.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-5 gap-2">
+              {profileMenuItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="flex flex-col items-center gap-2 cursor-pointer group"
+                  onClick={() => onMenuClick && onMenuClick(item.label)}
+                >
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${item.color}`}>
+                    <item.icon className="w-5 h-5" strokeWidth={2} />
+                  </div>
+                  <span className="text-xs text-gray-600 text-center font-medium group-hover:text-gray-900">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Stats - 仅版本3及以上展示，版本1和版本2不展示 */}
+        {appVersion >= 3 && (
           <div className="bg-white rounded-xl p-4 shadow-sm">
               <div className="flex justify-between items-center mb-4 border-b border-gray-50 pb-2">
                   <div className="flex gap-6">

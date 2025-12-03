@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Filter, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, Filter, ShoppingCart } from 'lucide-react';
 
 interface ProductDetailProps {
   onBack: () => void;
@@ -17,15 +17,15 @@ interface CarModel {
 }
 
 const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [showFilter, setShowFilter] = useState(false);
 
   // Mock product data
   const product = {
     id: productId || '1',
     images: [
-      'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80',
+      // 随机一张空气滤芯相关图片
+      'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa3?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1607868578181-8b3b2c8e3caa?auto=format&fit=crop&w=1200&q=80',
     ],
     price: 345,
     name: '巨江启停蓄电池 6-QTPA-80(720) EFB-T115',
@@ -70,14 +70,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId }) => {
     ] as CarModel[],
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
-  };
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
@@ -94,42 +86,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId }) => {
       <div className="flex-1 overflow-y-auto">
         {/* Product Image Carousel */}
         <div className="relative bg-white">
-          <div className="relative h-80 bg-gray-100">
-            <img
-              src={product.images[currentImageIndex]}
-              alt={product.name}
-              className="w-full h-full object-contain"
-            />
-            
-            {/* Image Navigation */}
-            {product.images.length > 1 && (
-              <>
-                <button
-                  onClick={prevImage}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center"
-                >
-                  <ChevronLeft className="w-5 h-5 text-white" />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center"
-                >
-                  <ChevronRight className="w-5 h-5 text-white" />
-                </button>
-                
-                {/* Image Indicator */}
-                <div className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-xs text-white/80">
-                  {currentImageIndex + 1}/{product.images.length}
-                </div>
-              </>
-            )}
-
-            {/* Brand Logo */}
-            <div className="absolute top-4 left-4 flex items-center gap-2 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg">
-              <div className="w-6 h-6 bg-secondary rounded flex items-center justify-center">
-                <span className="text-white text-xs font-bold">E</span>
+          <div className="relative h-80 bg-gray-100 flex items-center justify-center">
+            <div className="text-center px-6">
+              <div className="text-xl font-semibold text-gray-400 mb-2">
+                商品示意区域
               </div>
-              <span className="text-sm font-semibold text-gray-900">{product.brand}</span>
+              <div className="text-sm text-gray-500">
+                灰色背景 + 文案占位，可根据实际需求替换为实物图片
+              </div>
             </div>
           </div>
         </div>
