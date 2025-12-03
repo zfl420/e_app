@@ -4,6 +4,39 @@ import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
 import StatusBar from './StatusBar';
 import { getVersionStyles } from '../versionStyles';
 
+type StatsPeriod = 'today' | 'yesterday' | 'month';
+
+// 个人中心「今天 / 昨天 / 本月」统计模块的模拟数据
+// 金额单位：元，台次数量：台
+const MOCK_PROFILE_STATS: Record<
+  StatsPeriod,
+  {
+    产值: string;
+    实收: string;
+    台次: string;
+    客单价: string;
+  }
+> = {
+  today: {
+    产值: '2,860.50',
+    实收: '2,430.00',
+    台次: '8',
+    客单价: '303.75',
+  },
+  yesterday: {
+    产值: '3,120.00',
+    实收: '2,980.00',
+    台次: '9',
+    客单价: '331.11',
+  },
+  month: {
+    产值: '56,430.80',
+    实收: '51,260.00',
+    台次: '178',
+    客单价: '288.60',
+  },
+};
+
 interface ProfileProps {
   appVersion?: number;
   onSettingsClick: () => void;
@@ -14,7 +47,7 @@ interface ProfileProps {
 }
 
 const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick, onJoinClick, onFeedbackClick }) => {
-  const [statsPeriod, setStatsPeriod] = useState<'today' | 'yesterday' | 'month'>('today');
+  const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>('today');
   const styles = getVersionStyles(appVersion);
 
   // 根据版本控制「门店管理」里的入口
@@ -177,12 +210,20 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
               </div>
 
               <div className="grid grid-cols-4 divide-x divide-gray-100">
-                  {PROFILE_STATS.map((stat, idx) => (
-                      <div key={idx} className="flex flex-col items-center gap-1 py-1">
-                          <span className="text-lg font-bold text-gray-900">{stat.value}</span>
-                          <span className="text-xs text-gray-400">{stat.label}</span>
-                      </div>
-                  ))}
+                {PROFILE_STATS.map((stat, idx) => {
+                  // 优先从当前周期的模拟数据里取值，兜底用原始常量里的值
+                  const periodStats = MOCK_PROFILE_STATS[statsPeriod];
+                  const value =
+                    (periodStats && (periodStats as Record<string, string>)[stat.label]) ??
+                    stat.value;
+
+                  return (
+                    <div key={idx} className="flex flex-col items-center gap-1 py-1">
+                      <span className="text-lg font-bold text-gray-900">{value}</span>
+                      <span className="text-xs text-gray-400">{stat.label}</span>
+                    </div>
+                  );
+                })}
               </div>
           </div>
         )}
