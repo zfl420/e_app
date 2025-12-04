@@ -43,6 +43,7 @@ import { getVersionStyles } from './versionStyles';
 import AllApps from './components/AllApps';
 import JoinForm from './components/JoinForm';
 import FeedbackForm from './components/FeedbackForm';
+import AdminPanel from './components/AdminPanel';
 
 const App: React.FC = () => {
   const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
@@ -83,6 +84,7 @@ const App: React.FC = () => {
   const [vinScanMode, setVinScanMode] = useState<'order' | 'quick_quote'>('order');
   const [joinFormVisible, setJoinFormVisible] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
+  const [adminPanelVisible, setAdminPanelVisible] = useState(false);
 
   // 获取当前版本的样式配置
   const versionStyles = getVersionStyles(appVersion);
@@ -142,6 +144,7 @@ const App: React.FC = () => {
     setQuickQuoteProjectsVisible(false);
     setJoinFormVisible(false);
     setFeedbackVisible(false);
+    setAdminPanelVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -195,6 +198,7 @@ const App: React.FC = () => {
       setAllAppsVisible(false);
       setJoinFormVisible(false);
       setFeedbackVisible(false);
+      setAdminPanelVisible(false);
     };
     
     return (
@@ -661,6 +665,19 @@ const App: React.FC = () => {
     );
   }
 
+  if (adminPanelVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <AdminPanel onBack={() => setAdminPanelVisible(false)} />
+          </div>
+        </div>
+      </>
+    );
+  }
+
   if (myOrdersVisible) {
     return (
       <>
@@ -729,6 +746,7 @@ const App: React.FC = () => {
                 }
               }}
               onCartClick={() => setShoppingCartVisible(true)}
+              onAdminClick={() => setAdminPanelVisible(true)}
             />
             {appVersion >= 3 && (
               <>

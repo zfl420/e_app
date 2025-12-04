@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShoppingCart, ScanLine, Search } from 'lucide-react';
+import { ShoppingCart, ScanLine, Search, Settings } from 'lucide-react';
 import { TOP_ACTIONS } from '../constants';
 import StatusBar from './StatusBar';
 import { getVersionStyles } from '../versionStyles';
@@ -8,15 +8,25 @@ interface HeaderProps {
   appVersion?: number;
   onTopActionClick?: (id: string) => void;
   onCartClick?: () => void;
+  onAdminClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCartClick }) => {
+const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCartClick, onAdminClick }) => {
   const styles = getVersionStyles(appVersion);
-  
+
   return (
     <div className={`${styles.header.container} ${styles.header.paddingBottom} px-4 rounded-b-[2.5rem] shadow-md relative z-0`}>
       {/* Status Bar */}
       <StatusBar />
+
+      {/* Admin Button - 右上角管理后台按钮 */}
+      <button
+        onClick={onAdminClick}
+        className="absolute top-8 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-full transition-colors backdrop-blur-sm"
+        title="管理后台"
+      >
+        <Settings className="w-5 h-5 text-white" />
+      </button>
       {/* Search Bar Row */}
       <div className={`flex items-center gap-3 ${styles.header.searchBarMargin}`}>
         <div className="flex-1 bg-white/95 backdrop-blur-sm h-10 rounded-full flex items-center px-4 shadow-sm border border-white/20">
