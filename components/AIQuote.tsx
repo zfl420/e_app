@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Camera, AudioWaveform, Plus, ShoppingCart, CheckCircle, ChevronRight, Menu, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, Camera, AudioWaveform, Plus, ShoppingCart, CheckCircle, ChevronRight, Menu, Image as ImageIcon, FileQuestion } from 'lucide-react';
 
 interface AIQuoteProps {
   onBack: () => void;
   onViewOrderDetail?: () => void;
+  onInquiryClick?: () => void;
+  appVersion?: number;
 }
 
 type MessageType = 'text' | 'image' | 'vehicle_card' | 'selection_prompt' | 'quote_card' | 'success_card';
@@ -15,7 +17,7 @@ interface Message {
   isBot: boolean;
 }
 
-const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail }) => {
+const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail, onInquiryClick, appVersion = 4 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -151,7 +153,17 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail }) => {
             <button className="p-1" onClick={onBack}><ChevronLeft className="w-6 h-6 text-gray-700" /></button>
         </div>
         <h1 className="text-base font-bold text-gray-900">AI报价</h1>
-        <div className="w-8"></div>
+        <div className="w-8 flex items-center justify-end">
+          {appVersion === 1 && onInquiryClick && (
+            <button 
+              onClick={onInquiryClick}
+              className="p-1.5 rounded-lg hover:bg-gray-50 active:scale-95 transition-all"
+              title="询价单"
+            >
+              <FileQuestion className="w-5 h-5 text-gray-700" />
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="flex justify-center py-2">

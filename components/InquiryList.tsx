@@ -1,14 +1,29 @@
-import React from 'react';
-import { Search, ShoppingCart, CarFront, Plus } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, ShoppingCart, CarFront, Plus, ChevronLeft } from 'lucide-react';
 import { INQUIRY_LIST_DATA } from '../constants';
 import StatusBar from './StatusBar';
 
 interface InquiryListProps {
   onCartClick?: () => void;
   onAddInquiry?: () => void;
+  onBack?: () => void;
+  initialStatus?: 'pending' | 'quoted' | 'expired' | 'all';
 }
 
-const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) => {
+const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, onBack, initialStatus = 'all' }) => {
+  const [activeStatus, setActiveStatus] = useState<'pending' | 'quoted' | 'expired' | 'all'>(initialStatus);
+
+  useEffect(() => {
+    setActiveStatus(initialStatus);
+  }, [initialStatus]);
+
+  // 根据选中的状态过滤数据
+  const filteredData = useMemo(() => {
+    if (activeStatus === 'all') {
+      return INQUIRY_LIST_DATA;
+    }
+    return INQUIRY_LIST_DATA.filter(item => item.status === activeStatus);
+  }, [activeStatus]);
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
       {/* Status Bar */}
@@ -17,14 +32,51 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) 
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-3">
-          <h1 className="text-xl font-bold text-gray-900">询价单</h1>
-          <button
-            type="button"
-            onClick={onAddInquiry}
-            className="w-8 h-8 rounded-full flex items-center justify-center bg-white shadow-sm border border-gray-200 active:scale-95 transition-transform"
-          >
-            <Plus className="w-5 h-5 text-gray-900" strokeWidth={2} />
-          </button>
+          <div className="flex items-center gap-3">
+            {onBack && (
+              <button className="p-1" onClick={onBack}>
+                <ChevronLeft className="w-6 h-6 text-gray-700" />
+              </button>
+            )}
+            <h1 className="text-xl font-bold text-gray-900">询价单</h1>
+          </div>
+          {onAddInquiry && (
+            <button
+              type="button"
+              onClick={onAddInquiry}
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-white shadow-sm border border-gray-200 active:scale-95 transition-transform"
+            >
+              <Plus className="w-5 h-5 text-gray-900" strokeWidth={2} />
+            </button>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex justify-between items-center mb-3 border-b border-gray-100 pb-2">
+          <div className="flex gap-6">
+            {(['all', 'pending', 'quoted', 'expired'] as const).map(status => {
+              const labels: Record<typeof status, string> = {
+                all: '全部',
+                pending: '待报价',
+                quoted: '已报价',
+                expired: '已失效',
+              };
+              return (
+                <div
+                  key={status}
+                  onClick={() => setActiveStatus(status)}
+                  className={`text-sm font-medium pb-2 cursor-pointer relative transition-colors ${
+                    activeStatus === status ? 'text-secondary font-bold' : 'text-gray-500'
+                  }`}
+                >
+                  {labels[status]}
+                  {activeStatus === status && (
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-secondary rounded-full"></div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Search Bar */}
@@ -40,7 +92,7 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) 
 
       {/* List Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {INQUIRY_LIST_DATA.map((item) => (
+        {filteredData.map((item) => (
           <div key={item.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-50 relative">
             
             {/* Header Row */}
@@ -52,8 +104,14 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry }) 
               <div className="flex-1 min-w-0">
                  <div className="flex justify-between items-start">
                     <h3 className="text-sm font-bold text-gray-900 leading-snug pr-2">{item.carModel}</h3>
-                    <span className={`text-xs font-medium shrink-0 ${item.status === 'quoted' ? 'text-red-500' : 'text-gray-400'}`}>
-                        {item.status === 'quoted' ? '已报价' : '已过期'}
+                    <span className={`text-xs font-medium shrink-0 ${
+                      item.status === 'quoted' ? 'text-red-500' : 
+                      item.status === 'pending' ? 'text-orange-500' : 
+                      'text-gray-400'
+                    }`}>
+                        {item.status === 'quoted' ? '已报价' : 
+                         item.status === 'pending' ? '待报价' : 
+                         '已失效'}
                     </span>
                  </div>
                  <div className="text-xs text-gray-400 mt-1 font-mono">{item.vin}</div>

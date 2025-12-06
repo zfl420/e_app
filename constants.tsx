@@ -403,6 +403,37 @@ export const INQUIRY_LIST_DATA: InquiryItem[] = [
     parts: [
       { name: '发动机机脚胶', code: '19372102917(B25112012612)', date: '11/20' }
     ]
+  },
+  {
+    id: 'i5',
+    brandName: 'Toyota',
+    carModel: '丰田 凯美瑞 2020 2.5L 手自一体 豪华版',
+    vin: 'LVSHCAMB1LE123456',
+    status: 'pending',
+    parts: [
+      { name: '前刹车片', code: '19372102917(B25120123456)', date: '12/05' }
+    ]
+  },
+  {
+    id: 'i6',
+    brandName: 'Honda',
+    carModel: '本田 雅阁 2019 1.5T 无级 豪华版',
+    vin: 'LVSHCAMB1LE234567',
+    status: 'pending',
+    parts: [
+      { name: '空气滤芯', code: '19372102917(B25120134567)', date: '12/05' },
+      { name: '空调滤芯', code: '19372102917(B25120145678)', date: '12/05' }
+    ]
+  },
+  {
+    id: 'i7',
+    brandName: 'BMW',
+    carModel: '宝马 3系 2021 2.0T 手自一体 运动版',
+    vin: 'WBA3A5C59EK345678',
+    status: 'pending',
+    parts: [
+      { name: '火花塞', code: '19372102917(B25120156789)', date: '12/06' }
+    ]
   }
 ];
 

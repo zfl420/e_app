@@ -96,6 +96,8 @@ const App: React.FC = () => {
   const [joinFormVisible, setJoinFormVisible] = useState(false);
   const [feedbackVisible, setFeedbackVisible] = useState(false);
   const [adminPanelVisible, setAdminPanelVisible] = useState(false);
+  const [inquiryListVisible, setInquiryListVisible] = useState(false);
+  const [inquiryListInitialStatus, setInquiryListInitialStatus] = useState<'pending' | 'quoted' | 'expired' | 'all'>('all');
 
   // 获取当前版本的样式配置
   const versionStyles = getVersionStyles(appVersion);
@@ -210,6 +212,7 @@ const App: React.FC = () => {
       setJoinFormVisible(false);
       setFeedbackVisible(false);
       setAdminPanelVisible(false);
+      setInquiryListVisible(false);
     };
     
     return (
@@ -817,6 +820,33 @@ const App: React.FC = () => {
     );
   }
 
+  // Inquiry List View (from AI Quote page in version 1)
+  if (inquiryListVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <Suspense fallback={<LoadingFallback />}>
+              <InquiryList 
+                onBack={() => setInquiryListVisible(false)}
+                onCartClick={() => {
+                  setInquiryListVisible(false);
+                  setShoppingCartVisible(true);
+                }} 
+                onAddInquiry={() => {
+                  setInquiryListVisible(false);
+                  setActiveTab('ai_quote');
+                }}
+                initialStatus={inquiryListInitialStatus}
+              />
+            </Suspense>
+          </div>
+        </div>
+      </>
+    );
+  }
+
   // AI Quote View (Main Tab)
   if (activeTab === 'ai_quote') {
       return (
@@ -831,6 +861,8 @@ const App: React.FC = () => {
                         setSelectedOrderId(null);
                         setPurchaseOrderDetailVisible(true);
                       }}
+                      onInquiryClick={appVersion === 1 ? () => setInquiryListVisible(true) : undefined}
+                      appVersion={appVersion}
                     />
                   </Suspense>
               </div>
@@ -960,6 +992,10 @@ const App: React.FC = () => {
                  setMyOrdersTab(orderType);
                  setMyOrdersVisible(true);
                }}
+               onInquiryClick={appVersion === 1 ? (status) => {
+                 setInquiryListInitialStatus(status);
+                 setInquiryListVisible(true);
+               } : undefined}
                onJoinClick={() => setJoinFormVisible(true)}
                onFeedbackClick={() => setFeedbackVisible(true)}
              />

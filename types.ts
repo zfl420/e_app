@@ -69,7 +69,7 @@ export interface InquiryItem {
   brandName: string; // Used for placeholder logo
   carModel: string;
   vin: string;
-  status: 'quoted' | 'expired';
+  status: 'pending' | 'quoted' | 'expired';
   parts: InquiryPart[];
   showCart?: boolean;
 }

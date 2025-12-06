@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Settings, ChevronRight, ClipboardList } from 'lucide-react';
-import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS } from '../constants';
+import React, { useState, useMemo } from 'react';
+import { Settings, ChevronRight, ClipboardList, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { PROFILE_ORDERS, PROFILE_MENU, PROFILE_STATS, INQUIRY_LIST_DATA } from '../constants';
 import StatusBar from './StatusBar';
 import { getVersionStyles } from '../versionStyles';
 
@@ -42,13 +42,22 @@ interface ProfileProps {
   onSettingsClick: () => void;
   onMenuClick?: (menuId: string) => void;
   onOrderClick?: (orderType: 'all' | 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund') => void;
+  onInquiryClick?: (status: 'pending' | 'quoted' | 'expired' | 'all') => void;
   onJoinClick: () => void;
   onFeedbackClick: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick, onJoinClick, onFeedbackClick }) => {
+const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick, onInquiryClick, onJoinClick, onFeedbackClick }) => {
   const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>('today');
   const styles = getVersionStyles(appVersion);
+
+  // 统计询价单各状态的数量
+  const inquiryStats = useMemo(() => {
+    const pending = INQUIRY_LIST_DATA.filter(item => item.status === 'pending').length;
+    const quoted = INQUIRY_LIST_DATA.filter(item => item.status === 'quoted').length;
+    const expired = INQUIRY_LIST_DATA.filter(item => item.status === 'expired').length;
+    return { pending, quoted, expired };
+  }, []);
 
   // 根据版本控制「门店管理」里的入口
   // - 版本1：只展示前两个入口（员工管理、门店管理）
@@ -139,6 +148,55 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
                 })}
             </div>
         </div>
+
+        {/* Inquiry List - 仅版本1显示 */}
+        {appVersion === 1 && (
+          <div className="bg-white rounded-xl p-4 shadow-sm">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="font-bold text-gray-800 text-base">询价单</h2>
+              <div 
+                className="flex items-center text-xs text-gray-400 cursor-pointer"
+                onClick={() => onInquiryClick && onInquiryClick('all')}
+              >
+                全部询价单
+                <ChevronRight className="w-3 h-3 ml-0.5" />
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2 px-2">
+              {/* 待报价 */}
+              <div 
+                className="flex flex-col items-center gap-2 cursor-pointer group"
+                onClick={() => onInquiryClick && onInquiryClick('pending')}
+              >
+                <Clock className="w-6 h-6 text-secondary" strokeWidth={1.5} />
+                <span className="text-xs text-gray-600 font-medium group-hover:text-gray-900">待报价</span>
+              </div>
+              {/* 已报价 */}
+              <div 
+                className="flex flex-col items-center gap-2 cursor-pointer group"
+                onClick={() => onInquiryClick && onInquiryClick('quoted')}
+              >
+                <div className="relative">
+                  <CheckCircle className="w-6 h-6 text-secondary" strokeWidth={1.5} />
+                  {inquiryStats.quoted > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 bg-secondary text-white text-xs flex items-center justify-center rounded-full px-0.5 border-2 border-white">
+                      {inquiryStats.quoted}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs text-gray-600 font-medium group-hover:text-gray-900">已报价</span>
+              </div>
+              {/* 已失效 */}
+              <div 
+                className="flex flex-col items-center gap-2 cursor-pointer group"
+                onClick={() => onInquiryClick && onInquiryClick('expired')}
+              >
+                <XCircle className="w-6 h-6 text-secondary" strokeWidth={1.5} />
+                <span className="text-xs text-gray-600 font-medium group-hover:text-gray-900">已失效</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Store Management */}
         <div className="bg-white rounded-xl p-4 shadow-sm">
