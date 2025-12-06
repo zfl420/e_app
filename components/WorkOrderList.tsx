@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { ChevronLeft, Search, ScanLine, ChevronDown, Car } from 'lucide-react';
 import { WORK_ORDER_LIST_DATA } from '../constants';
 import { WorkOrderItem, WorkOrderProject } from '../types';
+import StatusBar from './StatusBar';
 
 interface WorkOrderListProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const WorkOrderList: React.FC<WorkOrderListProps> = ({ onBack }) => {
+const WorkOrderList: React.FC<WorkOrderListProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [mainTab, setMainTab] = useState<'pending' | 'working' | 'quality' | 'completed'>('pending');
   const [subTab, setSubTab] = useState<'maintenance' | 'wash' | 'inspection' | 'other'>('maintenance');
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
@@ -67,6 +71,7 @@ const WorkOrderList: React.FC<WorkOrderListProps> = ({ onBack }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white sticky top-0 z-20">
         <div className="flex items-center justify-between px-4 py-3">

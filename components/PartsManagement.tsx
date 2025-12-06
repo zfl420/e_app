@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Search, Plus } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface PartsManagementProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const PartsManagement: React.FC<PartsManagementProps> = ({ onBack }) => {
+const PartsManagement: React.FC<PartsManagementProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const parts = [
@@ -56,14 +60,15 @@ const PartsManagement: React.FC<PartsManagementProps> = ({ onBack }) => {
   );
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-screen bg-gray-50">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white sticky top-0 z-20">
-        <div className="flex items-center justify-between px-4 pt-10 pb-3">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
           <button onClick={onBack} className="p-1 -ml-2">
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <h1 className="text-lg font-bold text-gray-900">配件列表</h1>
+          <h1 className="text-lg font-bold text-gray-900">配件管理</h1>
           <div className="flex items-center gap-4 text-gray-700 text-sm">
             <div className="flex flex-col items-center gap-0.5">
               <Plus className="w-5 h-5" />
@@ -89,15 +94,15 @@ const PartsManagement: React.FC<PartsManagementProps> = ({ onBack }) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto bg-white pb-6">
+      <div className="flex-1 overflow-y-auto bg-gray-50 pb-6">
         <div className="px-4 pt-4">
-          <div className="text-sm font-bold text-gray-800 mb-3">油品</div>
+          <div className="text-sm text-gray-600 mb-3">配件列表 ({filteredParts.length}项)</div>
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             {filteredParts.map((part) => (
               <div
                 key={part.id}
-                className="bg-white border-b border-gray-100 py-3 cursor-pointer active:bg-gray-50"
+                className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-pointer active:bg-gray-50"
               >
                 <div className="text-sm font-medium text-gray-900 mb-1">{part.name}</div>
                 <div className="flex flex-wrap gap-2">

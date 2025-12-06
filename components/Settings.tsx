@@ -1,17 +1,23 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface SettingsProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({ onBack }) => {
+const Settings: React.FC<SettingsProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center relative border-b border-gray-100 sticky top-0 z-10">
-        <button onClick={onBack} className="p-1 -ml-2 absolute left-4">
-          <ChevronLeft className="w-6 h-6 text-gray-700" />
+        <button onClick={onBack} className="p-1 -ml-2">
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
         </button>
         <h1 className="w-full text-center text-lg font-medium text-gray-900">设置</h1>
       </div>

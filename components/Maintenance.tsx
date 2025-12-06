@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ScanLine, ChevronRight, Calendar } from 'lucide-react';
+import { ChevronLeft, ScanLine, ChevronRight, Calendar } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 type Step = 'scan' | 'params' | 'result';
 
@@ -65,9 +66,12 @@ const MAINTENANCE_ITEMS: MaintenanceItem[] = [
 
 interface MaintenanceProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const Maintenance: React.FC<MaintenanceProps> = ({ onBack }) => {
+const Maintenance: React.FC<MaintenanceProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [step, setStep] = useState<Step>('scan');
   const [selectedVehicle, setSelectedVehicle] = useState<HistoryVehicle | null>(HISTORY_VEHICLES[0]);
   const [selectedMileage, setSelectedMileage] = useState<number>(5000);
@@ -93,12 +97,15 @@ const Maintenance: React.FC<MaintenanceProps> = ({ onBack }) => {
   };
 
   const renderHeader = () => (
-    <div className="bg-white pt-10 pb-3 px-4 flex items-center border-b border-gray-100">
-      <button onClick={handleBack} className="p-1 -ml-1">
-        <ArrowLeft className="w-5 h-5 text-gray-800" />
-      </button>
-      <div className="flex-1 text-center text-base font-semibold text-gray-900">
-        查保养
+    <div className="bg-white sticky top-0 z-20">
+      <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+        <button onClick={handleBack} className="p-1 -ml-2">
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
+        </button>
+        <div className="flex-1 text-center text-base font-semibold text-gray-900">
+          查保养
+        </div>
+        <div className="w-10" />
       </div>
     </div>
   );
@@ -129,6 +136,7 @@ const Maintenance: React.FC<MaintenanceProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {renderHeader()}
 
       <div className="flex-1 overflow-y-auto pb-6">

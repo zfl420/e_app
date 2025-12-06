@@ -1,15 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { ChevronLeft, Search, ChevronDown, ShoppingCart } from 'lucide-react';
 import { CATEGORY_PRODUCT_MAP } from '../constants';
+import StatusBar from './StatusBar';
 
 interface ProductListProps {
   onBack: () => void;
   categoryId: string;
   categoryLabel: string;
   onCartClick?: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel, onCartClick }) => {
+const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel, onCartClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeMainFilter, setActiveMainFilter] = useState<'comprehensive' | 'brand' | 'category'>('comprehensive');
   const [cartCount] = useState(1); // 购物车商品数量
   const [cartTotal] = useState(0); // 购物车总价
@@ -30,31 +34,31 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Top Header - 红色背景显示分类名称 */}
-      <div className="bg-secondary text-white pt-safe">
-        <div className="flex items-center justify-between px-4 py-3">
-          <button onClick={onBack} className="p-1 -ml-1">
-            <ChevronLeft className="w-6 h-6 text-white" />
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+      {/* Header */}
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <h1 className="text-lg font-semibold">{categoryLabel}</h1>
-          <div className="w-8" /> {/* 占位符保持居中 */}
+          <h1 className="text-lg font-bold text-gray-900">{categoryLabel}</h1>
+          <div className="w-8" />
         </div>
-      </div>
 
-      {/* Search Bar */}
-      <div className="bg-white px-4 py-3 border-b border-gray-100">
-        <div className="bg-gray-100 h-9 rounded-full flex items-center px-3">
-          <Search className="w-4 h-4 text-gray-400 mr-2" />
-          <input
-            type="text"
-            placeholder="搜索分类、品牌、关键字"
-            className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
-          />
+        {/* Search Bar */}
+        <div className="px-4 pb-3">
+          <div className="bg-gray-100 h-10 rounded-lg flex items-center px-3">
+            <Search className="w-4 h-4 text-gray-400 mr-2" />
+            <input
+              type="text"
+              placeholder="搜索分类、品牌、关键字"
+              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Main Filter Bar */}
-      <div className="bg-white border-b border-gray-100">
+        {/* Main Filter Bar */}
+        <div className="border-b border-gray-100">
         <div className="flex items-center px-4 py-2">
           {[
             { id: 'comprehensive', label: '综合' },
@@ -73,8 +77,8 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
         </div>
       </div>
 
-      {/* Attribute Filter Bar */}
-      <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 overflow-x-auto no-scrollbar">
+        {/* Attribute Filter Bar */}
+        <div className="bg-gray-50 px-4 py-2 border-b border-gray-100 overflow-x-auto no-scrollbar">
         <div className="flex items-center gap-2">
           {[
             '属性筛选',
@@ -91,12 +95,17 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
             </button>
           ))}
         </div>
+        </div>
       </div>
 
       {/* Product List */}
-      <div className="flex-1 overflow-y-auto bg-gray-50 pb-20">
-        {products.map((item) => (
-          <div key={item.id} className="bg-white px-4 py-3 mb-2 border-b border-gray-100">
+      <div className="flex-1 overflow-y-auto bg-gray-50 pb-24">
+        <div className="px-4 pt-4">
+          <div className="text-sm text-gray-600 mb-3">商品列表 ({products.length}项)</div>
+          
+          <div className="space-y-3">
+            {products.map((item) => (
+              <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
             <div className="flex gap-3">
               {/* Product Image Placeholder */}
               <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center">
@@ -143,8 +152,10 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                 </div>
               </div>
             </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       {/* Bottom Cart Bar */}

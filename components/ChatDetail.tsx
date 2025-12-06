@@ -1,13 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, MoreHorizontal, Smile, Plus, Mic, Image as ImageIcon } from 'lucide-react';
 import { SAMPLE_CHAT_HISTORY, CHAT_THREADS } from '../constants';
+import StatusBar from './StatusBar';
 
 interface ChatDetailProps {
   chatId: string;
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const ChatDetail: React.FC<ChatDetailProps> = ({ chatId, onBack }) => {
+const ChatDetail: React.FC<ChatDetailProps> = ({ chatId, onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState(SAMPLE_CHAT_HISTORY);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -46,10 +50,12 @@ const ChatDetail: React.FC<ChatDetailProps> = ({ chatId, onBack }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 shrink-0 shadow-sm z-10">
         <button onClick={onBack} className="p-1 -ml-2">
-          <ChevronLeft className="w-7 h-7 text-gray-700" />
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
         </button>
         <h1 className="text-base font-bold text-gray-900 truncate max-w-[70%]">{chatInfo.name}</h1>
         <button className="p-1">

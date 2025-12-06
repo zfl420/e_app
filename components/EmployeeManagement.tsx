@@ -1,11 +1,15 @@
 import React from 'react';
 import { ChevronLeft, UserPlus, User } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface EmployeeManagementProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const EmployeeManagement: React.FC<EmployeeManagementProps> = ({ onBack }) => {
+const EmployeeManagement: React.FC<EmployeeManagementProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const employees = [
     {
       id: '1',
@@ -65,9 +69,10 @@ const EmployeeManagement: React.FC<EmployeeManagementProps> = ({ onBack }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white sticky top-0 z-20">
-        <div className="flex items-center justify-between px-4 pt-10 pb-3">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
           <button onClick={onBack} className="p-1 -ml-2">
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>

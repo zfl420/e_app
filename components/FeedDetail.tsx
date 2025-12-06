@@ -1,13 +1,18 @@
 import React from 'react';
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { VIDEO_FEED } from '../constants';
+import StatusBar from './StatusBar';
 
 interface FeedDetailProps {
   feedId: string;
   onBack: () => void;
+  onHome?: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const FeedDetail: React.FC<FeedDetailProps> = ({ feedId, onBack }) => {
+const FeedDetail: React.FC<FeedDetailProps> = ({ feedId, onBack, onHome, appVersion, onVersionChange, onAdminClick }) => {
   const feed = VIDEO_FEED.find((v) => v.id === feedId);
 
   if (!feed) {
@@ -16,6 +21,10 @@ const FeedDetail: React.FC<FeedDetailProps> = ({ feedId, onBack }) => {
 
   return (
     <div className="relative w-full h-screen bg-black overflow-hidden">
+      {/* Status Bar */}
+      <div className="absolute top-0 left-0 right-0 z-40">
+        <StatusBar variant="transparent" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+      </div>
       {/* 图片容器 - 全屏显示 */}
       <div className="absolute inset-0">
         <img 
@@ -25,20 +34,15 @@ const FeedDetail: React.FC<FeedDetailProps> = ({ feedId, onBack }) => {
         />
       </div>
 
-      {/* 顶部导航栏 */}
-      <div className="absolute top-0 left-0 right-0 z-30 pt-safe">
-        <div className="flex items-center justify-between px-4 py-3">
+      {/* 返回按钮 */}
+      <div className="absolute top-12 left-0 z-50">
+        <div className="px-4">
           <button
             onClick={onBack}
-            className="w-8 h-8 flex items-center justify-center text-white"
+            className="w-10 h-10 flex items-center justify-center text-white bg-black/30 rounded-full backdrop-blur-sm"
+            title="返回"
           >
             <ArrowLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={onBack}
-            className="w-8 h-8 flex items-center justify-center text-white"
-          >
-            <X className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -58,7 +62,6 @@ const FeedDetail: React.FC<FeedDetailProps> = ({ feedId, onBack }) => {
                   <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-gray-300 text-xs">已关注</span>
             </div>
           </div>
 
@@ -89,14 +92,6 @@ const FeedDetail: React.FC<FeedDetailProps> = ({ feedId, onBack }) => {
                 </svg>
               </div>
               <span className="text-white text-xs">312</span>
-            </div>
-            <div className="flex flex-col items-center gap-1">
-              <div className="w-10 h-10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-              </div>
-              <span className="text-white text-xs">68</span>
             </div>
             <div className="flex flex-col items-center gap-1">
               <div className="w-10 h-10 flex items-center justify-center">

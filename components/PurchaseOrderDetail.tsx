@@ -1,9 +1,13 @@
 import React from 'react';
-import { ArrowLeft, MoreVertical, Target, Copy, Check } from 'lucide-react';
+import { ChevronLeft, MoreVertical, Target, Copy, Check } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface PurchaseOrderDetailProps {
   onBack: () => void;
   orderId?: string;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 interface OrderDetailData {
@@ -41,7 +45,7 @@ interface OrderDetailData {
   };
 }
 
-const PurchaseOrderDetail: React.FC<PurchaseOrderDetailProps> = ({ onBack, orderId }) => {
+const PurchaseOrderDetail: React.FC<PurchaseOrderDetailProps> = ({ onBack, orderId, appVersion, onVersionChange, onAdminClick }) => {
   // 模拟订单数据，实际应该根据orderId从props或状态中获取
   const orderData: OrderDetailData = {
     orderNumber: 'S2511130025400',
@@ -90,22 +94,20 @@ const PurchaseOrderDetail: React.FC<PurchaseOrderDetailProps> = ({ onBack, order
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Status Bar Placeholder */}
-      <div className="h-0 bg-white"></div>
-
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-red-600 pt-safe-top">
-        <div className="flex items-center justify-between px-4 py-3">
-          <button onClick={onBack} className="p-2 -ml-2">
-            <ArrowLeft className="w-5 h-5 text-white" />
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <h1 className="flex-1 text-center text-base font-semibold text-white">订单详情</h1>
+          <h1 className="text-lg font-bold text-gray-900">订单详情</h1>
           <div className="flex items-center gap-2">
-            <button className="p-2">
-              <MoreVertical className="w-5 h-5 text-white" />
+            <button className="p-1">
+              <MoreVertical className="w-5 h-5 text-gray-700" />
             </button>
-            <button className="p-2">
-              <Target className="w-5 h-5 text-white" />
+            <button className="p-1">
+              <Target className="w-5 h-5 text-gray-700" />
             </button>
           </div>
         </div>

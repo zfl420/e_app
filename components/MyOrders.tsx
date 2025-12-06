@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Search, Filter, Store, Smile, ChevronRight } from 'lucide-react';
+import { ChevronLeft, Search, Filter, Store, Smile, ChevronRight } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 export type OrderTab = 'all' | 'pending_pay' | 'pending_ship' | 'pending_receive' | 'pending_review' | 'refund';
 
@@ -21,9 +22,12 @@ interface MyOrdersProps {
   onBack: () => void;
   initialTab?: OrderTab;
   onOrderClick?: (orderId: string) => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const MyOrders: React.FC<MyOrdersProps> = ({ onBack, initialTab = 'all', onOrderClick }) => {
+const MyOrders: React.FC<MyOrdersProps> = ({ onBack, initialTab = 'all', onOrderClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeTab, setActiveTab] = useState<OrderTab>(initialTab);
 
   // 生成订单数据，确保每个TAB都有数据，80%门店名称为"快准车服（临安服务站）"
@@ -216,14 +220,12 @@ const MyOrders: React.FC<MyOrdersProps> = ({ onBack, initialTab = 'all', onOrder
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      {/* Status Bar Placeholder */}
-      <div className="h-0 bg-white"></div>
-
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-white border-b border-gray-100 pt-safe-top">
-        <div className="flex items-center justify-between px-4 py-3">
-          <button onClick={onBack} className="p-2 -ml-2">
-            <ArrowLeft className="w-5 h-5 text-gray-700" />
+      <div className="bg-white sticky top-0 z-20 border-b border-gray-100">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
           <h1 className="flex-1 text-center text-base font-semibold text-gray-900">我的订单</h1>
           <div className="flex items-center gap-3">

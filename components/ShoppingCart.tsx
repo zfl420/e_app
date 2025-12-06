@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { ChevronLeft, MoreVertical, ChevronDown, ChevronUp, Smile, AlertCircle, Shield, Wrench } from 'lucide-react';
+import { ChevronLeft, ChevronDown, ChevronUp, Smile, AlertCircle, Shield, Wrench } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface ShoppingCartProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 interface CartItem {
@@ -24,7 +28,7 @@ interface CartItem {
   guarantees?: string[];
 }
 
-const ShoppingCart: React.FC<ShoppingCartProps> = ({ onBack }) => {
+const ShoppingCart: React.FC<ShoppingCartProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
       id: '1',
@@ -84,16 +88,14 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ onBack }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white sticky top-0 z-20 border-b border-gray-100">
-        <div className="flex items-center px-4 pt-3 pb-2">
-          <button onClick={onBack} className="p-1 -ml-1 mr-2">
+        <div className="flex items-center px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
           <h1 className="flex-1 text-center text-base font-semibold text-gray-900">购物车</h1>
-          <button className="p-1 -mr-1 ml-2">
-            <MoreVertical className="w-6 h-6 text-gray-800" />
-          </button>
         </div>
       </div>
 

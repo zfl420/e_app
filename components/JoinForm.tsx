@@ -4,20 +4,23 @@ import { ChevronLeft } from 'lucide-react';
 
 interface JoinFormProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const JoinForm: React.FC<JoinFormProps> = ({ onBack }) => {
+const JoinForm: React.FC<JoinFormProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      <StatusBar variant="white" />
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
 
       {/* Header */}
       <div className="flex items-center px-4 py-3 bg-white border-b border-gray-100">
         <button
           onClick={onBack}
-          className="mr-2 p-1 -ml-1 text-gray-700 active:scale-95 transition-transform"
+          className="p-1 -ml-2"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
         </button>
         <h1 className="text-base font-semibold text-gray-900">加盟快准</h1>
       </div>

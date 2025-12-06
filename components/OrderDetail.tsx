@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Car, ChevronRight } from 'lucide-react';
+import { ChevronLeft, Car, ChevronRight } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface OrderDetailProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
+const OrderDetail: React.FC<OrderDetailProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [fuelLevel, setFuelLevel] = useState<string>('');
   const [mileage, setMileage] = useState<string>('');
 
   return (
-    <div className="flex flex-col h-screen bg-red-50">
+    <div className="flex flex-col h-screen bg-gray-50">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-red-600 pt-10 pb-3 px-4">
-        <div className="flex items-center justify-between">
-          <button onClick={onBack} className="p-1 -ml-1">
-            <ArrowLeft className="w-5 h-5 text-white" />
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <div className="flex-1 text-center text-base font-semibold text-white">
+          <div className="flex-1 text-center text-base font-semibold text-gray-900">
             接车单详情
           </div>
           <div className="w-10" />
@@ -29,13 +35,13 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
         {/* Vehicle Information Section */}
         <div className="bg-white mx-4 mt-4 rounded-xl p-4 shadow-sm">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center shrink-0">
-              <Car className="w-5 h-5 text-red-600" />
+            <div className="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
+              <Car className="w-5 h-5 text-secondary" />
             </div>
             <div className="flex-1">
               <div className="text-lg font-bold text-gray-900 font-mono mb-1">川G773728</div>
               <div className="flex items-center gap-2">
-                <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded">
+                <span className="text-xs bg-red-50 text-secondary border border-secondary/20 px-2 py-0.5 rounded">
                   等级:1级
                 </span>
               </div>
@@ -43,7 +49,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
             <div className="text-right">
               <span className="text-sm text-gray-500">有比较</span>
             </div>
-            <button className="text-red-600 text-sm flex items-center gap-1">
+            <button className="text-secondary text-sm flex items-center gap-1">
               更换
               <ChevronRight className="w-4 h-4" />
             </button>
@@ -63,7 +69,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
           <div className="px-4 py-3 border-b border-gray-100">
             <button className="w-full flex items-center justify-between">
               <div className="flex items-center gap-1">
-                <span className="text-red-500 text-sm">*</span>
+                <span className="text-secondary text-sm">*</span>
                 <span className="text-sm text-gray-900">接车人员</span>
               </div>
               <div className="flex items-center gap-2">
@@ -105,7 +111,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
           <div className="px-4 py-3 border-b border-gray-100">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1">
-                <span className="text-red-500 text-sm">*</span>
+                <span className="text-secondary text-sm">*</span>
                 <span className="text-sm text-gray-900">接车时间</span>
               </div>
               <span className="text-sm text-gray-700">2025-11-21 17:32</span>
@@ -174,7 +180,7 @@ const OrderDetail: React.FC<OrderDetailProps> = ({ onBack }) => {
 
       {/* Bottom Save Button */}
       <div className="bg-white border-t border-gray-100 p-4 sticky bottom-0 z-20 pb-safe">
-        <button className="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-lg shadow-lg active:scale-[0.99] transition-transform">
+        <button className="w-full bg-secondary text-white py-3 rounded-xl font-bold text-lg shadow-lg shadow-red-100 active:scale-[0.99] transition-transform">
           保存
         </button>
       </div>

@@ -101,6 +101,20 @@ export interface ProductItem {
   sold: string;
   shop: string;
   location: string;
+  brand?: string;
+  specs?: string;
+  applicableModels?: string[];
+  attributes?: {
+    viscosity?: string; // 粘度SAE，如 "5W-30"
+    api?: string; // 美标API，如 "SP"
+    netContent?: string; // 净含量(L)
+    baseOil?: string; // 基础油类型
+    voltage?: string; // 电压，如 "12V"
+    capacity?: string; // 容量，如 "60Ah"
+    type?: string; // 类型，如 "前片"、"后片"
+    material?: string; // 材质，如 "陶瓷"、"低金属"
+    [key: string]: string | undefined; // 允许其他属性
+  };
 }
 
 export interface CustomerItem {
@@ -150,13 +164,30 @@ export interface CartItem {
   productId: string;
   productName: string;
   productImage: string;
-  brandPartNumber: string;
-  originalPartNumber: string;
-  brandPart: string;
+  brandPartNumber?: string;
+  originalPartNumber?: string;
+  brandPart?: string;
   location: string;
   price: number;
   quantity: number;
   selected: boolean;
   returnPolicy?: string;
   guarantees?: string[];
+  // 从商品列表添加的商品字段
+  specs?: string;
+  brand?: string;
+  volume?: string;
+}
+
+export interface SearchParams {
+  keyword?: string;
+  brand?: string;
+  attributes?: Record<string, string>;
+}
+
+export interface ScanResult {
+  productId?: string;
+  productName?: string;
+  brand?: string;
+  confidence?: number;
 }

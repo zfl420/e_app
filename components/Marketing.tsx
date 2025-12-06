@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface MarketingProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 type MainTabType = 'recommended' | 'history';
 type RecommendedSubTabType = 'calendar' | 'owner' | 'store';
 
-const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
+const Marketing: React.FC<MarketingProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [mainTab, setMainTab] = useState<MainTabType>('recommended');
   const [recommendedSubTab, setRecommendedSubTab] = useState<RecommendedSubTabType>('calendar');
 
@@ -282,15 +286,18 @@ const Marketing: React.FC<MarketingProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* 顶部栏 */}
-      <div className="bg-white pt-10 pb-4 px-4 flex items-center border-b border-gray-100">
-        <button onClick={onBack} className="p-1 -ml-1">
-          <ArrowLeft className="w-5 h-5 text-gray-800" />
-        </button>
-        <div className="flex-1 text-center text-base font-semibold text-gray-900">
-          精准营销
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+      {/* Header */}
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <div className="flex-1 text-center text-base font-semibold text-gray-900">
+            精准营销
+          </div>
+          <div className="w-6" />
         </div>
-        <div className="w-6" /> {/* 占位符，保持标题居中 */}
       </div>
 
       {/* 说明文字 */}

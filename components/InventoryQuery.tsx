@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Search, Filter } from 'lucide-react';
+import { ChevronLeft, Search, Filter } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface InventoryItem {
   id: string;
@@ -80,9 +81,12 @@ const MOCK_INVENTORY_DATA: InventoryItem[] = [
 
 interface InventoryQueryProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const InventoryQuery: React.FC<InventoryQueryProps> = ({ onBack }) => {
+const InventoryQuery: React.FC<InventoryQueryProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [inventoryList] = useState<InventoryItem[]>(MOCK_INVENTORY_DATA);
 
@@ -98,44 +102,46 @@ const InventoryQuery: React.FC<InventoryQueryProps> = ({ onBack }) => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="flex flex-col h-screen bg-gray-50">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-red-600 pt-10 pb-3 px-4">
-        <div className="flex items-center justify-between mb-3">
-          <button onClick={onBack} className="p-1 -ml-1">
-            <ArrowLeft className="w-5 h-5 text-white" />
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <div className="flex-1 text-center text-base font-semibold text-white">
-            库存查询
-          </div>
-          <button className="flex items-center gap-1 text-white text-sm">
+          <h1 className="text-lg font-bold text-gray-900">库存管理</h1>
+          <button className="flex items-center gap-1 text-gray-700 text-sm">
             <Filter className="w-4 h-4" />
-            <span>筛选</span>
+            <span className="text-sm">筛选</span>
           </button>
         </div>
-      </div>
 
-      {/* Search Bar */}
-      <div className="bg-white px-4 py-3 border-b border-gray-200">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="配件名称/编码/OE/规格/型号/品牌/车型等"
-            className="w-full h-10 pl-10 pr-4 bg-gray-100 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-white"
-          />
+        {/* Search Bar */}
+        <div className="px-4 pb-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="配件名称/编码/OE/规格/型号/品牌/车型等"
+              className="w-full h-10 pl-10 pr-4 bg-gray-100 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-white"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Inventory List */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="px-4 py-3 space-y-3">
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto bg-gray-50 pb-6">
+        <div className="px-4 pt-4">
+          <div className="text-sm text-gray-600 mb-3">库存列表 ({filteredInventory.length}项)</div>
+          
+          <div className="space-y-3">
           {filteredInventory.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg p-3 shadow-sm border border-gray-100"
+              className="bg-white rounded-lg p-4 shadow-sm border border-gray-100"
             >
               {/* Item Name and Status */}
               <div className="flex items-start justify-between mb-2">
@@ -191,6 +197,7 @@ const InventoryQuery: React.FC<InventoryQueryProps> = ({ onBack }) => {
               )}
             </div>
           ))}
+          </div>
         </div>
       </div>
     </div>

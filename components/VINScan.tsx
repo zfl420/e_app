@@ -1,17 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, X } from 'lucide-react';
+import { ChevronLeft, X } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface VINScanProps {
   onBack: () => void;
   initialTab?: 'plate' | 'vin' | 'permit';
   onSkip?: () => void;
   onMockScan?: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip, onMockScan }) => {
+const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip, onMockScan, appVersion, onVersionChange, onAdminClick }) => {
   const [activeTab, setActiveTab] = useState<'plate' | 'vin' | 'permit'>(initialTab);
   const [scanProgress, setScanProgress] = useState(0);
   const [isScanning, setIsScanning] = useState(false);
+  const [showTip, setShowTip] = useState(true);
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -77,69 +82,77 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip, o
   };
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden">
+    <div className="flex flex-col h-screen bg-black overflow-hidden">
+      {/* Status Bar */}
+      <StatusBar variant="black" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+      
+      {/* Header with Back Button */}
+      <div className="relative z-30">
+        <div className="flex items-center px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-white" />
+          </button>
+          <h1 className="flex-1 text-center text-base font-semibold text-white">扫一扫</h1>
+          <div className="w-10"></div>
+        </div>
+      </div>
+
       {/* Camera Background Placeholder */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="relative flex-1 bg-gradient-to-br from-gray-900 via-gray-800 to-black overflow-hidden">
         {/* Simulated camera view with pattern */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-1/4 left-1/4 w-1/2 h-1/2 border-4 border-white/30 rounded-2xl"></div>
           <div className="absolute top-1/3 left-1/3 w-1/3 h-1/3 border-4 border-white/20 rounded-xl"></div>
         </div>
-      </div>
 
-      {/* Top Status Bar */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 mt-2 z-30">
-        <div className="bg-black/80 backdrop-blur-sm rounded-full px-4 py-1.5 flex items-center gap-2">
-          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-        </div>
-      </div>
-
-      {/* Top Instruction Overlay */}
-      <div className="absolute top-12 left-0 right-0 z-30 px-4">
-        <div className="bg-black/60 backdrop-blur-md rounded-lg px-4 py-2 text-center">
-          <p className="text-white text-xs">请保持相机正对识别物体,避免反光</p>
-        </div>
-      </div>
-
-      {/* Close Button */}
-      <button
-        onClick={onBack}
-        className="absolute top-12 right-4 z-30 w-8 h-8 rounded-full bg-black/60 backdrop-blur-md flex items-center justify-center text-white"
-      >
-        <X className="w-5 h-5" />
-      </button>
-
-      {/* Scan Frame */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-        <div className="relative w-72 h-48">
-          {/* Dashed Border Frame */}
-          <div className="absolute inset-0 border-2 border-white border-dashed rounded-2xl"></div>
-          
-          {/* Corner Brackets */}
-          <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-2xl"></div>
-          <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-2xl"></div>
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-2xl"></div>
-          <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-2xl"></div>
-
+        {/* Scan Frame Container */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
           {/* Instruction Text */}
-          <div className="absolute -top-12 left-0 right-0 text-center">
+          <div className="mb-4 text-center">
             <p className="text-white text-sm font-medium">{getScanInstruction()}</p>
           </div>
 
-          {/* Progress Bar */}
-          {isScanning && (
-            <div className="absolute bottom-4 left-4 right-4">
-              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-red-500 rounded-full transition-all duration-300"
-                  style={{ width: `${scanProgress}%` }}
-                ></div>
+          {/* Tip Text with Close Button */}
+          {showTip && (
+            <div className="mb-6 z-30">
+              <div className="relative bg-black/60 backdrop-blur-md rounded-lg px-4 py-2 text-center">
+                <p className="text-white text-xs pr-6">请保持相机正对识别物体,避免反光</p>
+                <button
+                  onClick={() => setShowTip(false)}
+                  className="absolute top-1/2 right-2 -translate-y-1/2 w-5 h-5 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/60 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </div>
             </div>
           )}
 
+          {/* Scan Frame */}
+          <div className="relative w-72 h-40">
+            {/* Dashed Border Frame */}
+            <div className="absolute inset-0 border-2 border-white border-dashed rounded-2xl"></div>
+            
+            {/* Corner Brackets */}
+            <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-white rounded-tl-2xl"></div>
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-white rounded-tr-2xl"></div>
+            <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-white rounded-bl-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-white rounded-br-2xl"></div>
+
+            {/* Progress Bar */}
+            {isScanning && (
+              <div className="absolute bottom-4 left-4 right-4">
+                <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-red-500 rounded-full transition-all duration-300"
+                    style={{ width: `${scanProgress}%` }}
+                  ></div>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Skip Button - placed right below scan frame */}
-          <div className="absolute -bottom-16 left-1/2 -translate-x-1/2">
+          <div className="mt-6">
             <button
               onClick={onSkip}
               className="bg-white/90 backdrop-blur-sm text-gray-900 px-6 py-2.5 rounded-xl text-sm font-medium border-2 border-gray-200 shadow-lg active:scale-95 transition-transform"
@@ -150,52 +163,33 @@ const VINScan: React.FC<VINScanProps> = ({ onBack, initialTab = 'vin', onSkip, o
         </div>
       </div>
 
-      {/* Mock Scan Button - placed above bottom tab bar */}
-      <div className="absolute bottom-28 left-1/2 -translate-x-1/2 z-20">
-        <button 
-          onClick={onMockScan}
-          className="bg-red-500/95 text-white px-7 py-2.5 rounded-xl text-sm font-semibold shadow-lg active:scale-95 transition-transform"
-        >
-          模拟扫码
-        </button>
-      </div>
-
       {/* Bottom Navigation Bar */}
-      <div className="absolute bottom-0 left-0 right-0 z-30">
-        <div className="bg-black/90 backdrop-blur-md pb-safe">
-          {/* Tab Selector */}
-          <div className="flex items-center justify-center gap-8 px-4 py-4">
-            {(['plate', 'vin', 'permit'] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className="flex flex-col items-center gap-1 relative"
+      <div className="bg-black/90 backdrop-blur-md pb-safe z-30">
+        {/* Tab Selector */}
+        <div className="flex items-center justify-center gap-8 px-4 py-4">
+          {(['plate', 'vin', 'permit'] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="flex flex-col items-center gap-1 relative"
+            >
+              {/* Active Indicator Dot */}
+              {activeTab === tab && (
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
+              )}
+              <span
+                className={`text-sm font-medium transition-colors ${
+                  activeTab === tab ? 'text-white' : 'text-gray-400'
+                }`}
               >
-                {/* Active Indicator Dot */}
-                {activeTab === tab && (
-                  <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"></div>
-                )}
-                <span
-                  className={`text-sm font-medium transition-colors ${
-                    activeTab === tab ? 'text-white' : 'text-gray-400'
-                  }`}
-                >
-                  {getTabLabel(tab)}
-                </span>
-                {/* Active Underline */}
-                {activeTab === tab && (
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full"></div>
-                )}
-              </button>
-            ))}
-          </div>
-
-          {/* Bottom Controls */}
-          <div className="flex items-center justify-end px-4 pb-4">
-            <button className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center">
-              <ArrowLeft className="w-5 h-5 text-white" />
+                {getTabLabel(tab)}
+              </span>
+              {/* Active Underline */}
+              {activeTab === tab && (
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-white rounded-full"></div>
+              )}
             </button>
-          </div>
+          ))}
         </div>
       </div>
     </div>

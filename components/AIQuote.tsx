@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, Camera, AudioWaveform, Plus, ShoppingCart, CheckCircle, ChevronRight, Menu, Image as ImageIcon, FileQuestion } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface AIQuoteProps {
   onBack: () => void;
   onViewOrderDetail?: () => void;
   onInquiryClick?: () => void;
   appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 type MessageType = 'text' | 'image' | 'vehicle_card' | 'selection_prompt' | 'quote_card' | 'success_card';
@@ -17,7 +20,7 @@ interface Message {
   isBot: boolean;
 }
 
-const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail, onInquiryClick, appVersion = 4 }) => {
+const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail, onInquiryClick, appVersion = 4, onVersionChange, onAdminClick }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -147,10 +150,12 @@ const AIQuote: React.FC<AIQuoteProps> = ({ onBack, onViewOrderDetail, onInquiryC
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100 sticky top-0 z-20">
         <div className="flex items-center gap-3">
-            <button className="p-1" onClick={onBack}><ChevronLeft className="w-6 h-6 text-gray-700" /></button>
+            <button className="p-1 -ml-2" onClick={onBack}><ChevronLeft className="w-6 h-6 text-gray-800" /></button>
         </div>
         <h1 className="text-base font-bold text-gray-900">AI报价</h1>
         <div className="w-8 flex items-center justify-end">

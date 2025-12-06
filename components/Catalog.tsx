@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ScanLine, ChevronRight, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ScanLine, ChevronRight, ShoppingCart } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 type TabType = 'vin' | 'part';
 type Step = 'query' | 'parts_list' | 'brand_select' | 'oe_input' | 'part_diagram';
@@ -125,9 +126,12 @@ const BRANDS: Brand[] = [
 interface CatalogProps {
   onBack: () => void;
   onCartClick?: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const Catalog: React.FC<CatalogProps> = ({ onBack, onCartClick }) => {
+const Catalog: React.FC<CatalogProps> = ({ onBack, onCartClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeTab, setActiveTab] = useState<TabType>('vin');
   const [step, setStep] = useState<Step>('query');
   const [vinInput, setVinInput] = useState('');
@@ -185,78 +189,82 @@ const Catalog: React.FC<CatalogProps> = ({ onBack, onCartClick }) => {
   const renderHeader = () => {
     if (step === 'parts_list' && selectedVehicle) {
       return (
-        <div className="bg-white pt-10 pb-3 px-4 flex items-center justify-between border-b border-gray-100">
-          <button onClick={handleBack} className="p-1 -ml-1">
-            <ArrowLeft className="w-5 h-5 text-gray-800" />
-          </button>
-          <div className="flex-1 text-center text-base font-semibold text-gray-900">
-            {selectedVehicle.title}
+        <div className="bg-white sticky top-0 z-20">
+          <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+            <button onClick={handleBack} className="p-1 -ml-2">
+              <ChevronLeft className="w-6 h-6 text-gray-800" />
+            </button>
+            <div className="flex-1 text-center text-base font-semibold text-gray-900">
+              {selectedVehicle.title}
+            </div>
+            <button 
+              onClick={onCartClick}
+              className="relative p-1"
+            >
+              <ShoppingCart className="w-6 h-6 text-gray-800" />
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center border-2 border-white">
+                1
+              </span>
+            </button>
           </div>
-          <button 
-            onClick={onCartClick}
-            className="relative p-1"
-          >
-            <ShoppingCart className="w-6 h-6 text-gray-800" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center border-2 border-white">
-              1
-            </span>
-          </button>
         </div>
       );
     }
 
     return (
-      <div className="bg-white pt-10 pb-3 px-4 flex items-center border-b border-gray-100">
-        <button onClick={handleBack} className="p-1 -ml-1">
-          <ArrowLeft className="w-5 h-5 text-gray-800" />
-        </button>
-        <div className="flex-1 flex justify-center gap-8">
-          <button
-            onClick={() => {
-              setActiveTab('vin');
-              setStep('query');
-              setSelectedVehicle(null);
-              setSelectedBrand(null);
-              setOeInput('');
-            }}
-            className={`text-base font-semibold relative ${
-              activeTab === 'vin' ? 'text-red-500' : 'text-gray-500'
-            }`}
-          >
-            VIN码查询
-            {activeTab === 'vin' && (
-              <span className="absolute left-0 right-0 -bottom-1 h-0.5 bg-red-500" />
-            )}
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+          <button onClick={handleBack} className="p-1 -ml-1">
+            <ChevronLeft className="w-5 h-5 text-gray-800" />
           </button>
-          <button
-            onClick={() => {
-              setActiveTab('part');
-              setStep('brand_select');
-              setSelectedBrand(null);
-              setOeInput('');
-            }}
-            className={`text-base font-semibold relative ${
-              activeTab === 'part' ? 'text-red-500' : 'text-gray-500'
-            }`}
-          >
-            零件号查询
-            {activeTab === 'part' && (
-              <span className="absolute left-0 right-0 -bottom-1 h-0.5 bg-red-500" />
-            )}
-          </button>
+          <div className="flex-1 flex justify-center gap-8">
+            <button
+              onClick={() => {
+                setActiveTab('vin');
+                setStep('query');
+                setSelectedVehicle(null);
+                setSelectedBrand(null);
+                setOeInput('');
+              }}
+              className={`text-base font-semibold relative ${
+                activeTab === 'vin' ? 'text-red-500' : 'text-gray-500'
+              }`}
+            >
+              VIN码查询
+              {activeTab === 'vin' && (
+                <span className="absolute left-0 right-0 -bottom-1 h-0.5 bg-red-500" />
+              )}
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('part');
+                setStep('brand_select');
+                setSelectedBrand(null);
+                setOeInput('');
+              }}
+              className={`text-base font-semibold relative ${
+                activeTab === 'part' ? 'text-red-500' : 'text-gray-500'
+              }`}
+            >
+              零件号查询
+              {activeTab === 'part' && (
+                <span className="absolute left-0 right-0 -bottom-1 h-0.5 bg-red-500" />
+              )}
+            </button>
+          </div>
+          {onCartClick && (
+            <button 
+              onClick={onCartClick}
+              className="relative p-1"
+            >
+              <ShoppingCart className="w-6 h-6 text-gray-800" />
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center border-2 border-white">
+                1
+              </span>
+            </button>
+          )}
+          {!onCartClick && <div className="w-10" />}
         </div>
-        {onCartClick && (
-          <button 
-            onClick={onCartClick}
-            className="relative p-1"
-          >
-            <ShoppingCart className="w-6 h-6 text-gray-800" />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center border-2 border-white">
-              1
-            </span>
-          </button>
-        )}
-        {!onCartClick && <div className="w-10" />}
       </div>
     );
   };
@@ -468,6 +476,7 @@ const Catalog: React.FC<CatalogProps> = ({ onBack, onCartClick }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {renderHeader()}
 
       <div className="flex-1 overflow-y-auto">

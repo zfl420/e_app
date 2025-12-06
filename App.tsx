@@ -1,5 +1,4 @@
-import React, { useState, Suspense, lazy } from 'react';
-import { Settings as SettingsIcon } from 'lucide-react';
+import React, { useState, Suspense, lazy, useEffect } from 'react';
 // 首页必需的组件 - 同步导入
 import Header from './components/Header';
 import StoreCard from './components/StoreCard';
@@ -10,6 +9,7 @@ import BottomNav from './components/BottomNav';
 import { CATEGORIES } from './constants';
 import { getVersionStyles } from './versionStyles';
 import { OrderTab } from './components/MyOrders';
+import { SearchParams, ScanResult } from './types';
 
 // 懒加载组件 - 按需加载
 const PartsList = lazy(() => import('./components/PartsList'));
@@ -48,6 +48,8 @@ const AllApps = lazy(() => import('./components/AllApps'));
 const JoinForm = lazy(() => import('./components/JoinForm'));
 const FeedbackForm = lazy(() => import('./components/FeedbackForm'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
+const SearchResults = lazy(() => import('./components/SearchResults'));
+const ProductScan = lazy(() => import('./components/ProductScan'));
 
 // 加载中占位组件
 const LoadingFallback = () => (
@@ -55,6 +57,19 @@ const LoadingFallback = () => (
     <div className="text-gray-500">加载中...</div>
   </div>
 );
+
+// TOAST 组件
+const Toast: React.FC<{ visible: boolean; message: string }> = ({ visible, message }) => {
+  if (!visible) return null;
+  
+  return (
+    <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[9999] transition-opacity duration-300">
+      <div className="bg-gray-900 text-white px-6 py-3 rounded-lg shadow-lg text-sm font-medium max-w-xs mx-auto">
+        {message}
+      </div>
+    </div>
+  );
+};
 
 const App: React.FC = () => {
   const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
@@ -98,9 +113,139 @@ const App: React.FC = () => {
   const [adminPanelVisible, setAdminPanelVisible] = useState(false);
   const [inquiryListVisible, setInquiryListVisible] = useState(false);
   const [inquiryListInitialStatus, setInquiryListInitialStatus] = useState<'pending' | 'quoted' | 'expired' | 'all'>('all');
+  const [searchResultsVisible, setSearchResultsVisible] = useState(false);
+  const [searchParams, setSearchParams] = useState<{ keyword?: string; brand?: string; attributes?: Record<string, string> }>({});
+  const [productScanVisible, setProductScanVisible] = useState(false);
+  
+  // TOAST 状态
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+
+  // 购物车状态
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   // 获取当前版本的样式配置
   const versionStyles = getVersionStyles(appVersion);
+
+  // TOAST 自动消失
+  useEffect(() => {
+    if (toastVisible) {
+      const timer = setTimeout(() => {
+        setToastVisible(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toastVisible]);
+
+  // 显示 TOAST
+  const showToast = (message: string) => {
+    setToastMessage(message);
+    setToastVisible(true);
+  };
+
+  // 购物车操作方法
+  const addToCart = (product: ProductItem) => {
+    setCartItems(prevItems => {
+      // 检查商品是否已在购物车中
+      const existingItem = prevItems.find(item => item.productId === product.id);
+      if (existingItem) {
+        // 如果已存在，增加数量
+        return prevItems.map(item =>
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        // 如果不存在，添加新商品
+        const newCartItem: CartItem = {
+          id: `cart_${product.id}_${Date.now()}`,
+          storeName: product.shop || '快准车服',
+          storeLocation: product.location || '临安服务站',
+          cutOffTimes: ['上午11:30', '下午14:30', '下午18:00'],
+          productId: product.id,
+          productName: product.title,
+          productImage: product.image,
+          brandPartNumber: product.specs,
+          brandPart: product.brand ? `品牌件:${product.brand}` : undefined,
+          location: product.location,
+          price: parseFloat(product.price),
+          quantity: 1,
+          selected: true,
+          returnPolicy: '7天无理由退货',
+          guarantees: ['赔', '技'],
+          specs: product.specs,
+          brand: product.brand,
+          volume: product.volume,
+        };
+        return [...prevItems, newCartItem];
+      }
+    });
+    showToast('已加入购物车');
+  };
+
+  const removeFromCart = (cartItemId: string) => {
+    setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
+  };
+
+  const updateCartItemQuantity = (cartItemId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(cartItemId);
+      return;
+    }
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === cartItemId ? { ...item, quantity } : item
+      )
+    );
+  };
+
+  const toggleCartItemSelect = (cartItemId: string) => {
+    setCartItems(prevItems =>
+      prevItems.map(item =>
+        item.id === cartItemId ? { ...item, selected: !item.selected } : item
+      )
+    );
+  };
+
+  const toggleSelectAllCart = () => {
+    const allSelected = cartItems.every(item => item.selected);
+    setCartItems(prevItems =>
+      prevItems.map(item => ({ ...item, selected: !allSelected }))
+    );
+  };
+
+  // 计算购物车总价和数量
+  const cartTotal = cartItems
+    .filter(item => item.selected)
+    .reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // 检查页面在指定版本中是否可用
+  const isPageAvailableInVersion = (targetVersion: number): boolean => {
+    // 如果当前在首页，任何版本都支持
+    if (activeTab === 'home' && !partsViewVisible && !selectedChatId && !settingsViewVisible && 
+        !arrivalViewVisible && !productListVisible && !customerVehicleVisible && !fsPriceVisible &&
+        !maintenanceVisible && !catalogVisible && !inventoryVisible && !vinScanVisible &&
+        !serviceCollectionVisible && !productDetailVisible && !maintenanceManualVisible &&
+        !businessAnalysisVisible && !marketingVisible && !orderDetailVisible && !workOrderListVisible &&
+        !shoppingCartVisible && !feedDetailVisible && !employeeManagementVisible && !storeSettingsVisible &&
+        !partsManagementVisible && !workHourListVisible && !myOrdersVisible && !purchaseOrderDetailVisible &&
+        !allAppsVisible && !quickQuoteProjectsVisible && !joinFormVisible && !feedbackVisible &&
+        !adminPanelVisible && !inquiryListVisible) {
+      return true;
+    }
+
+    // 检查主标签页
+    if (activeTab === 'chat' || activeTab === 'inquiry') {
+      // 版本1不支持 chat 和 inquiry
+      if (targetVersion === 1) {
+        return false;
+      }
+    }
+
+    // 其他主标签页（home, ai_quote, profile）和所有二级页面在所有版本都支持
+    return true;
+  };
 
   const handleCategoryClick = (id: string) => {
     if (id === 'all') {
@@ -114,6 +259,32 @@ const App: React.FC = () => {
       setProductListVisible(true);
       return;
     }
+  };
+
+  // 处理搜索
+  const handleSearch = (keyword: string) => {
+    setSearchParams({ keyword });
+    setSearchResultsVisible(true);
+  };
+
+  // 处理扫码
+  const handleScan = () => {
+    setProductScanVisible(true);
+  };
+
+  // 处理扫码成功
+  const handleScanSuccess = (result: ScanResult) => {
+    setProductScanVisible(false);
+    // 根据识别结果设置搜索参数
+    const params: SearchParams = {};
+    if (result.productName) {
+      params.keyword = result.productName;
+    }
+    if (result.brand) {
+      params.brand = result.brand;
+    }
+    setSearchParams(params);
+    setSearchResultsVisible(true);
   };
 
   const handleTabChange = (id: string) => {
@@ -158,90 +329,43 @@ const App: React.FC = () => {
     setJoinFormVisible(false);
     setFeedbackVisible(false);
     setAdminPanelVisible(false);
+    setSearchResultsVisible(false);
+    setProductScanVisible(false);
   };
 
   const handleChatClick = (id: string) => {
     setSelectedChatId(id);
   };
 
-  // Left Side Buttons Component
-  const LeftSideButtons = () => {
-    const buttonColors = [
-      'bg-gray-100', // 按钮1 - 最浅
-      'bg-gray-200', // 按钮2
-      'bg-gray-300', // 按钮3
-      'bg-gray-400', // 按钮4 - 最深
-    ];
-    
-    const handleVersionChange = (version: number) => {
-      setAppVersion(version);
-      // 切换版本时，统一回到该版本的首页
-      setActiveTab('home');
+  // 版本切换处理函数
+  const handleVersionChange = (version: number) => {
+    // 如果目标版本与当前版本相同，直接返回
+    if (version === appVersion) {
+      return;
+    }
 
-      // 重置所有二级页面/弹层状态，回到首页初始态
-      setPartsViewVisible(false);
-      setSelectedChatId(null);
-      setSettingsViewVisible(false);
-      setArrivalViewVisible(false);
-      setProductListVisible(false);
-      setProductCategory(null);
-      setCustomerVehicleVisible(false);
-      setFsPriceVisible(false);
-      setMaintenanceVisible(false);
-      setCatalogVisible(false);
-      setInventoryVisible(false);
-      setVinScanVisible(false);
-      setProductDetailVisible(false);
-      setServiceCollectionVisible(false);
-      setMaintenanceManualVisible(false);
-      setBusinessAnalysisVisible(false);
-      setMarketingVisible(false);
-      setOrderDetailVisible(false);
-      setWorkOrderListVisible(false);
-      setShoppingCartVisible(false);
-      setFeedDetailVisible(false);
-      setSelectedFeedId(null);
-      setEmployeeManagementVisible(false);
-      setStoreSettingsVisible(false);
-      setPartsManagementVisible(false);
-      setWorkHourListVisible(false);
-      setMyOrdersVisible(false);
-      setPurchaseOrderDetailVisible(false);
-      setSelectedOrderId(null);
-      setAllAppsVisible(false);
-      setJoinFormVisible(false);
-      setFeedbackVisible(false);
-      setAdminPanelVisible(false);
-      setInquiryListVisible(false);
-    };
-    
-    return (
-      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
-        {[1, 2, 3, 4].map((num) => (
-          <button
-            key={num}
-            onClick={() => handleVersionChange(num)}
-            className={`w-10 h-10 ${buttonColors[num - 1]} rounded-xl shadow-lg border-2 ${
-              appVersion === num ? 'border-secondary' : 'border-gray-200'
-            } flex items-center justify-center text-gray-700 font-semibold text-sm hover:opacity-80 active:scale-95 transition-all`}
-          >
-            {num}
-          </button>
-        ))}
-      </div>
-    );
+    // 检查目标版本是否支持当前页面
+    if (!isPageAvailableInVersion(version)) {
+      showToast('当前版本无此页面，无法切换');
+      return;
+    }
+
+    // 如果支持，更新版本号，保持当前页面状态不变
+    setAppVersion(version);
   };
 
   // Render Full Screen Overlays
   if (partsViewVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <PartsList 
               onBack={() => setPartsViewVisible(false)} 
+              appVersion={appVersion}
+              onVersionChange={handleVersionChange}
+              onAdminClick={() => setAdminPanelVisible(true)}
               onSubcategoryClick={(parentCategory, subcategoryName) => {
                 // 根据大类简单映射到已有的商品数据分类，其他大类统一用汽机油数据做占位
                 let targetCategoryId: string = 'oil';
@@ -261,6 +385,7 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -268,14 +393,19 @@ const App: React.FC = () => {
   if (employeeManagementVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <EmployeeManagement onBack={() => setEmployeeManagementVisible(false)} />
+              <EmployeeManagement 
+                onBack={() => setEmployeeManagementVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -283,14 +413,19 @@ const App: React.FC = () => {
   if (storeSettingsVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <StoreSettings onBack={() => setStoreSettingsVisible(false)} />
+              <StoreSettings 
+                onBack={() => setStoreSettingsVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -298,14 +433,19 @@ const App: React.FC = () => {
   if (partsManagementVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <PartsManagement onBack={() => setPartsManagementVisible(false)} />
+              <PartsManagement 
+                onBack={() => setPartsManagementVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -313,11 +453,15 @@ const App: React.FC = () => {
   if (workHourListVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <WorkHourList onBack={() => setWorkHourListVisible(false)} />
+              <WorkHourList 
+                onBack={() => setWorkHourListVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
@@ -328,17 +472,20 @@ const App: React.FC = () => {
   if (selectedChatId) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <ChatDetail 
                 chatId={selectedChatId} 
                 onBack={() => setSelectedChatId(null)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -346,14 +493,19 @@ const App: React.FC = () => {
   if (settingsViewVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <Settings onBack={() => setSettingsViewVisible(false)} />
+              <Settings 
+                onBack={() => setSettingsViewVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -361,7 +513,6 @@ const App: React.FC = () => {
   if (orderDetailVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
@@ -369,11 +520,15 @@ const App: React.FC = () => {
                 onBack={() => {
                   setOrderDetailVisible(false);
                   setActiveTab('home');
-                }} 
+                }}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -381,12 +536,14 @@ const App: React.FC = () => {
   if (arrivalViewVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <ArrivalList 
                 onBack={() => setArrivalViewVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onCreateOrder={() => {
                   setArrivalViewVisible(false);
                   setVinScanMode('order');
@@ -396,6 +553,7 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -403,7 +561,6 @@ const App: React.FC = () => {
   if (productListVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
@@ -414,15 +571,22 @@ const App: React.FC = () => {
                 }} 
                 categoryId={productCategory?.id || 'oil'} 
                 categoryLabel={productCategory?.label || '汽机油'}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onCartClick={() => {
                   setProductListVisible(false);
                   setProductCategory(null);
                   setShoppingCartVisible(true);
                 }}
+                addToCart={addToCart}
+                cartCount={cartCount}
+                cartTotal={cartTotal}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -430,17 +594,20 @@ const App: React.FC = () => {
   if (customerVehicleVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <CustomerVehicle
                 initialTab={customerVehicleTab}
                 onBack={() => setCustomerVehicleVisible(false)}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -448,12 +615,14 @@ const App: React.FC = () => {
   if (fsPriceVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <FourSPrice
                 onBack={() => setFsPriceVisible(false)}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onInquiryClick={() => {
                   setFsPriceVisible(false);
                   setActiveTab('ai_quote');
@@ -466,6 +635,7 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -473,14 +643,19 @@ const App: React.FC = () => {
   if (maintenanceVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <Maintenance onBack={() => setMaintenanceVisible(false)} />
+              <Maintenance 
+                onBack={() => setMaintenanceVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -488,12 +663,14 @@ const App: React.FC = () => {
   if (catalogVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <Catalog 
                 onBack={() => setCatalogVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onCartClick={() => {
                   setCatalogVisible(false);
                   setShoppingCartVisible(true);
@@ -502,6 +679,7 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -509,14 +687,19 @@ const App: React.FC = () => {
   if (inventoryVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <InventoryQuery onBack={() => setInventoryVisible(false)} />
+              <InventoryQuery 
+                onBack={() => setInventoryVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -524,13 +707,15 @@ const App: React.FC = () => {
   if (vinScanVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className="min-h-screen bg-black flex justify-center">
           <div className="w-full max-w-md min-h-screen relative overflow-hidden">
             <Suspense fallback={<LoadingFallback />}>
               <VINScan 
                 onBack={() => setVinScanVisible(false)}
                 initialTab="vin"
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onSkip={() => {
                   setVinScanVisible(false);
                   if (vinScanMode === 'order') {
@@ -547,6 +732,7 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -554,14 +740,19 @@ const App: React.FC = () => {
   if (serviceCollectionVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
+              <ServiceCollection 
+                onBack={() => setServiceCollectionVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -569,14 +760,19 @@ const App: React.FC = () => {
   if (productDetailVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <ProductDetail onBack={() => setProductDetailVisible(false)} />
+              <ProductDetail 
+                onBack={() => setProductDetailVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -584,14 +780,19 @@ const App: React.FC = () => {
   if (maintenanceManualVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
+              <MaintenanceManual 
+                onBack={() => setMaintenanceManualVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -599,14 +800,19 @@ const App: React.FC = () => {
   if (businessAnalysisVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
+              <BusinessAnalysis 
+                onBack={() => setBusinessAnalysisVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -614,14 +820,19 @@ const App: React.FC = () => {
   if (marketingVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <Marketing onBack={() => setMarketingVisible(false)} />
+              <Marketing 
+                onBack={() => setMarketingVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -629,14 +840,19 @@ const App: React.FC = () => {
   if (workOrderListVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
+              <WorkOrderList 
+                onBack={() => setWorkOrderListVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -644,14 +860,24 @@ const App: React.FC = () => {
   if (shoppingCartVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
+              <ShoppingCart 
+                onBack={() => setShoppingCartVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+                cartItems={cartItems}
+                updateCartItemQuantity={updateCartItemQuantity}
+                toggleCartItemSelect={toggleCartItemSelect}
+                toggleSelectAllCart={toggleSelectAllCart}
+                removeFromCart={removeFromCart}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -659,7 +885,6 @@ const App: React.FC = () => {
   if (feedDetailVisible && selectedFeedId) {
     return (
       <>
-        <LeftSideButtons />
         <div className="min-h-screen bg-black flex justify-center">
           <div className="w-full max-w-md min-h-screen relative overflow-hidden">
             <Suspense fallback={<LoadingFallback />}>
@@ -668,11 +893,20 @@ const App: React.FC = () => {
                 onBack={() => {
                   setFeedDetailVisible(false);
                   setSelectedFeedId(null);
-                }} 
+                }}
+                onHome={() => {
+                  setFeedDetailVisible(false);
+                  setSelectedFeedId(null);
+                  setActiveTab('home');
+                }}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -680,7 +914,6 @@ const App: React.FC = () => {
   if (purchaseOrderDetailVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
@@ -690,10 +923,14 @@ const App: React.FC = () => {
                   setSelectedOrderId(null);
                 }}
                 orderId={selectedOrderId || undefined}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -701,14 +938,19 @@ const App: React.FC = () => {
   if (allAppsVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <AllApps onBack={() => setAllAppsVisible(false)} />
+              <AllApps 
+                onBack={() => setAllAppsVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -716,7 +958,6 @@ const App: React.FC = () => {
   if (quickQuoteProjectsVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
@@ -725,10 +966,14 @@ const App: React.FC = () => {
                   setQuickQuoteProjectsVisible(false);
                   setVinScanVisible(true);
                 }}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
               />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -736,14 +981,19 @@ const App: React.FC = () => {
   if (joinFormVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <JoinForm onBack={() => setJoinFormVisible(false)} />
+              <JoinForm 
+                onBack={() => setJoinFormVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -751,11 +1001,15 @@ const App: React.FC = () => {
   if (feedbackVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
-              <FeedbackForm onBack={() => setFeedbackVisible(false)} />
+              <FeedbackForm 
+                onBack={() => setFeedbackVisible(false)} 
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
             </Suspense>
           </div>
         </div>
@@ -766,12 +1020,14 @@ const App: React.FC = () => {
   if (adminPanelVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <AdminPanel 
                 onBack={() => setAdminPanelVisible(false)}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onMenuClick={(menuId) => {
                   setAdminPanelVisible(false);
                   if (menuId === '员工管理') {
@@ -794,6 +1050,7 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -801,13 +1058,15 @@ const App: React.FC = () => {
   if (myOrdersVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <MyOrders 
                 onBack={() => setMyOrdersVisible(false)} 
                 initialTab={myOrdersTab}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onOrderClick={(orderId) => {
                   setSelectedOrderId(orderId);
                   setPurchaseOrderDetailVisible(true);
@@ -824,12 +1083,14 @@ const App: React.FC = () => {
   if (inquiryListVisible) {
     return (
       <>
-        <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <InquiryList 
                 onBack={() => setInquiryListVisible(false)}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
                 onCartClick={() => {
                   setInquiryListVisible(false);
                   setShoppingCartVisible(true);
@@ -843,6 +1104,59 @@ const App: React.FC = () => {
             </Suspense>
           </div>
         </div>
+        <Toast visible={toastVisible} message={toastMessage} />
+      </>
+    );
+  }
+
+  // Search Results View
+  if (searchResultsVisible) {
+    return (
+      <>
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <Suspense fallback={<LoadingFallback />}>
+              <SearchResults 
+                onBack={() => setSearchResultsVisible(false)}
+                searchParams={searchParams}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+                onCartClick={() => {
+                  setSearchResultsVisible(false);
+                  setShoppingCartVisible(true);
+                }}
+                onProductClick={(productId) => {
+                  setSearchResultsVisible(false);
+                  setProductDetailVisible(true);
+                }}
+              />
+            </Suspense>
+          </div>
+        </div>
+        <Toast visible={toastVisible} message={toastMessage} />
+      </>
+    );
+  }
+
+  // Product Scan View
+  if (productScanVisible) {
+    return (
+      <>
+        <div className="min-h-screen bg-black flex justify-center">
+          <div className="w-full max-w-md min-h-screen relative overflow-hidden">
+            <Suspense fallback={<LoadingFallback />}>
+              <ProductScan 
+                onBack={() => setProductScanVisible(false)}
+                onScanSuccess={handleScanSuccess}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
+            </Suspense>
+          </div>
+        </div>
+        <Toast visible={toastVisible} message={toastMessage} />
       </>
     );
   }
@@ -851,7 +1165,6 @@ const App: React.FC = () => {
   if (activeTab === 'ai_quote') {
       return (
         <>
-          <LeftSideButtons />
           <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
               <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
                   <Suspense fallback={<LoadingFallback />}>
@@ -863,10 +1176,13 @@ const App: React.FC = () => {
                       }}
                       onInquiryClick={appVersion === 1 ? () => setInquiryListVisible(true) : undefined}
                       appVersion={appVersion}
+                      onVersionChange={handleVersionChange}
+                      onAdminClick={() => setAdminPanelVisible(true)}
                     />
                   </Suspense>
               </div>
           </div>
+          <Toast visible={toastVisible} message={toastMessage} />
         </>
       );
   }
@@ -874,15 +1190,6 @@ const App: React.FC = () => {
   // Render Main Tabs
   return (
     <>
-      <LeftSideButtons />
-      {/* Settings Button - 整个页面右上角的设置按钮 */}
-      <button
-        onClick={() => setAdminPanelVisible(true)}
-        className="fixed top-4 right-4 z-50 p-3 bg-white/90 hover:bg-white rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 backdrop-blur-sm border border-gray-200"
-        title="管理后台"
-      >
-        <SettingsIcon className="w-6 h-6 text-gray-700" />
-      </button>
       <div className={`min-h-screen ${versionStyles.mainContainer.background} flex justify-center`}>
         <div className={`w-full max-w-md ${versionStyles.mainContainer.container} min-h-screen relative shadow-2xl overflow-hidden flex flex-col`}>
         {activeTab === 'home' && (
@@ -908,6 +1215,9 @@ const App: React.FC = () => {
               }}
               onCartClick={() => setShoppingCartVisible(true)}
               onAdminClick={() => setAdminPanelVisible(true)}
+              onVersionChange={handleVersionChange}
+              onSearch={handleSearch}
+              onScan={handleScan}
             />
             {appVersion >= 3 && (
               <>
@@ -957,7 +1267,12 @@ const App: React.FC = () => {
 
         {activeTab === 'chat' && appVersion >= 2 && (
            <Suspense fallback={<LoadingFallback />}>
-             <ChatList onChatClick={handleChatClick} />
+             <ChatList 
+               onChatClick={handleChatClick}
+               appVersion={appVersion}
+               onVersionChange={handleVersionChange}
+               onAdminClick={() => setAdminPanelVisible(true)}
+             />
            </Suspense>
         )}
         
@@ -966,6 +1281,9 @@ const App: React.FC = () => {
              <InquiryList 
                onCartClick={() => setShoppingCartVisible(true)} 
                onAddInquiry={() => setActiveTab('ai_quote')}
+               appVersion={appVersion}
+               onVersionChange={handleVersionChange}
+               onAdminClick={() => setAdminPanelVisible(true)}
              />
            </Suspense>
         )}
@@ -975,6 +1293,8 @@ const App: React.FC = () => {
              <Profile 
                appVersion={appVersion}
                onSettingsClick={() => setSettingsViewVisible(true)}
+               onVersionChange={handleVersionChange}
+               onAdminClick={() => setAdminPanelVisible(true)}
               onMenuClick={(menuId) => {
                 if (menuId === '员工管理') {
                   setEmployeeManagementVisible(true);
@@ -1005,6 +1325,7 @@ const App: React.FC = () => {
         <BottomNav appVersion={appVersion} activeTab={activeTab} onTabChange={handleTabChange} />
         </div>
       </div>
+      <Toast visible={toastVisible} message={toastMessage} />
     </>
   );
 };

@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronDown, Search, ScanLine, CheckCircle2, AlertCircle, MoreHorizontal } from 'lucide-react';
 import { ARRIVAL_LIST_DATA } from '../constants';
+import StatusBar from './StatusBar';
 
 interface ArrivalListProps {
   onBack: () => void;
   onCreateOrder?: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const ArrivalList: React.FC<ArrivalListProps> = ({ onBack, onCreateOrder }) => {
+const ArrivalList: React.FC<ArrivalListProps> = ({ onBack, onCreateOrder, appVersion, onVersionChange, onAdminClick }) => {
   const [activeTab, setActiveTab] = useState('pending');
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white sticky top-0 z-20">
         <div className="flex items-center justify-between px-4 py-3">

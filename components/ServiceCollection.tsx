@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Search, Filter, Car, ChevronRight } from 'lucide-react';
+import { ChevronLeft, Search, Filter, Car, ChevronRight } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface ServiceCollectionItem {
   id: string;
@@ -72,9 +73,12 @@ const SERVICE_COLLECTION_DATA: ServiceCollectionItem[] = [
 
 interface ServiceCollectionProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const ServiceCollection: React.FC<ServiceCollectionProps> = ({ onBack }) => {
+const ServiceCollection: React.FC<ServiceCollectionProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   // 过滤数据
@@ -89,16 +93,20 @@ const ServiceCollection: React.FC<ServiceCollectionProps> = ({ onBack }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-red-600 pt-10 pb-3 px-4">
-        <div className="flex items-center justify-between">
-          <button onClick={onBack} className="p-1 -ml-1">
-            <ArrowLeft className="w-5 h-5 text-white" />
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
-          <div className="flex-1 text-center text-base font-semibold text-white">
+          <div className="flex-1 text-center text-base font-semibold text-gray-900">
             服务收款
           </div>
-          <div className="w-10" />
+          <button className="text-secondary text-sm font-medium px-2">
+            开卡
+          </button>
         </div>
       </div>
 
@@ -114,7 +122,7 @@ const ServiceCollection: React.FC<ServiceCollectionProps> = ({ onBack }) => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="输入姓名/手机号/车牌号搜索"
-              className="w-full h-10 pl-9 pr-3 bg-gray-50 rounded-lg text-sm text-gray-700 placeholder-gray-400 border-none outline-none focus:bg-white focus:ring-2 focus:ring-blue-200"
+              className="w-full h-10 pl-9 pr-3 bg-gray-100 rounded-lg text-sm text-gray-700 placeholder-gray-400 border-none outline-none focus:bg-white focus:ring-2 focus:ring-blue-200"
             />
           </div>
           <button className="flex items-center gap-1 px-3 h-10 text-sm text-gray-600">

@@ -45,9 +45,11 @@ interface ProfileProps {
   onInquiryClick?: (status: 'pending' | 'quoted' | 'expired' | 'all') => void;
   onJoinClick: () => void;
   onFeedbackClick: () => void;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick, onInquiryClick, onJoinClick, onFeedbackClick }) => {
+const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMenuClick, onOrderClick, onInquiryClick, onJoinClick, onFeedbackClick, onVersionChange, onAdminClick }) => {
   const [statsPeriod, setStatsPeriod] = useState<StatsPeriod>('today');
   const styles = getVersionStyles(appVersion);
 
@@ -80,7 +82,7 @@ const Profile: React.FC<ProfileProps> = ({ appVersion = 4, onSettingsClick, onMe
   return (
     <div className={`flex flex-col h-full ${styles.profile.container} pb-24`}>
       {/* Status Bar */}
-      <StatusBar variant="white" />
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       
       {/* Header Profile Section */}
       <div className={`${styles.profile.headerSection} px-6 pt-6 pb-8 relative`}>

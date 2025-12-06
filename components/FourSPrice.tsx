@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, ScanLine, Mic, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ScanLine, Mic, ChevronRight } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface VinHistoryItem {
   id: string;
@@ -83,9 +84,12 @@ interface FourSPriceProps {
   onBack: () => void;
   onInquiryClick?: () => void;
   onCreateOrderClick?: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const FourSPrice: React.FC<FourSPriceProps> = ({ onBack, onInquiryClick, onCreateOrderClick }) => {
+const FourSPrice: React.FC<FourSPriceProps> = ({ onBack, onInquiryClick, onCreateOrderClick, appVersion, onVersionChange, onAdminClick }) => {
   const [step, setStep] = useState<Step>('vin_list');
   const [selectedVin, setSelectedVin] = useState<VinHistoryItem | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
@@ -108,23 +112,28 @@ const FourSPrice: React.FC<FourSPriceProps> = ({ onBack, onInquiryClick, onCreat
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-white pt-10 pb-3 px-4 flex items-center justify-between border-b border-gray-100">
-        <button
-          onClick={() => {
-            if (step === 'vin_detail') {
-              setStep('vin_list');
-              setSelectedCategoryId(null);
-            } else {
-              onBack();
-            }
-          }}
-          className="p-1 -ml-1"
-        >
-          <ArrowLeft className="w-5 h-5 text-gray-800" />
-        </button>
-        <div className="flex-1 text-center text-base font-semibold text-gray-900 mr-7">
-          查4S价
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+          <button
+            onClick={() => {
+              if (step === 'vin_detail') {
+                setStep('vin_list');
+                setSelectedCategoryId(null);
+              } else {
+                onBack();
+              }
+            }}
+            className="p-1 -ml-2"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <div className="flex-1 text-center text-base font-semibold text-gray-900">
+            查4S价
+          </div>
+          <div className="w-10" />
         </div>
       </div>
 

@@ -1,8 +1,12 @@
 import React, { useState, useMemo } from 'react';
-import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, CheckCircle2 } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface QuickQuoteProjectsProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 interface Category {
@@ -53,7 +57,7 @@ const MINOR_MAINTENANCE_ITEMS: ProjectItem[] = [
   },
 ];
 
-const QuickQuoteProjects: React.FC<QuickQuoteProjectsProps> = ({ onBack }) => {
+const QuickQuoteProjects: React.FC<QuickQuoteProjectsProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [activeCategory, setActiveCategory] = useState<string | null>('minor');
   const [checkedIds, setCheckedIds] = useState<string[]>([]);
   const [expandedMinorId, setExpandedMinorId] = useState<string | null>(null);
@@ -80,15 +84,18 @@ const QuickQuoteProjects: React.FC<QuickQuoteProjectsProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
-      <div className="bg-white pt-10 pb-3 px-4 flex items-center border-b border-gray-100">
-        <button onClick={onBack} className="p-1 -ml-1">
-          <ArrowLeft className="w-5 h-5 text-gray-800" />
-        </button>
-        <div className="flex-1 text-center text-base font-semibold text-gray-900">
-          项目/材料添加
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <div className="flex-1 text-center text-base font-semibold text-gray-900">
+            项目/材料添加
+          </div>
+          <div className="w-10" />
         </div>
-        <div className="w-10" />
       </div>
 
       {/* Vehicle summary */}

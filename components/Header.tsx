@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ShoppingCart, ScanLine, Search } from 'lucide-react';
 import { TOP_ACTIONS } from '../constants';
 import StatusBar from './StatusBar';
@@ -9,15 +9,51 @@ interface HeaderProps {
   onTopActionClick?: (id: string) => void;
   onCartClick?: () => void;
   onAdminClick?: () => void;
+  onVersionChange?: (version: number) => void;
+  onSearch?: (keyword: string) => void;
+  onScan?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCartClick, onAdminClick }) => {
+const Header: React.FC<HeaderProps> = ({ 
+  appVersion = 4, 
+  onTopActionClick, 
+  onCartClick, 
+  onAdminClick, 
+  onVersionChange,
+  onSearch,
+  onScan
+}) => {
   const styles = getVersionStyles(appVersion);
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const handleSearch = () => {
+    if (searchKeyword.trim() && onSearch) {
+      onSearch(searchKeyword.trim());
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  const handleScanClick = () => {
+    if (onScan) {
+      onScan();
+    }
+  };
 
   return (
     <div className={`${styles.header.container} ${styles.header.paddingBottom} px-4 rounded-b-[2.5rem] shadow-md relative z-0`}>
       {/* Status Bar */}
-      <StatusBar />
+      <div className="-mx-4">
+        <StatusBar 
+          appVersion={appVersion}
+          onVersionChange={onVersionChange}
+          onAdminClick={onAdminClick}
+        />
+      </div>
 
       {/* Search Bar Row */}
       <div className={`flex items-center gap-3 ${styles.header.searchBarMargin}`}>
@@ -25,10 +61,19 @@ const Header: React.FC<HeaderProps> = ({ appVersion = 4, onTopActionClick, onCar
           <Search className="w-5 h-5 text-gray-400 mr-2" />
           <input 
             type="text" 
-            placeholder="配件名称/型号搜索" 
+            placeholder="配件名称/型号/品牌搜索" 
             className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            onKeyPress={handleKeyPress}
           />
-          <ScanLine className="w-5 h-5 text-gray-400 ml-2" />
+          <button 
+            onClick={handleScanClick}
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            title="扫码识别商品"
+          >
+            <ScanLine className="w-5 h-5 text-gray-400" />
+          </button>
         </div>
         <button className="relative p-2" onClick={onCartClick}>
           <ShoppingCart className="w-7 h-7 text-white" />

@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface BusinessAnalysisProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 type PeriodType = 'day' | 'week' | 'month';
 type MainTabType = 'business' | 'customer' | 'diagnosis';
 type SideMenuType = 'business' | 'count' | 'marketing';
 
-const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack }) => {
+const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [mainTab, setMainTab] = useState<MainTabType>('business');
   const [period, setPeriod] = useState<PeriodType>('day');
   const [currentDate, setCurrentDate] = useState('2025-12-03');
@@ -261,15 +265,18 @@ const BusinessAnalysis: React.FC<BusinessAnalysisProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* 顶部栏 */}
-      <div className="bg-white pt-10 pb-3 px-4 flex items-center justify-between border-b border-gray-100">
-        <button onClick={onBack} className="p-1 -ml-1">
-          <ArrowLeft className="w-5 h-5 text-gray-800" />
-        </button>
-        <div className="flex-1 text-center text-base font-semibold text-gray-900">
-          营业分析
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+      {/* Header */}
+      <div className="bg-white sticky top-0 z-20">
+        <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+          <button onClick={onBack} className="p-1 -ml-2">
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
+          </button>
+          <div className="flex-1 text-center text-base font-semibold text-gray-900">
+            营业分析
+          </div>
+          <div className="w-10"></div>
         </div>
-        <div className="w-10"></div>
       </div>
 
       {/* 主标签导航 */}

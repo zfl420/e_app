@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Search, ScanLine, Car, FileText, MessageCircle } from 'lucide-react';
+import { ChevronLeft, Search, ScanLine, Car, FileText, MessageCircle } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 type TabType = 'case' | 'fault' | 'circuit' | 'remote';
 
 interface MaintenanceManualProps {
   onBack: () => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
+const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack, appVersion, onVersionChange, onAdminClick }) => {
   const [activeTab, setActiveTab] = useState<TabType>('case');
 
   const tabs = [
@@ -18,14 +22,16 @@ const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
   ];
 
   const renderHeader = () => (
-    <div className="bg-white pt-10 pb-3 px-4 flex items-center border-b border-gray-100">
-      <button onClick={onBack} className="p-1 -ml-1">
-        <ArrowLeft className="w-5 h-5 text-gray-800" />
-      </button>
-      <div className="flex-1 text-center text-base font-semibold text-gray-900">
-        维修手册
+    <div className="bg-white sticky top-0 z-20">
+      <div className="flex items-center justify-between px-4 pt-3 pb-3 border-b border-gray-100">
+        <button onClick={onBack} className="p-1 -ml-2">
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
+        </button>
+        <div className="flex-1 text-center text-base font-semibold text-gray-900">
+          维修手册
+        </div>
+        <div className="w-10" />
       </div>
-      <div className="w-10" />
     </div>
   );
 
@@ -51,32 +57,32 @@ const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
   );
 
   const renderSearchSection = () => (
-    <div className="bg-red-500 px-4 py-4">
+    <div className="bg-white px-4 py-4 border-b border-gray-100">
       <div className="relative mb-3">
         <input
           type="text"
           placeholder="输入关键字查询"
-          className="w-full h-12 px-4 pr-12 bg-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-200"
+          className="w-full h-12 px-4 pr-12 bg-gray-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-white"
         />
         <button className="absolute right-3 top-1/2 -translate-y-1/2">
           <MessageCircle className="w-5 h-5 text-gray-400" />
         </button>
       </div>
       <div className="flex gap-2 mb-3">
-        <button className="flex-1 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center justify-center gap-2 text-white text-sm">
+        <button className="flex-1 bg-gray-50 rounded-lg px-3 py-2 flex items-center justify-center gap-2 text-gray-700 text-sm">
           <ScanLine className="w-4 h-4" />
           <span>扫VIN码</span>
         </button>
-        <button className="flex-1 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center justify-center gap-2 text-white text-sm">
+        <button className="flex-1 bg-gray-50 rounded-lg px-3 py-2 flex items-center justify-center gap-2 text-gray-700 text-sm">
           <Car className="w-4 h-4" />
           <span>选择车型</span>
         </button>
-        <button className="flex-1 bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 flex items-center justify-center gap-2 text-white text-sm">
+        <button className="flex-1 bg-gray-50 rounded-lg px-3 py-2 flex items-center justify-center gap-2 text-gray-700 text-sm">
           <span className="text-xs font-mono">VIN</span>
           <span>输入VIN码</span>
         </button>
       </div>
-      <div className="text-xs text-white/80">查询历史: LNYABAA33GVN00267</div>
+      <div className="text-xs text-gray-500">查询历史: LNYABAA33GVN00267</div>
     </div>
   );
 
@@ -208,6 +214,7 @@ const MaintenanceManual: React.FC<MaintenanceManualProps> = ({ onBack }) => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {renderHeader()}
       {renderTabs()}
       <div className="flex-1 overflow-y-auto">

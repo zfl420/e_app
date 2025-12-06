@@ -1,12 +1,16 @@
 import React from 'react';
 import { ChevronLeft, Users, Store, Package, Briefcase, Settings, BarChart3, MessageSquare } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface AdminPanelProps {
   onBack: () => void;
   onMenuClick?: (menuId: string) => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ onBack, onMenuClick }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ onBack, onMenuClick, appVersion, onVersionChange, onAdminClick }) => {
   const menuItems = [
     { id: 'employee', icon: Users, label: '员工管理', desc: '管理员工信息和权限' },
     { id: 'store', icon: Store, label: '门店管理', desc: '门店信息和配置' },
@@ -19,11 +23,12 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack, onMenuClick }) => {
 
   return (
     <div className="h-full bg-gray-50 flex flex-col">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-gradient-to-r from-primary to-primary-dark text-white px-4 py-4">
         <div className="flex items-center gap-3 mb-4">
-          <button onClick={onBack} className="p-1 hover:bg-white/10 rounded-lg transition-colors">
-            <ChevronLeft className="w-6 h-6" />
+          <button onClick={onBack} className="p-1 -ml-2 hover:bg-white/10 rounded-lg transition-colors">
+            <ChevronLeft className="w-6 h-6 text-white" />
           </button>
           <h1 className="text-xl font-bold">管理后台</h1>
         </div>

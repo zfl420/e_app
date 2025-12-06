@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { ChevronLeft, Filter, ShoppingCart } from 'lucide-react';
+import StatusBar from './StatusBar';
 
 interface ProductDetailProps {
   onBack: () => void;
   productId?: string;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
 interface CarModel {
@@ -16,7 +20,7 @@ interface CarModel {
   }>;
 }
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId }) => {
+const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId, appVersion, onVersionChange, onAdminClick }) => {
   const [showFilter, setShowFilter] = useState(false);
 
   // Mock product data
@@ -72,10 +76,11 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId }) => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="bg-white sticky top-0 z-20 border-b border-gray-100">
-        <div className="flex items-center px-4 pt-3 pb-2">
-          <button onClick={onBack} className="p-1 -ml-1 mr-2">
+        <div className="flex items-center px-4 pt-3 pb-3">
+          <button onClick={onBack} className="p-1 -ml-2">
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
           <h1 className="flex-1 text-center text-base font-semibold text-gray-900">商品详情</h1>

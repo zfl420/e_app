@@ -5,15 +5,18 @@ import StatusBar from './StatusBar';
 
 interface ChatListProps {
   onChatClick: (id: string) => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const ChatList: React.FC<ChatListProps> = ({ onChatClick }) => {
+const ChatList: React.FC<ChatListProps> = ({ onChatClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeTab, setActiveTab] = useState<'messages' | 'contacts'>('messages');
 
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
       {/* Status Bar */}
-      <StatusBar variant="white" />
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
 
       {/* Top Module: Tabs + Search（整体白色模块） */}
       <div className="bg-white sticky top-0 z-10 border-b border-gray-100">

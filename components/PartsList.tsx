@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { ChevronLeft, ShoppingCart, Search } from 'lucide-react';
 import { SIDEBAR_CATEGORIES, CATEGORY_SECTIONS } from '../constants';
+import StatusBar from './StatusBar';
 
 interface PartsListProps {
   onBack: () => void;
@@ -8,9 +9,12 @@ interface PartsListProps {
    * 点击右侧任一配件小类时触发，方便跳转到商品列表页
    */
   onSubcategoryClick?: (parentCategory: string, subcategoryName: string) => void;
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const PartsList: React.FC<PartsListProps> = ({ onBack, onSubcategoryClick }) => {
+const PartsList: React.FC<PartsListProps> = ({ onBack, onSubcategoryClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeCategory, setActiveCategory] = useState(SIDEBAR_CATEGORIES[0]);
   const rightPanelRef = useRef<HTMLDivElement>(null);
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -74,10 +78,12 @@ const PartsList: React.FC<PartsListProps> = ({ onBack, onSubcategoryClick }) => 
 
   return (
     <div className="flex flex-col h-screen bg-white">
+      {/* Status Bar */}
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 shrink-0 z-20">
         <button onClick={onBack} className="p-1 -ml-2">
-          <ChevronLeft className="w-7 h-7 text-gray-700" />
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
         </button>
         
         <div className="flex-1 bg-gray-100 h-9 rounded-full flex items-center px-4">

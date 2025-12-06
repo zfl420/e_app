@@ -8,9 +8,12 @@ interface InquiryListProps {
   onAddInquiry?: () => void;
   onBack?: () => void;
   initialStatus?: 'pending' | 'quoted' | 'expired' | 'all';
+  appVersion?: number;
+  onVersionChange?: (version: number) => void;
+  onAdminClick?: () => void;
 }
 
-const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, onBack, initialStatus = 'all' }) => {
+const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, onBack, initialStatus = 'all', appVersion, onVersionChange, onAdminClick }) => {
   const [activeStatus, setActiveStatus] = useState<'pending' | 'quoted' | 'expired' | 'all'>(initialStatus);
 
   useEffect(() => {
@@ -27,15 +30,15 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, on
   return (
     <div className="flex flex-col h-full bg-gray-50 pb-24">
       {/* Status Bar */}
-      <StatusBar variant="white" />
+      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
       
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 sticky top-0 z-10">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             {onBack && (
-              <button className="p-1" onClick={onBack}>
-                <ChevronLeft className="w-6 h-6 text-gray-700" />
+              <button className="p-1 -ml-2" onClick={onBack}>
+                <ChevronLeft className="w-6 h-6 text-gray-800" />
               </button>
             )}
             <h1 className="text-xl font-bold text-gray-900">询价单</h1>
@@ -133,22 +136,23 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, on
                ))}
             </div>
 
-            {/* Cart Button (Absolute) */}
-            {item.showCart && (
-                <div className="absolute bottom-4 right-4">
-                    <button 
-                      onClick={onCartClick}
-                      className="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm text-secondary hover:bg-gray-50"
-                    >
-                        <ShoppingCart className="w-4 h-4" />
-                    </button>
-                </div>
-            )}
           </div>
         ))}
         {/* Spacer for bottom nav */}
         <div className="h-8"></div>
       </div>
+
+      {/* Fixed Cart Button - Above Bottom Nav */}
+      {onCartClick && (
+        <div className="fixed bottom-20 right-4 z-40 max-w-md mx-auto left-0 flex justify-end pr-4">
+          <button 
+            onClick={onCartClick}
+            className="w-12 h-12 bg-white border-2 border-gray-200 rounded-full flex items-center justify-center shadow-lg text-secondary hover:bg-gray-50 active:scale-95 transition-transform"
+          >
+            <ShoppingCart className="w-7 h-7" strokeWidth={2} />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
