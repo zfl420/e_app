@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, Search, Plus, User } from 'lucide-react';
+import { ChevronLeft, Search, Plus } from 'lucide-react';
 
 interface WorkHourListProps {
   onBack: () => void;
@@ -65,10 +65,6 @@ const WorkHourList: React.FC<WorkHourListProps> = ({ onBack }) => {
           </button>
           <h1 className="text-lg font-bold text-gray-900">工时列表</h1>
           <div className="flex items-center gap-4 text-gray-700 text-sm">
-            <div className="flex flex-col items-center gap-0.5">
-              <User className="w-5 h-5" />
-              <span className="text-[10px]">客服</span>
-            </div>
             <div className="flex flex-col items-center gap-0.5">
               <Plus className="w-5 h-5" />
               <span className="text-[10px]">新建工时</span>

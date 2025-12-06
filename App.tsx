@@ -1,49 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
+import { Settings as SettingsIcon } from 'lucide-react';
+// 首页必需的组件 - 同步导入
 import Header from './components/Header';
 import StoreCard from './components/StoreCard';
 import Banner from './components/Banner';
 import CategoryGrid from './components/CategoryGrid';
 import VideoFeed from './components/VideoFeed';
 import BottomNav from './components/BottomNav';
-import PartsList from './components/PartsList';
-import ChatList from './components/ChatList';
-import ChatDetail from './components/ChatDetail';
-import InquiryList from './components/InquiryList';
-import Profile from './components/Profile';
-import Settings from './components/Settings';
-import ArrivalList from './components/ArrivalList';
-import AIQuote from './components/AIQuote';
-import ProductList from './components/ProductList';
 import { CATEGORIES } from './constants';
-import CustomerVehicle from './components/CustomerVehicle';
-import FourSPrice from './components/FourSPrice';
-import Maintenance from './components/Maintenance';
-import Catalog from './components/Catalog';
-import InventoryQuery from './components/InventoryQuery';
-import VINScan from './components/VINScan';
-import ServiceCollection from './components/ServiceCollection';
-import QuickQuoteProjects from './components/QuickQuoteProjects';
-import ProductDetail from './components/ProductDetail';
-import MaintenanceManual from './components/MaintenanceManual';
-import BusinessAnalysis from './components/BusinessAnalysis';
-import Marketing from './components/Marketing';
-import OrderDetail from './components/OrderDetail';
-import PurchaseOrderDetail from './components/PurchaseOrderDetail';
-import WorkOrderList from './components/WorkOrderList';
-import ShoppingCart from './components/ShoppingCart';
-import FeedDetail from './components/FeedDetail';
-import EmployeeManagement from './components/EmployeeManagement';
-import StoreSettings from './components/StoreSettings';
-import Inventory from './components/Inventory';
-import PartsManagement from './components/PartsManagement';
-import WorkHourList from './components/WorkHourList';
-import MyOrders from './components/MyOrders';
-import { OrderTab } from './components/MyOrders';
 import { getVersionStyles } from './versionStyles';
-import AllApps from './components/AllApps';
-import JoinForm from './components/JoinForm';
-import FeedbackForm from './components/FeedbackForm';
-import AdminPanel from './components/AdminPanel';
+import { OrderTab } from './components/MyOrders';
+
+// 懒加载组件 - 按需加载
+const PartsList = lazy(() => import('./components/PartsList'));
+const ChatList = lazy(() => import('./components/ChatList'));
+const ChatDetail = lazy(() => import('./components/ChatDetail'));
+const InquiryList = lazy(() => import('./components/InquiryList'));
+const Profile = lazy(() => import('./components/Profile'));
+const Settings = lazy(() => import('./components/Settings'));
+const ArrivalList = lazy(() => import('./components/ArrivalList'));
+const AIQuote = lazy(() => import('./components/AIQuote'));
+const ProductList = lazy(() => import('./components/ProductList'));
+const CustomerVehicle = lazy(() => import('./components/CustomerVehicle'));
+const FourSPrice = lazy(() => import('./components/FourSPrice'));
+const Maintenance = lazy(() => import('./components/Maintenance'));
+const Catalog = lazy(() => import('./components/Catalog'));
+const InventoryQuery = lazy(() => import('./components/InventoryQuery'));
+const VINScan = lazy(() => import('./components/VINScan'));
+const ServiceCollection = lazy(() => import('./components/ServiceCollection'));
+const QuickQuoteProjects = lazy(() => import('./components/QuickQuoteProjects'));
+const ProductDetail = lazy(() => import('./components/ProductDetail'));
+const MaintenanceManual = lazy(() => import('./components/MaintenanceManual'));
+const BusinessAnalysis = lazy(() => import('./components/BusinessAnalysis'));
+const Marketing = lazy(() => import('./components/Marketing'));
+const OrderDetail = lazy(() => import('./components/OrderDetail'));
+const PurchaseOrderDetail = lazy(() => import('./components/PurchaseOrderDetail'));
+const WorkOrderList = lazy(() => import('./components/WorkOrderList'));
+const ShoppingCart = lazy(() => import('./components/ShoppingCart'));
+const FeedDetail = lazy(() => import('./components/FeedDetail'));
+const EmployeeManagement = lazy(() => import('./components/EmployeeManagement'));
+const StoreSettings = lazy(() => import('./components/StoreSettings'));
+const Inventory = lazy(() => import('./components/Inventory'));
+const PartsManagement = lazy(() => import('./components/PartsManagement'));
+const WorkHourList = lazy(() => import('./components/WorkHourList'));
+const MyOrders = lazy(() => import('./components/MyOrders'));
+const AllApps = lazy(() => import('./components/AllApps'));
+const JoinForm = lazy(() => import('./components/JoinForm'));
+const FeedbackForm = lazy(() => import('./components/FeedbackForm'));
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+
+// 加载中占位组件
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="text-gray-500">加载中...</div>
+  </div>
+);
 
 const App: React.FC = () => {
   const [appVersion, setAppVersion] = useState<number>(4); // 默认版本4（完整版）
@@ -225,7 +236,8 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <PartsList 
+            <Suspense fallback={<LoadingFallback />}>
+              <PartsList 
               onBack={() => setPartsViewVisible(false)} 
               onSubcategoryClick={(parentCategory, subcategoryName) => {
                 // 根据大类简单映射到已有的商品数据分类，其他大类统一用汽机油数据做占位
@@ -243,6 +255,7 @@ const App: React.FC = () => {
                 setProductListVisible(true);
               }}
             />
+            </Suspense>
           </div>
         </div>
       </>
@@ -255,7 +268,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <EmployeeManagement onBack={() => setEmployeeManagementVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <EmployeeManagement onBack={() => setEmployeeManagementVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -268,7 +283,39 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <StoreSettings onBack={() => setStoreSettingsVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <StoreSettings onBack={() => setStoreSettingsVisible(false)} />
+            </Suspense>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (partsManagementVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <Suspense fallback={<LoadingFallback />}>
+              <PartsManagement onBack={() => setPartsManagementVisible(false)} />
+            </Suspense>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (workHourListVisible) {
+    return (
+      <>
+        <LeftSideButtons />
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <Suspense fallback={<LoadingFallback />}>
+              <WorkHourList onBack={() => setWorkHourListVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -281,10 +328,12 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <ChatDetail 
-              chatId={selectedChatId} 
-              onBack={() => setSelectedChatId(null)} 
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <ChatDetail 
+                chatId={selectedChatId} 
+                onBack={() => setSelectedChatId(null)} 
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -297,7 +346,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <Settings onBack={() => setSettingsViewVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <Settings onBack={() => setSettingsViewVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -310,12 +361,14 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <OrderDetail 
-              onBack={() => {
-                setOrderDetailVisible(false);
-                setActiveTab('home');
-              }} 
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <OrderDetail 
+                onBack={() => {
+                  setOrderDetailVisible(false);
+                  setActiveTab('home');
+                }} 
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -328,14 +381,16 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <ArrivalList 
-              onBack={() => setArrivalViewVisible(false)} 
-              onCreateOrder={() => {
-                setArrivalViewVisible(false);
-                setVinScanMode('order');
-                setVinScanVisible(true);
-              }}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <ArrivalList 
+                onBack={() => setArrivalViewVisible(false)} 
+                onCreateOrder={() => {
+                  setArrivalViewVisible(false);
+                  setVinScanMode('order');
+                  setVinScanVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -348,19 +403,21 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <ProductList 
-              onBack={() => {
-                setProductListVisible(false);
-                setProductCategory(null);
-              }} 
-              categoryId={productCategory?.id || 'oil'} 
-              categoryLabel={productCategory?.label || '汽机油'}
-              onCartClick={() => {
-                setProductListVisible(false);
-                setProductCategory(null);
-                setShoppingCartVisible(true);
-              }}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <ProductList 
+                onBack={() => {
+                  setProductListVisible(false);
+                  setProductCategory(null);
+                }} 
+                categoryId={productCategory?.id || 'oil'} 
+                categoryLabel={productCategory?.label || '汽机油'}
+                onCartClick={() => {
+                  setProductListVisible(false);
+                  setProductCategory(null);
+                  setShoppingCartVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -373,10 +430,12 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <CustomerVehicle
-              initialTab={customerVehicleTab}
-              onBack={() => setCustomerVehicleVisible(false)}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <CustomerVehicle
+                initialTab={customerVehicleTab}
+                onBack={() => setCustomerVehicleVisible(false)}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -389,17 +448,19 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <FourSPrice
-              onBack={() => setFsPriceVisible(false)}
-              onInquiryClick={() => {
-                setFsPriceVisible(false);
-                setActiveTab('ai_quote');
-              }}
-              onCreateOrderClick={() => {
-                setFsPriceVisible(false);
-                setOrderDetailVisible(true);
-              }}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <FourSPrice
+                onBack={() => setFsPriceVisible(false)}
+                onInquiryClick={() => {
+                  setFsPriceVisible(false);
+                  setActiveTab('ai_quote');
+                }}
+                onCreateOrderClick={() => {
+                  setFsPriceVisible(false);
+                  setOrderDetailVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -412,7 +473,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <Maintenance onBack={() => setMaintenanceVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <Maintenance onBack={() => setMaintenanceVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -425,13 +488,15 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <Catalog 
-              onBack={() => setCatalogVisible(false)} 
-              onCartClick={() => {
-                setCatalogVisible(false);
-                setShoppingCartVisible(true);
-              }}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <Catalog 
+                onBack={() => setCatalogVisible(false)} 
+                onCartClick={() => {
+                  setCatalogVisible(false);
+                  setShoppingCartVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -444,7 +509,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <InventoryQuery onBack={() => setInventoryVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <InventoryQuery onBack={() => setInventoryVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -457,22 +524,24 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className="min-h-screen bg-black flex justify-center">
           <div className="w-full max-w-md min-h-screen relative overflow-hidden">
-            <VINScan 
-              onBack={() => setVinScanVisible(false)}
-              initialTab="vin"
-              onSkip={() => {
-                setVinScanVisible(false);
-                if (vinScanMode === 'order') {
-                  setOrderDetailVisible(true);
-                } else if (vinScanMode === 'quick_quote') {
+            <Suspense fallback={<LoadingFallback />}>
+              <VINScan 
+                onBack={() => setVinScanVisible(false)}
+                initialTab="vin"
+                onSkip={() => {
+                  setVinScanVisible(false);
+                  if (vinScanMode === 'order') {
+                    setOrderDetailVisible(true);
+                  } else if (vinScanMode === 'quick_quote') {
+                    setQuickQuoteProjectsVisible(true);
+                  }
+                }}
+                onMockScan={() => {
+                  setVinScanVisible(false);
                   setQuickQuoteProjectsVisible(true);
-                }
-              }}
-              onMockScan={() => {
-                setVinScanVisible(false);
-                setQuickQuoteProjectsVisible(true);
-              }}
-            />
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -485,7 +554,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <ServiceCollection onBack={() => setServiceCollectionVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -498,7 +569,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <ProductDetail onBack={() => setProductDetailVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <ProductDetail onBack={() => setProductDetailVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -511,7 +584,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <MaintenanceManual onBack={() => setMaintenanceManualVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -524,7 +599,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <BusinessAnalysis onBack={() => setBusinessAnalysisVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -537,7 +614,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <Marketing onBack={() => setMarketingVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <Marketing onBack={() => setMarketingVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -550,7 +629,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <WorkOrderList onBack={() => setWorkOrderListVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -563,7 +644,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <ShoppingCart onBack={() => setShoppingCartVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -576,13 +659,15 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className="min-h-screen bg-black flex justify-center">
           <div className="w-full max-w-md min-h-screen relative overflow-hidden">
-            <FeedDetail 
-              feedId={selectedFeedId}
-              onBack={() => {
-                setFeedDetailVisible(false);
-                setSelectedFeedId(null);
-              }} 
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <FeedDetail 
+                feedId={selectedFeedId}
+                onBack={() => {
+                  setFeedDetailVisible(false);
+                  setSelectedFeedId(null);
+                }} 
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -595,13 +680,15 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <PurchaseOrderDetail 
-              onBack={() => {
-                setPurchaseOrderDetailVisible(false);
-                setSelectedOrderId(null);
-              }}
-              orderId={selectedOrderId || undefined}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <PurchaseOrderDetail 
+                onBack={() => {
+                  setPurchaseOrderDetailVisible(false);
+                  setSelectedOrderId(null);
+                }}
+                orderId={selectedOrderId || undefined}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -614,7 +701,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <AllApps onBack={() => setAllAppsVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <AllApps onBack={() => setAllAppsVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -627,12 +716,14 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <QuickQuoteProjects
-              onBack={() => {
-                setQuickQuoteProjectsVisible(false);
-                setVinScanVisible(true);
-              }}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <QuickQuoteProjects
+                onBack={() => {
+                  setQuickQuoteProjectsVisible(false);
+                  setVinScanVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -645,7 +736,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <JoinForm onBack={() => setJoinFormVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <JoinForm onBack={() => setJoinFormVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -658,7 +751,9 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <FeedbackForm onBack={() => setFeedbackVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <FeedbackForm onBack={() => setFeedbackVisible(false)} />
+            </Suspense>
           </div>
         </div>
       </>
@@ -671,7 +766,29 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <AdminPanel onBack={() => setAdminPanelVisible(false)} />
+            <Suspense fallback={<LoadingFallback />}>
+              <AdminPanel 
+                onBack={() => setAdminPanelVisible(false)}
+                onMenuClick={(menuId) => {
+                  setAdminPanelVisible(false);
+                  if (menuId === '员工管理') {
+                    setEmployeeManagementVisible(true);
+                  } else if (menuId === '门店管理') {
+                    setStoreSettingsVisible(true);
+                  } else if (menuId === '库存管理') {
+                    setInventoryVisible(true);
+                  } else if (menuId === '配件管理') {
+                    setPartsManagementVisible(true);
+                  } else if (menuId === '工时管理') {
+                    setWorkHourListVisible(true);
+                  } else if (menuId === '数据分析') {
+                    setBusinessAnalysisVisible(true);
+                  } else if (menuId === '反馈建议') {
+                    setFeedbackVisible(true);
+                  }
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -684,14 +801,16 @@ const App: React.FC = () => {
         <LeftSideButtons />
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-            <MyOrders 
-              onBack={() => setMyOrdersVisible(false)} 
-              initialTab={myOrdersTab}
-              onOrderClick={(orderId) => {
-                setSelectedOrderId(orderId);
-                setPurchaseOrderDetailVisible(true);
-              }}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <MyOrders 
+                onBack={() => setMyOrdersVisible(false)} 
+                initialTab={myOrdersTab}
+                onOrderClick={(orderId) => {
+                  setSelectedOrderId(orderId);
+                  setPurchaseOrderDetailVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         </div>
       </>
@@ -705,13 +824,15 @@ const App: React.FC = () => {
           <LeftSideButtons />
           <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
               <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
-                  <AIQuote 
-                    onBack={() => setActiveTab('home')} 
-                    onViewOrderDetail={() => {
-                      setSelectedOrderId(null);
-                      setPurchaseOrderDetailVisible(true);
-                    }}
-                  />
+                  <Suspense fallback={<LoadingFallback />}>
+                    <AIQuote 
+                      onBack={() => setActiveTab('home')} 
+                      onViewOrderDetail={() => {
+                        setSelectedOrderId(null);
+                        setPurchaseOrderDetailVisible(true);
+                      }}
+                    />
+                  </Suspense>
               </div>
           </div>
         </>
@@ -722,6 +843,14 @@ const App: React.FC = () => {
   return (
     <>
       <LeftSideButtons />
+      {/* Settings Button - 整个页面右上角的设置按钮 */}
+      <button
+        onClick={() => setAdminPanelVisible(true)}
+        className="fixed top-4 right-4 z-50 p-3 bg-white/90 hover:bg-white rounded-full shadow-lg transition-all hover:scale-110 active:scale-95 backdrop-blur-sm border border-gray-200"
+        title="管理后台"
+      >
+        <SettingsIcon className="w-6 h-6 text-gray-700" />
+      </button>
       <div className={`min-h-screen ${versionStyles.mainContainer.background} flex justify-center`}>
         <div className={`w-full max-w-md ${versionStyles.mainContainer.container} min-h-screen relative shadow-2xl overflow-hidden flex flex-col`}>
         {activeTab === 'home' && (
@@ -795,40 +924,46 @@ const App: React.FC = () => {
         )}
 
         {activeTab === 'chat' && appVersion >= 2 && (
-           <ChatList onChatClick={handleChatClick} />
+           <Suspense fallback={<LoadingFallback />}>
+             <ChatList onChatClick={handleChatClick} />
+           </Suspense>
         )}
         
         {activeTab === 'inquiry' && appVersion >= 2 && (
-           <InquiryList 
-             onCartClick={() => setShoppingCartVisible(true)} 
-             onAddInquiry={() => setActiveTab('ai_quote')}
-           />
+           <Suspense fallback={<LoadingFallback />}>
+             <InquiryList 
+               onCartClick={() => setShoppingCartVisible(true)} 
+               onAddInquiry={() => setActiveTab('ai_quote')}
+             />
+           </Suspense>
         )}
 
         {activeTab === 'profile' && (
-           <Profile 
-             appVersion={appVersion}
-             onSettingsClick={() => setSettingsViewVisible(true)}
-             onMenuClick={(menuId) => {
-               if (menuId === '员工管理') {
-                 setEmployeeManagementVisible(true);
-               } else if (menuId === '门店管理') {
-                 setStoreSettingsVisible(true);
-               } else if (menuId === '库存管理') {
-                 setInventoryVisible(true);
-               } else if (menuId === '配件管理') {
-                 setPartsManagementVisible(true);
-               } else if (menuId === '工时管理') {
-                 setWorkHourListVisible(true);
-               }
-             }}
-             onOrderClick={(orderType) => {
-               setMyOrdersTab(orderType);
-               setMyOrdersVisible(true);
-             }}
-             onJoinClick={() => setJoinFormVisible(true)}
-             onFeedbackClick={() => setFeedbackVisible(true)}
-           />
+           <Suspense fallback={<LoadingFallback />}>
+             <Profile 
+               appVersion={appVersion}
+               onSettingsClick={() => setSettingsViewVisible(true)}
+              onMenuClick={(menuId) => {
+                if (menuId === '员工管理') {
+                  setEmployeeManagementVisible(true);
+                } else if (menuId === '门店管理') {
+                  setStoreSettingsVisible(true);
+                } else if (menuId === '库存管理') {
+                  setInventoryVisible(true);
+                } else if (menuId === '配件管理') {
+                  setPartsManagementVisible(true);
+                } else if (menuId === '工时管理' || menuId === '项目管理') {
+                  setWorkHourListVisible(true);
+                }
+              }}
+               onOrderClick={(orderType) => {
+                 setMyOrdersTab(orderType);
+                 setMyOrdersVisible(true);
+               }}
+               onJoinClick={() => setJoinFormVisible(true)}
+               onFeedbackClick={() => setFeedbackVisible(true)}
+             />
+           </Suspense>
         )}
 
         <BottomNav appVersion={appVersion} activeTab={activeTab} onTabChange={handleTabChange} />

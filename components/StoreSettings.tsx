@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, Camera, MapPin, Calendar, MessageCircle, Users } from 'lucide-react';
+import { ChevronLeft, Camera, MapPin } from 'lucide-react';
 
 interface StoreSettingsProps {
   onBack: () => void;
@@ -32,7 +32,7 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ onBack }) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto pb-24">
+      <div className="flex-1 overflow-y-auto pb-4">
         <div className="p-4 space-y-4">
           {/* Store Name */}
           <div className="bg-white rounded-lg p-4 shadow-sm">
@@ -117,18 +117,14 @@ const StoreSettings: React.FC<StoreSettingsProps> = ({ onBack }) => {
           <div className="bg-white rounded-lg p-4 shadow-sm">
             <div className="text-sm text-gray-700 mb-2">门店技师</div>
           </div>
-        </div>
-      </div>
 
-      {/* Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 flex gap-3">
-        <button className="flex-1 flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 rounded-lg py-3">
-          <MessageCircle className="w-5 h-5" />
-          <span className="text-sm">推荐给朋友</span>
-        </button>
-        <button className="flex-1 bg-red-500 text-white rounded-lg py-3 text-sm font-medium">
-          预览效果
-        </button>
+          {/* Save Button */}
+          <div className="pt-2 pb-4">
+            <button className="w-full bg-red-500 text-white rounded-lg py-3 text-sm font-medium">
+              保存
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

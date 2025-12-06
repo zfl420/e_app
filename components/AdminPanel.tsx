@@ -3,9 +3,10 @@ import { ChevronLeft, Users, Store, Package, Briefcase, Settings, BarChart3, Mes
 
 interface AdminPanelProps {
   onBack: () => void;
+  onMenuClick?: (menuId: string) => void;
 }
 
-const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
+const AdminPanel: React.FC<AdminPanelProps> = ({ onBack, onMenuClick }) => {
   const menuItems = [
     { id: 'employee', icon: Users, label: '员工管理', desc: '管理员工信息和权限' },
     { id: 'store', icon: Store, label: '门店管理', desc: '门店信息和配置' },
@@ -37,6 +38,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onBack }) => {
             return (
               <button
                 key={item.id}
+                onClick={() => onMenuClick && onMenuClick(item.label)}
                 className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all active:scale-95 flex flex-col items-center text-center"
               >
                 <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center mb-3">
