@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { ChevronLeft, Search, ChevronDown, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, Search, ChevronDown, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { CATEGORY_PRODUCT_MAP } from '../constants';
 import StatusBar from './StatusBar';
 
@@ -15,11 +15,11 @@ interface ProductListProps {
 
 const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel, onCartClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeMainFilter, setActiveMainFilter] = useState<'comprehensive' | 'brand' | 'category'>('comprehensive');
-  const [cartCount] = useState(1); // 购物车商品数量
-  const [cartTotal] = useState(0); // 购物车总价
+  const [productQuantities, setProductQuantities] = useState<Record<string, number>>({}); // 商品数量状态 { [productId]: quantity }
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false); // 头部是否折叠
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const lastScrollTop = useRef(0);
+  const isHeaderCollapsedRef = useRef(false); // 使用 ref 避免闭包问题
 
   const products = useMemo(() => CATEGORY_PRODUCT_MAP[categoryId] || [], [categoryId]);
 
@@ -60,6 +60,20 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
     });
   }, [products, productsWithStrikethrough]);
 
+  // 计算购物车总商品数量
+  const cartCount = useMemo(() => {
+    return Object.values(productQuantities).reduce((sum, quantity) => sum + quantity, 0);
+  }, [productQuantities]);
+
+  // 计算购物车总价
+  const cartTotal = useMemo(() => {
+    return products.reduce((total, product) => {
+      const quantity = productQuantities[product.id] || 0;
+      const price = parseFloat(product.price) || 0;
+      return total + (quantity * price);
+    }, 0);
+  }, [products, productQuantities]);
+
   // 计算商品的划线价（比当前价格高20-30%）
   const getStrikethroughPrice = (productId: string, currentPrice: string): string | null => {
     if (!productsWithStrikethrough.has(productId)) {
@@ -89,6 +103,36 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
     return '商品';
   };
 
+  // 增加商品数量
+  const increaseQuantity = (productId: string) => {
+    setProductQuantities(prev => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + 1
+    }));
+  };
+
+  // 减少商品数量
+  const decreaseQuantity = (productId: string) => {
+    setProductQuantities(prev => {
+      const currentQuantity = prev[productId] || 0;
+      if (currentQuantity <= 1) {
+        // 如果数量为1或0，删除该商品（数量变为0）
+        const newQuantities = { ...prev };
+        delete newQuantities[productId];
+        return newQuantities;
+      }
+      return {
+        ...prev,
+        [productId]: currentQuantity - 1
+      };
+    });
+  };
+
+  // 同步 ref 和 state
+  useEffect(() => {
+    isHeaderCollapsedRef.current = isHeaderCollapsed;
+  }, [isHeaderCollapsed]);
+
   // 滚动监听，控制头部区域的折叠/展开
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current;
@@ -96,23 +140,50 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
 
     const handleScroll = () => {
       const currentScrollTop = scrollContainer.scrollTop;
-      const scrollThreshold = 50; // 滚动阈值，避免轻微滚动触发
-
-      // 向上滚动（查看下面的商品）时折叠头部
-      if (currentScrollTop > lastScrollTop.current && currentScrollTop > scrollThreshold) {
+      const scrollThreshold = 100;
+      const scrollDelta = currentScrollTop - lastScrollTop.current;
+      
+      // 根据滚动方向立即响应
+      // 向下滚动（scrollDelta > 0）且超过阈值时，立即折叠
+      if (scrollDelta > 0 && currentScrollTop > scrollThreshold && !isHeaderCollapsedRef.current) {
         setIsHeaderCollapsed(true);
       }
-      // 向下滚动或滚动到顶部时展开头部
-      else if (currentScrollTop < lastScrollTop.current || currentScrollTop <= scrollThreshold) {
+      // 向上滚动（scrollDelta < 0）或回到顶部时，立即展开
+      else if ((scrollDelta < 0 || currentScrollTop <= scrollThreshold) && isHeaderCollapsedRef.current) {
         setIsHeaderCollapsed(false);
       }
-
+      
       lastScrollTop.current = currentScrollTop;
     };
 
-    scrollContainer.addEventListener('scroll', handleScroll);
+    // 使用 requestAnimationFrame 优化性能，限制更新频率
+    let rafId: number | null = null;
+    let lastUpdateTime = 0;
+    const UPDATE_INTERVAL = 50; // 50ms内最多更新一次状态，减少延迟
+
+    const throttledHandleScroll = () => {
+      const now = Date.now();
+      
+      // 如果距离上次更新时间太近，跳过（但第一次滚动立即执行）
+      if (lastUpdateTime > 0 && now - lastUpdateTime < UPDATE_INTERVAL) {
+        return;
+      }
+
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(() => {
+          handleScroll();
+          lastUpdateTime = Date.now();
+          rafId = null;
+        });
+      }
+    };
+
+    scrollContainer.addEventListener('scroll', throttledHandleScroll, { passive: true });
     return () => {
-      scrollContainer.removeEventListener('scroll', handleScroll);
+      scrollContainer.removeEventListener('scroll', throttledHandleScroll);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
     };
   }, []);
 
@@ -143,8 +214,8 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
 
         {/* Filter Bars - 可折叠区域 */}
         <div 
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isHeaderCollapsed ? 'max-h-0 opacity-0' : 'max-h-[150px] opacity-100'
+          className={`overflow-hidden transition-all duration-200 ease-in-out ${
+            isHeaderCollapsed ? 'max-h-0 opacity-0 pointer-events-none' : 'max-h-[150px] opacity-100'
           }`}
         >
           {/* Main Filter Bar */}
@@ -251,10 +322,42 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                     </div>
                   </div>
 
-                  {/* Select Specs Button */}
-                  <button className="px-4 py-1.5 bg-secondary text-white text-xs rounded-lg whitespace-nowrap ml-2">
-                    选规格
-                  </button>
+                  {/* Quantity Selector */}
+                  {(() => {
+                    const quantity = productQuantities[item.id] || 0;
+                    if (quantity === 0) {
+                      // 显示加号按钮
+                      return (
+                        <button
+                          onClick={() => increaseQuantity(item.id)}
+                          className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center ml-2 flex-shrink-0"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      );
+                    } else {
+                      // 显示数量选择器（- 数字 +）
+                      return (
+                        <div className="flex items-center gap-2 ml-2 flex-shrink-0">
+                          <button
+                            onClick={() => decreaseQuantity(item.id)}
+                            className="w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center"
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="text-sm font-medium text-gray-900 min-w-[24px] text-center">
+                            {quantity}
+                          </span>
+                          <button
+                            onClick={() => increaseQuantity(item.id)}
+                            className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                      );
+                    }
+                  })()}
                 </div>
               </div>
             </div>
@@ -274,8 +377,8 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
           >
             <ShoppingCart className="w-6 h-6 text-gray-700" />
             {cartCount > 0 && (
-              <span className="absolute top-0 right-0 w-4 h-4 bg-secondary rounded-full text-xs text-white flex items-center justify-center font-bold">
-                {cartCount}
+              <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-secondary rounded-full text-xs text-white flex items-center justify-center font-bold">
+                {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
           </button>
@@ -287,7 +390,15 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
             </div>
           </div>
 
-          <button className="px-6 py-2 bg-gray-300 text-white text-sm rounded-lg font-medium">
+          <button
+            onClick={cartCount > 0 ? onCartClick : undefined}
+            disabled={cartCount === 0}
+            className={`px-6 py-2 text-white text-sm rounded-lg font-medium transition-colors ${
+              cartCount > 0
+                ? 'bg-secondary cursor-pointer hover:bg-secondary/90'
+                : 'bg-gray-300 cursor-not-allowed'
+            }`}
+          >
             去结算
           </button>
         </div>
