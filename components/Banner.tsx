@@ -15,27 +15,25 @@ const Banner: React.FC<BannerProps> = ({ appVersion = 4, onClick }) => {
       onClick={onClick}
     >
       <img 
-        src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=800&q=80" 
-        alt="Banner" 
+        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80" 
+        alt="轮胎" 
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
       />
       {/* Simulated overlay content based on original UI */}
-      <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/90 to-transparent flex items-center pl-6">
+      <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/90 to-transparent flex items-center justify-between pl-6 pr-6">
         <div className="text-white">
-          <div className="flex items-start gap-3 mb-1">
-             <div className="bg-secondary p-1 rounded-lg text-center shadow-lg">
-                <div className="text-sm font-bold">11/30</div>
-                <div className="text-xs opacity-80">星期日</div>
-             </div>
-             <div className="pt-0.5">
-               <h3 className="font-bold text-lg leading-tight text-white drop-shadow-md">巨江银离子空调滤</h3>
-               <p className="text-sm font-light text-gray-200 mt-0.5">清新 自在呼吸</p>
-             </div>
-          </div>
+          <h3 className="font-bold text-lg leading-tight text-white drop-shadow-md">应诺轮胎 159 特价</h3>
         </div>
-      </div>
-      <div className="absolute bottom-2 right-2 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-xs text-white/80">
-        广告
+        <button 
+          className="bg-white text-emerald-900 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
+          onClick={(e) => {
+            e.stopPropagation();
+            onClick?.();
+          }}
+        >
+          查看详情
+        </button>
       </div>
     </div>
   );

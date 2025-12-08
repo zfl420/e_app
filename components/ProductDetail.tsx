@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import { ChevronLeft, Filter, ShoppingCart } from 'lucide-react';
+import React, { useMemo } from 'react';
+import { ChevronLeft, ShoppingCart } from 'lucide-react';
+import { CATEGORY_PRODUCT_MAP } from '../constants';
+import { ProductItem } from '../types';
 import StatusBar from './StatusBar';
 
 interface ProductDetailProps {
@@ -21,58 +23,127 @@ interface CarModel {
 }
 
 const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId, appVersion, onVersionChange, onAdminClick }) => {
-  const [showFilter, setShowFilter] = useState(false);
 
-  // Mock product data
-  const product = {
-    id: productId || '1',
-    images: [
-      // 随机一张空气滤芯相关图片
-      'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa3?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1607868578181-8b3b2c8e3caa?auto=format&fit=crop&w=1200&q=80',
-    ],
-    price: 345,
-    name: '巨江启停蓄电池 6-QTPA-80(720) EFB-T115',
-    purchaseInfo: '按1倍加购 | 库存90',
-    brand: '巨江',
-    productInfo: {
-      materialCode: '80102949',
-      brand: '巨江',
-      specification: 'EFB-T115',
-      originalCode: '6-QTPA-80(720)',
-      generalSpec: 'EFB-T115',
-      nationalSpec: '6-QTPE-75',
-      polarity: 'L',
-      capacity: '80',
-      startingCurrent: '720',
-      length: '305',
-      width: '172',
-      height: '203',
-    },
-    applicableModels: [
-      {
-        brand: '雷克萨斯',
-        model: 'ES(丰田汽车)',
-        parentBrand: 'ES',
-        years: [
-          { year: '2015款', engine: '2.0L' },
-          { year: '2016款', engine: '2.0L' },
-          { year: '2017款', engine: '2.0L' },
+  // 从所有分类的商品中查找对应的商品
+  const productItem = useMemo(() => {
+    if (!productId) return null;
+    
+    // 遍历所有分类查找商品
+    for (const categoryProducts of Object.values(CATEGORY_PRODUCT_MAP)) {
+      const found = categoryProducts.find(item => item.id === productId);
+      if (found) return found;
+    }
+    return null;
+  }, [productId]);
+
+  // 将 ProductItem 转换为组件需要的格式
+  const product = useMemo(() => {
+    if (!productItem) {
+      // 默认数据（当找不到商品时）
+      return {
+        id: productId || '1',
+        images: [
+          'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa3?auto=format&fit=crop&w=1200&q=80',
+          'https://images.unsplash.com/photo-1607868578181-8b3b2c8e3caa?auto=format&fit=crop&w=1200&q=80',
         ],
-      },
-      {
-        brand: '雷克萨斯',
-        model: 'RX(丰田汽车)',
-        parentBrand: 'RX',
-        years: [
-          { year: '2016款', engine: '2.0T' },
-          { year: '2017款', engine: '2.0T' },
-          { year: '2020款', engine: '2.0T' },
-          { year: '2021款', engine: '2.0T' },
-        ],
-      },
-    ] as CarModel[],
-  };
+        price: 0,
+        name: '商品不存在',
+        purchaseInfo: '--',
+        brand: '--',
+        productInfo: {
+          materialCode: '--',
+          brand: '--',
+          specification: '--',
+          originalCode: '--',
+          generalSpec: '--',
+          nationalSpec: '--',
+          polarity: '--',
+          capacity: '--',
+          startingCurrent: '--',
+          length: '--',
+          width: '--',
+          height: '--',
+        },
+        applicableModels: [] as CarModel[],
+      };
+    }
+
+    // 根据商品ID生成虚拟的产品信息
+    const generateProductInfo = (item: ProductItem) => {
+      // 使用商品ID的哈希值生成稳定的虚拟数据
+      const hash = item.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+      
+      // 从规格中提取信息，如果没有则使用虚拟数据
+      const specs = item.specs || item.volume || '';
+      const brand = item.brand || item.title.split(' ')[0] || '未知品牌';
+      
+      return {
+        materialCode: `MAT${String(hash).padStart(8, '0')}`,
+        brand: brand,
+        specification: specs || '标准规格',
+        originalCode: `OE${String(hash).padStart(8, '0')}`,
+        generalSpec: specs || '通用规格',
+        nationalSpec: `GB${String(hash % 10000).padStart(4, '0')}`,
+        polarity: hash % 2 === 0 ? 'L' : 'R',
+        capacity: item.attributes?.capacity || String(60 + (hash % 40)),
+        startingCurrent: item.attributes?.voltage ? String(500 + (hash % 500)) : '--',
+        length: String(200 + (hash % 200)),
+        width: String(150 + (hash % 100)),
+        height: String(100 + (hash % 150)),
+      };
+    };
+
+    // 将适用车型转换为 CarModel 格式
+    const convertApplicableModels = (models?: string[]): CarModel[] => {
+      if (!models || models.length === 0) {
+        // 如果没有适用车型，生成虚拟数据
+        const hash = productItem.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        const brands = ['大众', '丰田', '本田', '奔驰', '宝马', '奥迪'];
+        const brand = brands[hash % brands.length];
+        return [
+          {
+            brand: brand,
+            model: `${brand} 通用车型`,
+            parentBrand: brand,
+            years: [
+              { year: '2020款', engine: '2.0L' },
+              { year: '2021款', engine: '2.0L' },
+              { year: '2022款', engine: '2.0T' },
+            ],
+          },
+        ];
+      }
+
+      // 将字符串数组转换为 CarModel 格式
+      return models.map((model, index) => {
+        const hash = (productItem.id + index).split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+        return {
+          brand: model,
+          model: `${model} 系列`,
+          parentBrand: model,
+          years: [
+            { year: '2020款', engine: '2.0L' },
+            { year: '2021款', engine: '2.0L' },
+            { year: '2022款', engine: '2.0T' },
+          ],
+        };
+      });
+    };
+
+    return {
+      id: productItem.id,
+      images: [
+        productItem.image || 'https://images.unsplash.com/photo-1612815154858-60aa4c59eaa3?auto=format&fit=crop&w=1200&q=80',
+        'https://images.unsplash.com/photo-1607868578181-8b3b2c8e3caa?auto=format&fit=crop&w=1200&q=80',
+      ],
+      price: parseFloat(productItem.price) || 0,
+      name: productItem.title,
+      purchaseInfo: `按1倍加购 | 库存${90 + (productItem.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 50)}`,
+      brand: productItem.brand || productItem.title.split(' ')[0] || '未知品牌',
+      productInfo: generateProductInfo(productItem),
+      applicableModels: convertApplicableModels(productItem.applicableModels),
+    };
+  }, [productItem, productId]);
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -171,15 +242,8 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ onBack, productId, appVer
 
         {/* Applicable Car Models */}
         <div className="bg-white mt-2 px-4 py-4">
-          <div className="flex items-center justify-between mb-3">
+          <div className="mb-3">
             <h3 className="text-base font-semibold text-gray-900">适用车型</h3>
-            <button
-              onClick={() => setShowFilter(!showFilter)}
-              className="px-3 py-1 text-sm text-secondary border border-secondary rounded-lg"
-            >
-              <Filter className="w-4 h-4 inline mr-1" />
-              筛选
-            </button>
           </div>
           
           <div className="space-y-4">

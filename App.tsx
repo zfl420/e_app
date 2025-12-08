@@ -4,12 +4,14 @@ import Header from './components/Header';
 import StoreCard from './components/StoreCard';
 import Banner from './components/Banner';
 import CategoryGrid from './components/CategoryGrid';
-import VideoFeed from './components/VideoFeed';
 import BottomNav from './components/BottomNav';
 import { CATEGORIES } from './constants';
 import { getVersionStyles } from './versionStyles';
 import { OrderTab } from './components/MyOrders';
 import { SearchParams, ScanResult } from './types';
+
+// 懒加载 VideoFeed（包含图片，可以延迟加载）
+const VideoFeed = lazy(() => import('./components/VideoFeed'));
 
 // 懒加载组件 - 按需加载
 const PartsList = lazy(() => import('./components/PartsList'));
@@ -50,6 +52,7 @@ const FeedbackForm = lazy(() => import('./components/FeedbackForm'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const SearchResults = lazy(() => import('./components/SearchResults'));
 const ProductScan = lazy(() => import('./components/ProductScan'));
+const ActivityList = lazy(() => import('./components/ActivityList'));
 
 // 加载中占位组件
 const LoadingFallback = () => (
@@ -89,6 +92,7 @@ const App: React.FC = () => {
   const [vinScanVisible, setVinScanVisible] = useState(false);
   const [serviceCollectionVisible, setServiceCollectionVisible] = useState(false);
   const [productDetailVisible, setProductDetailVisible] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [maintenanceManualVisible, setMaintenanceManualVisible] = useState(false);
   const [businessAnalysisVisible, setBusinessAnalysisVisible] = useState(false);
   const [marketingVisible, setMarketingVisible] = useState(false);
@@ -116,6 +120,7 @@ const App: React.FC = () => {
   const [searchResultsVisible, setSearchResultsVisible] = useState(false);
   const [searchParams, setSearchParams] = useState<{ keyword?: string; brand?: string; attributes?: Record<string, string> }>({});
   const [productScanVisible, setProductScanVisible] = useState(false);
+  const [activityListVisible, setActivityListVisible] = useState(false);
   
   // TOAST 状态
   const [toastVisible, setToastVisible] = useState(false);
@@ -331,6 +336,7 @@ const App: React.FC = () => {
     setAdminPanelVisible(false);
     setSearchResultsVisible(false);
     setProductScanVisible(false);
+    setActivityListVisible(false);
   };
 
   const handleChatClick = (id: string) => {
@@ -558,7 +564,7 @@ const App: React.FC = () => {
     );
   }
 
-  if (productListVisible) {
+  if (productListVisible && !productDetailVisible) {
     return (
       <>
         <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
@@ -568,6 +574,7 @@ const App: React.FC = () => {
                 onBack={() => {
                   setProductListVisible(false);
                   setProductCategory(null);
+                  setSelectedProductId(null);
                 }} 
                 categoryId={productCategory?.id || 'oil'} 
                 categoryLabel={productCategory?.label || '汽机油'}
@@ -578,6 +585,10 @@ const App: React.FC = () => {
                   setProductListVisible(false);
                   setProductCategory(null);
                   setShoppingCartVisible(true);
+                }}
+                onProductClick={(productId) => {
+                  setSelectedProductId(productId);
+                  setProductDetailVisible(true);
                 }}
                 addToCart={addToCart}
                 cartCount={cartCount}
@@ -764,7 +775,15 @@ const App: React.FC = () => {
           <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
             <Suspense fallback={<LoadingFallback />}>
               <ProductDetail 
-                onBack={() => setProductDetailVisible(false)} 
+                onBack={() => {
+                  setProductDetailVisible(false);
+                  setSelectedProductId(null);
+                  // 如果之前是从商品列表进入的，返回时保持商品列表可见
+                  if (productListVisible) {
+                    // 保持 productListVisible 为 true，这样会重新渲染商品列表
+                  }
+                }} 
+                productId={selectedProductId || undefined}
                 appVersion={appVersion}
                 onVersionChange={handleVersionChange}
                 onAdminClick={() => setAdminPanelVisible(true)}
@@ -1161,6 +1180,53 @@ const App: React.FC = () => {
     );
   }
 
+  // Activity List View
+  if (activityListVisible) {
+    return (
+      <>
+        <div className={`min-h-screen ${versionStyles.overlay.background} flex justify-center`}>
+          <div className={`w-full max-w-md ${versionStyles.overlay.container} min-h-screen relative shadow-2xl overflow-hidden`}>
+            <Suspense fallback={<LoadingFallback />}>
+              <ActivityList 
+                onBack={() => setActivityListVisible(false)}
+                onProductClick={(productId) => {
+                  setSelectedProductId(productId);
+                  setActivityListVisible(false);
+                  setProductDetailVisible(true);
+                }}
+                onCartClick={() => {
+                  setActivityListVisible(false);
+                  setShoppingCartVisible(true);
+                }}
+                onViewAllProducts={(categoryId, categoryLabel) => {
+                  // 映射活动分类ID到商品列表分类ID
+                  const categoryMap: Record<string, { id: string; label: string }> = {
+                    'tire': { id: 'brake_disc', label: '轮胎' }, // 轮胎暂时映射到刹车盘分类
+                    'wiper': { id: 'filter', label: '雨刮' }, // 雨刮暂时映射到过滤分类
+                    'brake_pad': { id: 'brake_pad', label: '刹车片' },
+                    'oil': { id: 'oil', label: '汽机油' },
+                  };
+                  
+                  const mappedCategory = categoryMap[categoryId] || { id: categoryId, label: categoryLabel };
+                  setProductCategory(mappedCategory);
+                  setActivityListVisible(false);
+                  setProductListVisible(true);
+                }}
+                addToCart={addToCart}
+                cartCount={cartCount}
+                cartTotal={cartTotal}
+                appVersion={appVersion}
+                onVersionChange={handleVersionChange}
+                onAdminClick={() => setAdminPanelVisible(true)}
+              />
+            </Suspense>
+          </div>
+        </div>
+        <Toast visible={toastVisible} message={toastMessage} />
+      </>
+    );
+  }
+
   // AI Quote View (Main Tab)
   if (activeTab === 'ai_quote') {
       return (
@@ -1249,19 +1315,21 @@ const App: React.FC = () => {
                     }
                   }}
                 />
-                <Banner appVersion={appVersion} onClick={() => setProductDetailVisible(true)} />
+                <Banner appVersion={appVersion} onClick={() => setActivityListVisible(true)} />
               </>
             )}
             {appVersion < 3 && (
-              <Banner appVersion={appVersion} onClick={() => setProductDetailVisible(true)} />
+              <Banner appVersion={appVersion} onClick={() => setActivityListVisible(true)} />
             )}
             <CategoryGrid appVersion={appVersion} onCategoryClick={handleCategoryClick} />
-            <VideoFeed 
-              onFeedClick={(feedId) => {
-                setSelectedFeedId(feedId);
-                setFeedDetailVisible(true);
-              }}
-            />
+            <Suspense fallback={<div className="mx-4 pb-24"><div className="grid grid-cols-2 gap-3"><div className="aspect-[3/4] bg-gray-200 animate-pulse rounded-xl" /><div className="aspect-[3/4] bg-gray-200 animate-pulse rounded-xl" /></div></div>}>
+              <VideoFeed 
+                onFeedClick={(feedId) => {
+                  setSelectedFeedId(feedId);
+                  setFeedDetailVisible(true);
+                }}
+              />
+            </Suspense>
           </div>
         )}
 

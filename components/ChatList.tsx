@@ -14,51 +14,54 @@ const ChatList: React.FC<ChatListProps> = ({ onChatClick, appVersion, onVersionC
   const [activeTab, setActiveTab] = useState<'messages' | 'contacts'>('messages');
 
   return (
-    <div className="flex flex-col h-full bg-gray-50 pb-24">
-      {/* Status Bar */}
-      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+    <div className="flex flex-col h-full bg-gray-50">
+      {/* Fixed Top Section */}
+      <div className="fixed top-0 left-0 right-0 z-50 max-w-md mx-auto bg-white">
+        {/* Status Bar */}
+        <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
 
-      {/* Top Module: Tabs + Search（整体白色模块） */}
-      <div className="bg-white sticky top-0 z-10 border-b border-gray-100">
-        {/* Header */}
-        <div className="flex items-center justify-between px-4 pt-4 pb-4">
-          <div className="flex items-end gap-6">
-            <button 
-              onClick={() => setActiveTab('messages')}
-              className={`text-lg font-bold relative pb-1 transition-colors ${activeTab === 'messages' ? 'text-secondary' : 'text-gray-400'}`}
-            >
-              消息
-              {activeTab === 'messages' && (
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-1 bg-secondary rounded-full"></span>
-              )}
-            </button>
-            <button 
-              onClick={() => setActiveTab('contacts')}
-              className={`text-base font-medium relative pb-1 transition-colors ${activeTab === 'contacts' ? 'text-secondary' : 'text-gray-400'}`}
-            >
-              联系人
+        {/* Top Module: Tabs + Search（整体白色模块） */}
+        <div className="border-b border-gray-100">
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 pt-4 pb-4">
+            <div className="flex items-end gap-6">
+              <button
+                onClick={() => setActiveTab('messages')}
+                className={`text-lg font-bold relative pb-1 transition-colors ${activeTab === 'messages' ? 'text-secondary' : 'text-gray-400'}`}
+              >
+                消息
+                {activeTab === 'messages' && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-1 bg-secondary rounded-full"></span>
+                )}
+              </button>
+              <button
+                onClick={() => setActiveTab('contacts')}
+                className={`text-base font-medium relative pb-1 transition-colors ${activeTab === 'contacts' ? 'text-secondary' : 'text-gray-400'}`}
+              >
+                联系人
+              </button>
+            </div>
+            <button className="p-2 -mr-2 text-secondary">
+              <Plus className="w-6 h-6" />
             </button>
           </div>
-          <button className="p-2 -mr-2 text-secondary">
-            <Plus className="w-6 h-6" />
-          </button>
-        </div>
 
-        {/* Search */}
-        <div className="px-4 pb-4">
-          <div className="bg-gray-100 rounded-full h-9 flex items-center px-3 border border-gray-100">
-            <Search className="w-4 h-4 text-gray-400 mr-2" />
-            <input 
-              type="text" 
-              placeholder="搜索" 
-              className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
-            />
+          {/* Search */}
+          <div className="px-4 pb-4">
+            <div className="bg-gray-100 rounded-full h-9 flex items-center px-3 border border-gray-100">
+              <Search className="w-4 h-4 text-gray-400 mr-2" />
+              <input
+                type="text"
+                placeholder="搜索"
+                className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Content Module：与上方白色模块之间通过灰色背景留出间隔 */}
-      <div className="flex-1 overflow-y-auto px-4 pb-4 mt-3">
+      <div className="flex-1 overflow-y-auto px-4 pb-24 pt-[11rem] mt-3">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           {activeTab === 'messages' ? (
             <div>

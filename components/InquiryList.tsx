@@ -28,12 +28,13 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, on
     return INQUIRY_LIST_DATA.filter(item => item.status === activeStatus);
   }, [activeStatus]);
   return (
-    <div className="flex flex-col h-full bg-gray-50 pb-24">
-      {/* Status Bar */}
-      <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
-      
-      {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 sticky top-0 z-10">
+    <div className="flex flex-col h-full bg-gray-50 relative">
+      {/* Fixed Status Bar and Header */}
+      <div className="fixed top-0 left-0 right-0 z-50 max-w-md mx-auto bg-white">
+        <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
+        
+        {/* Header */}
+        <div className="px-4 pt-4 pb-3">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             {onBack && (
@@ -91,10 +92,11 @@ const InquiryList: React.FC<InquiryListProps> = ({ onCartClick, onAddInquiry, on
             className="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 min-w-0"
           />
         </div>
+        </div>
       </div>
 
-      {/* List Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      {/* Scrollable List Content */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 pt-[13.5rem] pb-24">
         {filteredData.map((item) => (
           <div key={item.id} className="bg-white rounded-xl p-4 shadow-sm border border-gray-50 relative">
             

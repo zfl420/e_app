@@ -8,12 +8,13 @@ interface ProductListProps {
   categoryId: string;
   categoryLabel: string;
   onCartClick?: () => void;
+  onProductClick?: (productId: string) => void;
   appVersion?: number;
   onVersionChange?: (version: number) => void;
   onAdminClick?: () => void;
 }
 
-const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel, onCartClick, appVersion, onVersionChange, onAdminClick }) => {
+const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryLabel, onCartClick, onProductClick, appVersion, onVersionChange, onAdminClick }) => {
   const [activeMainFilter, setActiveMainFilter] = useState<'comprehensive' | 'brand' | 'category'>('comprehensive');
   const [productQuantities, setProductQuantities] = useState<Record<string, number>>({}); // 商品数量状态 { [productId]: quantity }
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false); // 头部是否折叠
@@ -193,7 +194,13 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
       {/* Header */}
       <div className="bg-white sticky top-0 z-20 transition-all duration-300 ease-in-out">
         <div className="flex items-center justify-between px-4 pt-3 pb-3">
-          <button onClick={onBack} className="p-1 -ml-2">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onBack();
+            }} 
+            className="p-1 -ml-2"
+          >
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
           <h1 className="text-lg font-bold text-gray-900">{categoryLabel}</h1>
@@ -269,7 +276,22 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
             {sortedProducts.map((item) => {
               const hasStrikethrough = productsWithStrikethrough.has(item.id);
               return (
-              <div key={item.id} className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+              <div 
+                key={item.id} 
+                className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+                onClick={(e) => {
+                  // 如果点击的是按钮，不处理
+                  if ((e.target as HTMLElement).closest('button')) {
+                    return;
+                  }
+                  // 确保点击事件能正确触发
+                  if (onProductClick) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onProductClick(item.id);
+                  }
+                }}
+              >
             <div className="flex gap-3">
               {/* Product Image Placeholder */}
               <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center relative">
@@ -277,11 +299,9 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                   {getProductImageText(item.title)}
                 </span>
                 {/* 特价标签 */}
-                {hasStrikethrough && (
-                  <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-                    特价
-                  </div>
-                )}
+                <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+                  特价
+                </div>
               </div>
 
               {/* Product Info */}
@@ -329,7 +349,10 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                       // 显示加号按钮
                       return (
                         <button
-                          onClick={() => increaseQuantity(item.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            increaseQuantity(item.id);
+                          }}
                           className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center ml-2 flex-shrink-0"
                         >
                           <Plus className="w-4 h-4" />
@@ -340,7 +363,10 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                       return (
                         <div className="flex items-center gap-2 ml-2 flex-shrink-0">
                           <button
-                            onClick={() => decreaseQuantity(item.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              decreaseQuantity(item.id);
+                            }}
                             className="w-8 h-8 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center"
                           >
                             <Minus className="w-4 h-4" />
@@ -349,7 +375,10 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                             {quantity}
                           </span>
                           <button
-                            onClick={() => increaseQuantity(item.id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              increaseQuantity(item.id);
+                            }}
                             className="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center"
                           >
                             <Plus className="w-4 h-4" />
