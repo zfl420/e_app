@@ -187,6 +187,47 @@ const ActivityList: React.FC<ActivityListProps> = ({
     return '商品';
   };
 
+  // 为每个分类选择最多5个商品显示划线价和特价标签
+  const getProductsWithStrikethrough = (products: ProductItem[]): Set<string> => {
+    if (products.length === 0) return new Set<string>();
+    
+    // 使用商品ID的哈希值来排序，确保选择的一致性
+    const productsWithHash = products.map(product => ({
+      product,
+      hash: product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    }));
+    
+    // 按哈希值排序，确保选择的一致性
+    productsWithHash.sort((a, b) => a.hash - b.hash);
+    
+    // 最多选择5个商品
+    const maxCount = 5;
+    const selectedIds = new Set<string>();
+    
+    for (let i = 0; i < Math.min(maxCount, productsWithHash.length); i++) {
+      selectedIds.add(productsWithHash[i].product.id);
+    }
+    
+    return selectedIds;
+  };
+
+  // 计算商品的划线价（比当前价格高20-30%）
+  const getStrikethroughPrice = (productId: string, currentPrice: string, productsWithStrikethrough: Set<string>): string | null => {
+    if (!productsWithStrikethrough.has(productId)) {
+      return null;
+    }
+    
+    const price = parseFloat(currentPrice);
+    if (isNaN(price)) return null;
+    
+    // 基于商品ID生成一个可预测的倍数（1.2-1.3之间）
+    const hash = productId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    const multiplier = 1.2 + (hash % 11) / 100; // 1.2 到 1.3
+    
+    const strikethroughPrice = Math.round(price * multiplier * 100) / 100;
+    return strikethroughPrice.toFixed(2);
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <StatusBar variant="white" appVersion={appVersion} onVersionChange={onVersionChange} onAdminClick={onAdminClick} />
@@ -243,46 +284,65 @@ const ActivityList: React.FC<ActivityListProps> = ({
               {/* Product List */}
               <div className="px-4 py-4">
                 <div className="space-y-3">
-                  {products.map((product) => (
-                    <div
-                      key={product.id}
-                      onClick={() => onProductClick?.(product.id)}
-                      className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex gap-3">
-                        {/* Product Image Placeholder */}
-                        <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center relative">
-                          <span className="text-xs font-medium text-gray-400">
-                            {getProductImageText(product.title)}
-                          </span>
-                          <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-                            特价
-                          </div>
-                        </div>
-
-                        {/* Product Info */}
-                        <div className="flex-1 min-w-0">
-                          {/* Product Title */}
-                          <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-2 mb-1.5">
-                            {product.title}
-                          </div>
-
-                          {/* Volume */}
-                          <div className="mb-1.5">
-                            <span className="text-xs text-gray-400">{product.volume}</span>
-                          </div>
-
-                          {/* Price & Store Info */}
-                          <div className="flex items-end justify-between">
-                            <div className="flex-1">
-                              <div className="text-red-500 text-lg font-bold leading-none mb-1">
-                                ¥{product.price}
-                              </div>
-                              <div className="flex items-center gap-2 text-xs text-gray-500">
-                                <span className="text-blue-500">马上送</span>
-                                <span>{product.shop}</span>
-                              </div>
+                  {(() => {
+                    const productsWithStrikethrough = getProductsWithStrikethrough(products);
+                    return products.map((product) => {
+                      const hasStrikethrough = productsWithStrikethrough.has(product.id);
+                      const strikethroughPrice = getStrikethroughPrice(product.id, product.price, productsWithStrikethrough);
+                      return (
+                        <div
+                          key={product.id}
+                          onClick={() => onProductClick?.(product.id)}
+                          className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
+                        >
+                          <div className="flex gap-3">
+                            {/* Product Image Placeholder */}
+                            <div className="w-20 h-20 bg-gray-100 rounded-lg flex-shrink-0 flex items-center justify-center relative">
+                              <span className="text-xs font-medium text-gray-400">
+                                {getProductImageText(product.title)}
+                              </span>
+                              {/* 特价标签 - 只在有划线价的商品上显示 */}
+                              {hasStrikethrough && (
+                                <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+                                  特价
+                                </div>
+                              )}
                             </div>
+
+                            {/* Product Info */}
+                            <div className="flex-1 min-w-0">
+                              {/* Product Title */}
+                              <div className="text-sm text-gray-900 font-medium leading-snug line-clamp-2 mb-1.5">
+                                {product.title}
+                              </div>
+
+                              {/* Volume */}
+                              <div className="mb-1.5">
+                                <span className="text-xs text-gray-400">{product.volume}</span>
+                              </div>
+
+                              {/* Price & Store Info */}
+                              <div className="flex items-end justify-between">
+                                <div className="flex-1">
+                                  {strikethroughPrice ? (
+                                    <div className="flex items-baseline gap-2 mb-1">
+                                      <div className="text-gray-400 text-sm line-through leading-none">
+                                        ¥{strikethroughPrice}
+                                      </div>
+                                      <div className="text-red-500 text-lg font-bold leading-none">
+                                        ¥{product.price}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="text-red-500 text-lg font-bold leading-none mb-1">
+                                      ¥{product.price}
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                                    <span className="text-blue-500">马上送</span>
+                                    <span>{product.shop}</span>
+                                  </div>
+                                </div>
 
                             {/* Quantity Selector */}
                             {(() => {
@@ -333,7 +393,9 @@ const ActivityList: React.FC<ActivityListProps> = ({
                         </div>
                       </div>
                     </div>
-                  ))}
+                      );
+                    });
+                  })()}
                 </div>
 
                 {/* View All Products Button */}

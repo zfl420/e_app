@@ -24,25 +24,25 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
 
   const products = useMemo(() => CATEGORY_PRODUCT_MAP[categoryId] || [], [categoryId]);
 
-  // 随机选择20%的商品显示划线价，基于商品ID确保一致性
+  // 选择最多5个商品显示划线价和特价标签，基于商品ID确保一致性
   const productsWithStrikethrough = useMemo(() => {
     if (products.length === 0) return new Set<string>();
     
-    // 使用商品ID的哈希值来确定哪些商品被选中（模5余数为0表示20%）
+    // 使用商品ID的哈希值来排序，确保选择的一致性
+    const productsWithHash = products.map(product => ({
+      product,
+      hash: product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    }));
+    
+    // 按哈希值排序，确保选择的一致性
+    productsWithHash.sort((a, b) => a.hash - b.hash);
+    
+    // 最多选择5个商品
+    const maxCount = 5;
     const selectedIds = new Set<string>();
     
-    products.forEach(product => {
-      // 使用简单的哈希函数基于商品ID
-      const hash = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-      // 模5，余数为0的商品被选中（约20%）
-      if (hash % 5 === 0) {
-        selectedIds.add(product.id);
-      }
-    });
-    
-    // 确保至少选择了一些商品，如果完全没有选中，则选择第一个
-    if (selectedIds.size === 0 && products.length > 0) {
-      selectedIds.add(products[0].id);
+    for (let i = 0; i < Math.min(maxCount, productsWithHash.length); i++) {
+      selectedIds.add(productsWithHash[i].product.id);
     }
     
     return selectedIds;
@@ -298,10 +298,12 @@ const ProductList: React.FC<ProductListProps> = ({ onBack, categoryId, categoryL
                 <span className="text-xs font-medium text-gray-400">
                   {getProductImageText(item.title)}
                 </span>
-                {/* 特价标签 */}
-                <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
-                  特价
-                </div>
+                {/* 特价标签 - 只在有划线价的商品上显示 */}
+                {hasStrikethrough && (
+                  <div className="absolute -top-1 -left-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded">
+                    特价
+                  </div>
+                )}
               </div>
 
               {/* Product Info */}

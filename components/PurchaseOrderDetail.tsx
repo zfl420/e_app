@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, MoreVertical, Target, Copy, Check } from 'lucide-react';
+import { ChevronLeft, Copy, Check } from 'lucide-react';
 import StatusBar from './StatusBar';
 
 interface PurchaseOrderDetailProps {
@@ -102,14 +102,7 @@ const PurchaseOrderDetail: React.FC<PurchaseOrderDetailProps> = ({ onBack, order
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
           <h1 className="text-lg font-bold text-gray-900">订单详情</h1>
-          <div className="flex items-center gap-2">
-            <button className="p-1">
-              <MoreVertical className="w-5 h-5 text-gray-700" />
-            </button>
-            <button className="p-1">
-              <Target className="w-5 h-5 text-gray-700" />
-            </button>
-          </div>
+          <div className="w-10" />
         </div>
       </div>
 
